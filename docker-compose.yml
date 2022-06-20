@@ -1,0 +1,7 @@
+version: '3.6'
+services:
+  api:
+    image: 983515929/gabriel_api
+    command: "/app/start.sh"
+    ports:
+      - '8000:8000'
