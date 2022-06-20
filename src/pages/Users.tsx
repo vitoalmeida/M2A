@@ -4,8 +4,9 @@ import SearchForm from "../components/companies/SearchForm";
 import Layout from "../components/Layout";
 import Results from "../components/users/Results";
 import { AccountActions } from "../redux/account";
+import { Helmet } from "react-helmet";
 
-function Questions() {
+function Users() {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -13,11 +14,18 @@ function Questions() {
   }, []);
 
   return (
-    <Layout>
-      <SearchForm />
-      <Results />
-    </Layout>
+    <>
+      <Helmet>
+        <title>Usuários - M2A</title>
+        <meta name="description" content="Login to M2A application" />
+      </Helmet>
+
+      <Layout>
+        <SearchForm />
+        <Results />
+      </Layout>
+    </>
   );
 }
 
-export default Questions;
+export default Users;

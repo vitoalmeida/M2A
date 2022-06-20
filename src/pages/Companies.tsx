@@ -8,7 +8,7 @@ import SearchForm from "../components/companies/SearchForm";
 import Layout from "../components/Layout";
 import { CompaniesActions } from "../redux/companies";
 import { GeneralActions } from "../redux/general";
-import { useSelector } from "../redux/hooks";
+import { Helmet } from "react-helmet";
 
 function Companies() {
   const dispatch = useDispatch();
@@ -19,10 +19,16 @@ function Companies() {
   }, []);
 
   return (
-    <Layout>
-      <SearchForm />
-      <Results />
-    </Layout>
+    <>
+      <Helmet>
+        <title>Empresas - M2A</title>
+        <meta name="description" content="Login to M2A application" />
+      </Helmet>
+      <Layout>
+        <SearchForm />
+        <Results />
+      </Layout>
+    </>
   );
 }
 

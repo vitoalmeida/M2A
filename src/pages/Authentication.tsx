@@ -1,8 +1,4 @@
-import React from "react";
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
-import Layout from "../components/Layout";
-import { AccountActions } from "../redux/account";
 import { useSelector } from "../redux/hooks";
 import { Helmet } from "react-helmet";
 import AuthCard from "../components/authentication";

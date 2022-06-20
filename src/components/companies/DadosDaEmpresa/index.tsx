@@ -21,21 +21,21 @@ const DadosDaEmpresa = ({ changeTab }: Props) => {
   const { general, account, companies } = useSelector((state) => state);
 
   const initialValues: any = {
-    cnpj: companies?.editCompany?.cnpj || 123424324,
-    razao_social: companies?.editCompany?.razao_social || "Teste",
-    fantasia: companies?.editCompany?.fantasia || "Teste Fantasia",
-    num_empregados: companies?.editCompany?.num_empregados || 1,
-    dt_ano_inicio: companies?.editCompany?.dt_ano_inicio || "2022-06-18",
+    cnpj: companies?.editCompany?.cnpj,
+    razao_social: companies?.editCompany?.razao_social,
+    fantasia: companies?.editCompany?.fantasia,
+    num_empregados: companies?.editCompany?.num_empregados,
+    dt_ano_inicio: companies?.editCompany?.dt_ano_inicio,
     bool_master: companies?.editCompany?.bool_master,
     inscricao_estadual: companies?.editCompany?.inscricao_estadual,
-    grupo: companies?.editCompany?.grupo || 1,
-    segmento: companies?.editCompany?.segmento || 1,
-    setor: companies?.editCompany?.setor || 1,
-    tipo_industria: companies?.editCompany?.tipo_industria || 1,
-    faturamento: companies?.editCompany?.faturamento || 1,
-    projeto: companies?.editCompany?.projeto || 1,
-    endereco: companies?.editCompany?.endereco || 1,
-    valor_arrecadacao: companies?.editCompany?.valor_arrecadacao || 1,
+    grupo: companies?.editCompany?.grupo,
+    segmento: companies?.editCompany?.segmento,
+    setor: companies?.editCompany?.setor,
+    tipo_industria: companies?.editCompany?.tipo_industria,
+    faturamento: companies?.editCompany?.faturamento,
+    projeto: companies?.editCompany?.projeto,
+    endereco: companies?.editCompany?.endereco,
+    valor_arrecadacao: companies?.editCompany?.valor_arrecadacao,
   };
 
   function handleSubmit(values) {
