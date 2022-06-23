@@ -8,6 +8,7 @@ import * as helpers from "../../helpers/index";
 function* getUf() {
   try {
     const { data } = yield call(api.general.getUf);
+    console.log(data)
     const formatedUf = helpers.formData.formatUf(data.results);
 
     yield put(GeneralActions.getUfSuccess(formatedUf));
