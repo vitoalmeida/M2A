@@ -5,6 +5,9 @@ export const errorMessages = {
   invalidEmail: "Digite um e-mail válido",
   shortPassword: "A senha deve conter no mínimo 6 dígitos",
   differentPassword: "A senhas não correspondem",
+  mustBeGreater: "O valor deve ser maior que 0",
+  mustBeLess: "O valor deve ser menor que 9999",
+  cnpjMustBeLess: "CNPJ deve conter menos que 14 dígitos",
 };
 
 function parseLabel(key: string): string {

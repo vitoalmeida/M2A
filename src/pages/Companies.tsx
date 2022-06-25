@@ -11,13 +11,6 @@ import { GeneralActions } from "../redux/general";
 import { Helmet } from "react-helmet";
 
 function Companies() {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(CompaniesActions.getCompaniesRequest());
-    dispatch(GeneralActions.getUfRequest());
-  }, []);
-
   return (
     <>
       <Helmet>

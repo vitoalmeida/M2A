@@ -12,6 +12,10 @@ export enum CompaniesTypes {
   GET_COMPANIES_SUCCESS = "@companies/GET_COMPANIES_SUCCESS",
   GET_COMPANIES_FAILURE = "@companies/GET_COMPANIES_FAILURE",
 
+  GET_MASTER_COMPANIES_REQUEST = "@companies/GET_MASTER_COMPANIES_REQUEST",
+  GET_MASTER_COMPANIES_SUCCESS = "@companies/GET_MASTER_COMPANIES_SUCCESS",
+  GET_MASTER_COMPANIES_FAILURE = "@companies/GET_MASTER_COMPANIES_FAILURE",
+
   REGISTER_COMPANY_REQUEST = "@companies/REGISTER_COMPANY_REQUEST",
   REGISTER_COMPANY_SUCCESS = "@companies/REGISTER_COMPANY_SUCCESS",
   REGISTER_COMPANY_FAILURE = "@companies/REGISTER_COMPANY_FAILURE",
@@ -53,6 +57,19 @@ export interface GetCompaniesSuccess {
 
 export interface GetCompaniesFailure {
   type: CompaniesTypes.GET_COMPANIES_FAILURE;
+}
+
+export interface GetMasterCompanies {
+  type: CompaniesTypes.GET_MASTER_COMPANIES_REQUEST;
+}
+
+export interface GetMasterCompaniesSuccess {
+  type: CompaniesTypes.GET_MASTER_COMPANIES_SUCCESS;
+  payload: { data: Company[] };
+}
+
+export interface GetMasterCompaniesFailure {
+  type: CompaniesTypes.GET_MASTER_COMPANIES_FAILURE;
 }
 
 export interface RegisterCompany {
@@ -125,27 +142,34 @@ export interface CompaniesState {
 }
 
 export interface Company {
-  id: number;
-  cnpj: string;
-  razao_social: string;
-  fantasia: string;
-  num_empregados: string;
-  dt_ano_inicio: string;
-  telefone: string;
+  id?: number;
+  cnpj?: string;
+  email?: string;
+  razao_social?: string;
+  fantasia?: string;
+  num_empregados?: string;
+  dt_ano_inicio?: string;
+  telefone?: string;
   celular?: string;
   inscricao_estadual?: string;
   fax?: string;
+  master?: number;
   bool_master?: boolean;
   ds_negocio?: string;
   missao?: string;
   visao?: string;
   valores?: string;
-  grupo: { nome_grupo: string };
-  segmento: { ds_segmento: string };
-  setor: { ds_setor: string };
-  tipo_industria: { ds_tipo_industria: string };
-  faturamento: { dt_ano: string; valor: number };
-  projeto: number;
-  endereco: Address;
-  valor_arrecadacao: { tipo_arrecadacao: string };
+  segmento?: number | { ds_segmento: string };
+  setor?: number | { ds_setor: string };
+  tipo_industria?: { ds_tipo_industria: string };
+  faturamento?: number[] | { dt_ano: string; valor: number }[];
+  endereco?: Address;
+  valor_arrecadacao?: number | { tipo_arrecadacao: string };
+  resp_nome?: string;
+  resp_sobrenome?: string;
+  resp_email?: string;
+  resp_sexo?: string;
+  resp_formacao_academica?: string;
+  // grupo: { nome_grupo: string };
+  // projeto: number;
 }

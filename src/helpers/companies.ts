@@ -52,10 +52,11 @@ export function verifyCompanyToEdit(oldCompany: Company, newCompany: Company) {
     formatedCompany.fax = newCompany.fax;
   }
 
-  if (
-    newCompany.bool_master &&
-    newCompany.bool_master !== oldCompany.bool_master
-  ) {
+  if (newCompany.master !== oldCompany.master) {
+    formatedCompany.master = newCompany.master;
+  }
+
+  if (newCompany.bool_master !== oldCompany.bool_master) {
     formatedCompany.bool_master = newCompany.bool_master;
   }
 
@@ -78,9 +79,9 @@ export function verifyCompanyToEdit(oldCompany: Company, newCompany: Company) {
     formatedCompany.valores = newCompany.valores;
   }
 
-  if (newCompany.grupo && newCompany.grupo !== oldCompany.grupo) {
-    formatedCompany.grupo = newCompany.grupo;
-  }
+  // if (newCompany.grupo && newCompany.grupo !== oldCompany.grupo) {
+  //   formatedCompany.grupo = newCompany.grupo;
+  // }
 
   if (newCompany.segmento && newCompany.segmento !== oldCompany.segmento) {
     formatedCompany.segmento = newCompany.segmento;
@@ -104,9 +105,9 @@ export function verifyCompanyToEdit(oldCompany: Company, newCompany: Company) {
     formatedCompany.faturamento = newCompany.faturamento;
   }
 
-  if (newCompany.projeto && newCompany.projeto !== oldCompany.projeto) {
-    formatedCompany.projeto = newCompany.projeto;
-  }
+  // if (newCompany.projeto && newCompany.projeto !== oldCompany.projeto) {
+  //   formatedCompany.projeto = newCompany.projeto;
+  // }
 
   if (
     newCompany.valor_arrecadacao &&

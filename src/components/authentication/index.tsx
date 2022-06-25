@@ -1,29 +1,66 @@
 import { useState } from "react";
+import { FaChevronLeft } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { CompanyForm } from "..";
+import { AccountActions } from "../../redux/account";
+import { useSelector } from "../../redux/hooks";
 import LoginForm from "./LoginForm";
-import RegisterForm from "./RegisterForm";
+import PasswordForm from "./PasswordForm";
 
-const AuthCard = () => {
+const AuthRegion = () => {
+  const dispatch = useDispatch();
+  const { companies } = useSelector((state) => state);
+
   const [currentScreen, setCurrentScreen] = useState("login");
+  const [registerFinalStep, setRegisterFinalStep] = useState(false);
+
+  function handleSubmit() {
+    // dispatch(AccountActions.registerAccountRequest({}));
+  }
 
   return (
-    <div className="self-center bg-white md:shadow-xl min-h-[45rem] flex max-w-6xl rounded-2xl overflow-hidden duration-500">
+    <div className="relative self-center bg-white md:shadow-xl min-h-[45rem] flex rounded-2xl overflow-x-hidden duration-500">
       <div className="flex-1 flex flex-col justify-center py-12 px-4 md:px-20 lg:px-20 xl:px-24 duration-500">
-        <div className="mx-auto w-full max-w-sm lg:max-w-lg duration-500">
-          <div className="flex flex-col items-center">
-            <img
-              className="h-20 mx-auto w-auto"
-              src={require("../../assets/images/logo.png")}
-              alt="Workflow"
-            />
+        <div className="mx-auto duration-500">
+          {registerFinalStep && (
+            <span
+              onClick={() => setRegisterFinalStep(false)}
+              className="cursor-pointer top-10 left-4 md:left-20 lg:left-20 xl:left-24 absolute flex items-center text-gray-500"
+            >
+              <FaChevronLeft className="text-gray-500 mr-2" />
+              Voltar
+            </span>
+          )}
+          <div className="flex flex-col items-center duration-500">
+            {currentScreen === "login" && (
+              <img
+                className="h-20 mx-auto w-auto"
+                src={require("../../assets/images/logo.png")}
+                alt="Workflow"
+              />
+            )}
             <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
               {currentScreen === "login"
                 ? "Faça login em sua conta"
+                : registerFinalStep
+                ? "Falta pouco..."
                 : "Registre-se agora"}
             </h2>
+            {registerFinalStep && (
+              <p className="text-gray-500">
+                Estabeleça uma senha para sua conta.
+              </p>
+            )}
           </div>
 
-          <div className="mt-8">
-            {currentScreen === "login" ? <LoginForm /> : <RegisterForm />}
+          <div className="mt-8 duration-500">
+            {currentScreen === "login" ? (
+              <LoginForm />
+            ) : registerFinalStep ? (
+              <PasswordForm onSubmit={() => handleSubmit} />
+            ) : (
+              <CompanyForm onSubmit={() => setRegisterFinalStep(true)} />
+            )}
           </div>
         </div>
         <div className="mt-6 relative">
@@ -56,4 +93,4 @@ const AuthCard = () => {
   );
 };
 
-export default AuthCard;
+export default AuthRegion;

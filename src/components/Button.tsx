@@ -4,6 +4,7 @@ import "react-activity/dist/library.css";
 
 interface Props {
   icon?: ReactNode;
+  iconRight?: boolean;
   title: string;
   color?: string;
   loading?: boolean;
@@ -16,6 +17,7 @@ const Button: React.FC<Props> = ({
   color,
   onClick,
   icon,
+  iconRight,
 }: Props) => {
   function handleClick() {
     if (onClick) onClick();
@@ -31,8 +33,9 @@ const Button: React.FC<Props> = ({
           color ? "" : "bg-secondary-blue hover:bg-[#1289d9]"
         } w-full flex items-center gap-x-1 justify-center py-2 px-5 border border-transparent rounded-md shadow-md text-sm md:text-base font-medium text-white focus:outline-none duration-500`}
       >
-        {icon && icon}
+        {icon && !iconRight && icon}
         {loading ? <Dots color="#FFF" size={16} /> : title}
+        {icon && iconRight && icon}
       </button>
     </div>
   );

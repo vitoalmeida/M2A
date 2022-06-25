@@ -1,7 +1,7 @@
 export interface GenericData {
   id: number;
-  value: string;
   label: string;
+  optional: string;
 }
 
 export interface ErrorType {

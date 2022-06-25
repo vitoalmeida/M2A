@@ -29,7 +29,7 @@ const Header = () => {
         onCloseModal={() => setProfileOpen(false)}
         closeButton
       >
-        <Perfil />
+        {/* <Perfil /> */}
       </Modal>
       <div className="flex justify-between my-5">
         <img
@@ -43,7 +43,7 @@ const Header = () => {
           }}
           className="flex items-center cursor-pointer"
         >
-          <p className="mr-2 text-xs xl:text-lg">{`${account?.data.nome} ${account?.data.sobrenome}`}</p>
+          {/* <p className="mr-2 text-xs xl:text-lg">{`${account?.data.nome} ${account?.data.sobrenome}`}</p> */}
           <FaChevronDown color={"#474747"} />
 
           <span className="ml-4 inline-block h-10 w-10 rounded-full overflow-hidden bg-gray-100">

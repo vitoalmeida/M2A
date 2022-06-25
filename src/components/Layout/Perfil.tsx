@@ -10,10 +10,6 @@ const Perfil: React.FC = () => {
   let dispatch = useDispatch();
   const { account, general } = useSelector((state) => state);
 
-  useEffect(() => {
-    dispatch(GeneralActions.getUfRequest());
-  }, []);
-
   return (
     <div className="overflow-hidden sm:rounded-lg max-w-3xl">
       <div className="flex pl-4 sm:px-10 items-center py-3">

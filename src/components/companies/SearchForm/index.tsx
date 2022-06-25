@@ -24,8 +24,8 @@ const SearchForm = () => {
               label="Estado"
               name="uf"
               data={[
-                { value: "Test", label: "test" },
-                { value: "Test2", label: "test2" },
+                { id: 1, label: "test" },
+                { id: 2, label: "test2" },
               ]}
             />
           </div>
@@ -34,8 +34,8 @@ const SearchForm = () => {
               label="Emp. vinculada"
               name="empresa_vinculada"
               data={[
-                { value: "Test", label: "test" },
-                { value: "Test2", label: "test2" },
+                { id: 1, label: "test" },
+                { id: 2, label: "test2" },
               ]}
             />
           </div>
@@ -44,8 +44,8 @@ const SearchForm = () => {
               label="Arrecadação"
               name="arrecadacao"
               data={[
-                { value: "Test", label: "test" },
-                { value: "Test2", label: "test2" },
+                { id: 3, label: "test" },
+                { id: 4, label: "test2" },
               ]}
             />
           </div>
@@ -54,8 +54,8 @@ const SearchForm = () => {
               label="Setor"
               name="setor"
               data={[
-                { value: "Test", label: "test" },
-                { value: "Test2", label: "test2" },
+                { id: 1, label: "test" },
+                { id: 2, label: "test2" },
               ]}
             />
           </div>

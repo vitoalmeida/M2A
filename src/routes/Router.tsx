@@ -9,9 +9,13 @@ import { CustomBrowserRouter } from "./CustomBrowserRouter";
 import configApi from "../services/config";
 import NotFound from "../pages/NotFound";
 import Questions from "../pages/Questions";
+import { GeneralActions } from "../redux/general";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
 
 const Router = () => {
-  const { account } = useSelector((state) => state);
+  const dispatch = useDispatch();
+  const { account, general } = useSelector((state) => state);
   const isAuthenticated = account.token;
 
   if (isAuthenticated) {
@@ -21,7 +25,13 @@ const Router = () => {
     });
   }
 
-  // console.log(isAuthenticated);
+  useEffect(() => {
+    if (!general?.uf?.length) {
+      // dispatch(CompaniesActions.getCompaniesRequest());
+      dispatch(GeneralActions.getStaticValuesRequest());
+    }
+  }, []);
+
   return (
     <CustomBrowserRouter basename={"/"}>
       <Routes>
@@ -33,8 +43,8 @@ const Router = () => {
         />
         <Route
           path="companies"
-          // element={<Companies />}
-          element={isAuthenticated ? <Companies /> : <Authentication />}
+          element={<Companies />}
+          // element={isAuthenticated ? <Companies /> : <Authentication />}
         />
         <Route
           path="questionnaires"

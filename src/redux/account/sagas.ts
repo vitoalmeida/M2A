@@ -34,7 +34,6 @@ function* getAccountSuccess(data, token) {
 function* getAccounts() {
   try {
     const { data: returnData } = yield call(api.account.getUsers);
-    console.log(returnData);
 
     yield getAccountsSuccess(returnData.results, returnData.count);
   } catch (err) {
@@ -50,7 +49,18 @@ function* getAccountsSuccess(data: Profile[], count: number) {
 
 function* registerAccount({ payload: { data } }: RegisterAccount) {
   try {
-    yield call(api.account.registerAccount, data);
+    const { data: address } = yield call(
+      api.general.registerAddress,
+      data.user_inf?.endereco
+    );
+
+    console.log(address.id);
+
+    yield call(api.account.registerAccount, {
+      ...data,
+      endereco: address.id,
+    });
+    console.log("registro");
 
     showToast("Registrado com sucesso!", "success");
     yield registerAccountSuccess(data);

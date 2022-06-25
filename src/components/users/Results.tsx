@@ -19,7 +19,6 @@ const Results = () => {
 
   const [editOpen, setEditOpen] = useState(false);
   const [warningOpen, setWarningOpen] = useState(false);
-  console.log(account.accountList);
 
   function handleOpenModal(company?: Company) {
     if (company) dispatch(CompaniesActions.setEditCompany(company));

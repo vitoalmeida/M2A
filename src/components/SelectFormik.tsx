@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { FaChevronDown } from "react-icons/fa";
 
 interface Item {
-  value: string;
+  id: number | string;
   label: string;
 }
 
@@ -54,14 +54,14 @@ const SelectFormik: React.FC<Props> = ({
       {label && (
         <label className="mb-1 block text-sm font-medium text-gray-700">
           {label}
-          {required && <span className="ml-1 text-red-400">*</span>}
+          {required && <span className="ml-1 text-red-300">*</span>}
         </label>
       )}
-      <div className="relative flex">
+      <div className={`${error ? "" : "pb-6"} relative flex`}>
         <Field
           className={`${
-            error ? "border-red-400" : "mb-8 border-gray-300"
-          } block appearance-none w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+            error ? "border-red-300" : "border-gray-300"
+          } appearance-none block w-full px-3 py-2 border text-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
           as="select"
           name={name}
           error={!disableErrorMessage ? error : undefined}
@@ -83,7 +83,7 @@ const SelectFormik: React.FC<Props> = ({
 
             {data &&
               data.map((item) => (
-                <option key={item.value} value={item.value}>
+                <option key={item.id} value={item.id}>
                   {item.label}
                 </option>
               ))}
@@ -92,7 +92,7 @@ const SelectFormik: React.FC<Props> = ({
         <FaChevronDown color={"#989898"} className="absolute right-3 top-3" />
       </div>
       {error || description ? (
-        <div className="text-red-400 text-xs mb-4">{`${
+        <div className="text-red-300 text-xs pb-2">{`${
           error || description
         }`}</div>
       ) : null}

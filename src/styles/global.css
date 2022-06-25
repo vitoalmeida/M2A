@@ -8,4 +8,24 @@
   html {
     font-family: "Inter";
   }
+
+  .glass {
+    background: rgba(255, 0, 0, 0.2);
+    border-radius: 5px;
+    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(1.5px);
+    -webkit-backdrop-filter: blur(1.5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
+  }
 }

@@ -16,6 +16,8 @@ interface Props {
   descriptionMarginBottom?: number;
   textArea?: boolean;
   required?: boolean;
+  disabled?: boolean;
+  pattern?: string;
 }
 
 const InputFormik: React.FC<Props> = ({
@@ -27,9 +29,10 @@ const InputFormik: React.FC<Props> = ({
   disableErrorMessage,
   secureTextEntry,
   description,
-  multiline,
   descriptionMarginBottom,
+  disabled,
   type,
+  pattern,
   textArea,
 }) => {
   const { values, errors, touched, setFieldValue, setErrors } =
@@ -57,13 +60,13 @@ const InputFormik: React.FC<Props> = ({
       {label && (
         <label className="mb-1 block text-sm font-medium text-gray-700">
           {label}
-          {required && <span className="ml-1 text-red-400">*</span>}
+          {required && <span className="ml-1 text-red-300">*</span>}
         </label>
       )}
-      <div className="">
+      <div className={`${error ? "" : "pb-6"}`}>
         <Field
           className={`${textArea && "h-24"} ${
-            error ? "border-red-400" : "mb-5 border-gray-300"
+            error ? "border-red-300" : "border-gray-300"
           } appearance-none block w-full px-3 py-2 border text-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
           name={name}
           error={!disableErrorMessage ? error : undefined}
@@ -74,18 +77,25 @@ const InputFormik: React.FC<Props> = ({
             delete newErrors[name];
             setErrors(newErrors);
           }}
-          type={type}
+          type={type === "currency" ? "number" : type}
+          disabled={disabled}
           onBlur={() => setFocus(false)}
-          value={values[name]}
+          value={
+            type === "currency"
+              ? values[name] && Number(values[name]).toFixed(2)
+              : values[name]
+          }
           placeholder={placeholder}
+          pattern={pattern}
           as={textArea ? "textarea" : "input"}
         />
+
+        {error || description ? (
+          <div className="text-red-300 text-xs pb-2">{`${
+            error || description || ""
+          }`}</div>
+        ) : null}
       </div>
-      {error || description ? (
-        <div className="text-red-400 text-xs mb-4">{`${
-          error || description || ""
-        }`}</div>
-      ) : null}
     </>
   );
 };

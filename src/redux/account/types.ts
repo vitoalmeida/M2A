@@ -1,4 +1,7 @@
 /* eslint-disable no-shadow */
+
+import { Company } from "../companies/types";
+
 /* eslint-disable no-unused-vars */
 export enum AccountTypes {
   GET_ACCOUNT_REQUEST = "@general/GET_ACCOUNT_REQUEST",
@@ -101,7 +104,10 @@ export interface LoginProfile {
   password: string;
 }
 
-export interface RegisterProfile extends Profile {
+export interface RegisterProfile extends LoginProfile {
+  tipo: number;
+  ativo: boolean;
   password: string;
-  confirmPassword: string;
+  confirmPassword?: string;
+  user_inf: Company;
 }

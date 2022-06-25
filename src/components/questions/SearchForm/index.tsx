@@ -1,7 +1,7 @@
-import { Formik, Form } from 'formik';
-import { InputFormik, SelectFormik, Button } from '../../index';
-import formSchema from './formSchema';
-import { IoMdTrash, IoMdSearch } from 'react-icons/io';
+import { Formik, Form } from "formik";
+import { InputFormik, SelectFormik, Button } from "../../index";
+import formSchema from "./formSchema";
+import { IoMdTrash, IoMdSearch } from "react-icons/io";
 
 const SearchForm = () => {
   function handleSubmit(values) {
@@ -11,28 +11,28 @@ const SearchForm = () => {
   return (
     <Formik onSubmit={handleSubmit} {...formSchema}>
       <Form>
-        <div className='md:flex md:justify-around mt-5 w-full'>
-          <div className='flex flex-col w-full md:pr-5'>
+        <div className="md:flex md:justify-around mt-5 w-full">
+          <div className="flex flex-col w-full md:pr-5">
             <InputFormik
-              label='Pesquisar'
-              name='pesquisa'
-              placeholder='Título da pergunta'
+              label="Pesquisar"
+              name="pesquisa"
+              placeholder="Título da pergunta"
             />
           </div>
-          <div className='flex flex-col w-full md:l-5'>
+          <div className="flex flex-col w-full md:l-5">
             <SelectFormik
-              label='Questionário'
-              name='uf'
+              label="Questionário"
+              name="uf"
               data={[
-                { value: 'Test', label: 'test' },
-                { value: 'Test2', label: 'test2' },
+                { id: 1, label: "test" },
+                { id: 2, label: "test2" },
               ]}
             />
           </div>
         </div>
-        <div className='-mt-3 flex w-full gap-x-5 justify-end'>
-          <Button title='Limpar' color='#ff8282' icon={<IoMdTrash />} />
-          <Button title='Filtrar' icon={<IoMdSearch />} />
+        <div className="-mt-3 flex w-full gap-x-5 justify-end">
+          <Button title="Limpar" color="#ff8282" icon={<IoMdTrash />} />
+          <Button title="Filtrar" icon={<IoMdSearch />} />
         </div>
       </Form>
     </Formik>
