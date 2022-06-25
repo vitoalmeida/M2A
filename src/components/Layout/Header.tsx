@@ -5,6 +5,8 @@ import Modal from "../Modal";
 import Perfil from "./Perfil";
 import { FaChevronDown } from "react-icons/fa";
 import { BsFillGearFill } from "react-icons/bs";
+import { Company } from "../../redux/companies/types";
+import { Profile } from "../../redux/account/types";
 
 const tabs = [
   { name: "Empresas", href: "/companies" },
@@ -19,6 +21,7 @@ const Header = () => {
   const location = useLocation();
   const { account } = useSelector((state) => state);
   const activeTab = location.pathname;
+  console.log(account?.data);
 
   const [isProfileOpen, setProfileOpen] = useState(false);
 
@@ -29,7 +32,7 @@ const Header = () => {
         onCloseModal={() => setProfileOpen(false)}
         closeButton
       >
-        {/* <Perfil /> */}
+        <Perfil />
       </Modal>
       <div className="flex justify-between my-5">
         <img
@@ -43,7 +46,13 @@ const Header = () => {
           }}
           className="flex items-center cursor-pointer"
         >
-          {/* <p className="mr-2 text-xs xl:text-lg">{`${account?.data.nome} ${account?.data.sobrenome}`}</p> */}
+          <p className="mr-2 text-xs xl:text-lg">
+            {account.data.isCompany
+              ? (account.data.user_inf as Company).fantasia
+              : `${(account?.data?.user_inf as Profile).nome} ${
+                  (account?.data?.user_inf as Profile).sobrenome
+                }`}
+          </p>
           <FaChevronDown color={"#474747"} />
 
           <span className="ml-4 inline-block h-10 w-10 rounded-full overflow-hidden bg-gray-100">

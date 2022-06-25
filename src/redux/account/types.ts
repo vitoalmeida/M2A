@@ -21,7 +21,7 @@ export enum AccountTypes {
 
 export interface GetAccount {
   type: AccountTypes.GET_ACCOUNT_REQUEST;
-  payload: { data: LoginProfile };
+  payload: { data: LoginAccount };
 }
 
 export interface GetAccountSuccess {
@@ -48,12 +48,12 @@ export interface GetAccountsFailure {
 
 export interface RegisterAccount {
   type: AccountTypes.REGISTER_ACCOUNT_REQUEST;
-  payload: { data: RegisterProfile };
+  payload: { data: RegisterAccountType };
 }
 
 export interface RegisterAccountSuccess {
   type: AccountTypes.REGISTER_ACCOUNT_SUCCESS;
-  payload: { data: Profile };
+  payload: { data: Account };
 }
 
 export interface RegisterAccountFailure {
@@ -78,14 +78,23 @@ export type AccountActionTypes =
 
 export interface AccountState {
   loading: boolean;
-  data: Profile | null;
+  data: Account | null;
   token: number | null;
-  accountList: { data: Profile[] | null; count: number | null };
+  accountList: { data: Account[] | null; count: number | null };
+}
+
+export interface Account {
+  isCompany: boolean;
+  email?: string;
+  username?: string;
+  password?: string;
+  tipo?: number;
+  ativo?: boolean;
+  user_inf: Company | Profile;
 }
 
 export interface Profile {
   id?: number;
-  ativo: boolean | number;
   nome: string;
   sobrenome: string;
   cpf: string;
@@ -95,19 +104,18 @@ export interface Profile {
   formacao: string;
   perfil: string;
   uf: number | string;
-  empresa: number;
 }
 
-export interface LoginProfile {
+export interface LoginAccount {
   email?: string;
   username?: string;
-  password: string;
+  password?: string;
 }
 
-export interface RegisterProfile extends LoginProfile {
-  tipo: number;
-  ativo: boolean;
-  password: string;
+export interface RegisterAccountType extends LoginAccount {
+  tipo?: number;
+  ativo?: boolean;
+  password?: string;
   confirmPassword?: string;
   user_inf: Company;
 }

@@ -12,8 +12,13 @@ function* getAccount({ payload: { data } }: GetAccount) {
   try {
     const { data: returnData } = yield call(api.account.login, data);
 
+    const isCompany = returnData.user.tipo === 3 || returnData.user.tipo === 4;
+
     showToast("Logado com sucesso!", "success");
-    yield getAccountSuccess(returnData.user, returnData.access);
+    yield getAccountSuccess(
+      { ...returnData.user, isCompany },
+      returnData.access
+    );
   } catch (err) {
     yield put(AccountActions.getAccountFailure());
 
@@ -54,13 +59,12 @@ function* registerAccount({ payload: { data } }: RegisterAccount) {
       data.user_inf?.endereco
     );
 
-    console.log(address.id);
+    data.user_inf.endereco = address.id;
 
     yield call(api.account.registerAccount, {
       ...data,
       endereco: address.id,
     });
-    console.log("registro");
 
     showToast("Registrado com sucesso!", "success");
     yield registerAccountSuccess(data);

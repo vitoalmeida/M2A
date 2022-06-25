@@ -10,6 +10,7 @@ import { CompaniesActions } from "../../redux/companies";
 import { useDispatch } from "react-redux";
 import WaningModal from "../WaningModal";
 import { BsCircleFill } from "react-icons/bs";
+import { Profile } from "../../redux/account/types";
 
 const Results = () => {
   const dispatch = useDispatch();
@@ -113,7 +114,7 @@ const Results = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
                   {account?.accountList?.data?.map((user) => (
-                    <tr key={user.id}>
+                    <tr key={(account?.data?.user_inf as Profile).id}>
                       <td className="relative whitespace-nowrap py-4 text-right text-sm font-medium">
                         <BsCircleFill
                           className="flex mx-auto"
@@ -121,18 +122,20 @@ const Results = () => {
                         />
                       </td>
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                        {`${user.nome} ${user.sobrenome}`}
+                        {`${(account?.data?.user_inf as Profile).nome} ${
+                          (account?.data?.user_inf as Profile).sobrenome
+                        }`}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                         {user.email}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {user.perfil}
+                        {(account?.data?.user_inf as Profile).perfil}
                       </td>
                       <td className="relative whitespace-nowrap py-4 text-right text-sm font-medium">
                         <button
                           className="flex text-main-blue mx-auto"
-                          // onClick={() => handleOpenModal(user)}
+                          onClick={() => handleOpenModal(user)}
                         >
                           <FaEdit />
                         </button>
