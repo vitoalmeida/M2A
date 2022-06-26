@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+import Layout from '../components/Layout';
+import { Helmet } from 'react-helmet';
+import { useState } from 'react';
+import { Button } from '../components';
+import Question from '../components/Questionnairies/Question';
+=======
 import Layout from "../components/Layout";
 import { Helmet } from "react-helmet";
 import { useState } from "react";
@@ -5,6 +12,7 @@ import { RadioGroup } from "@headlessui/react";
 import { Button } from "../components";
 import { useSelector } from "../redux/hooks";
 import { useDispatch } from "react-redux";
+>>>>>>> 1540162867a89e47a529e87b445d7a30fea5d633
 
 const settings = [
   {
@@ -20,7 +28,12 @@ const settings = [
 
 const questions = [
   {
+<<<<<<< HEAD
+    id: 1,
+    question: 'Vitor boiolinha gayzinho viadinho bichinha frutinha soca mole',
+=======
     question: "Vitor boiolinha gayzinho viadinho bichinha frutinha soca mole",
+>>>>>>> 1540162867a89e47a529e87b445d7a30fea5d633
     answers: [
       "Sim elde é!",
       "Com toda cerdteza!",
@@ -29,7 +42,12 @@ const questions = [
     ],
   },
   {
+<<<<<<< HEAD
+    id: 2,
+    question: 'Vitor boiolinha gayzinho viadinho bichinha frutinha soca mole',
+=======
     question: "Vitor boiolinha gayzinho viadinho bichinha frutinha soca mole",
+>>>>>>> 1540162867a89e47a529e87b445d7a30fea5d633
     answers: [
       "Sim egle é!",
       "Com toda certeza!",
@@ -38,7 +56,12 @@ const questions = [
     ],
   },
   {
+<<<<<<< HEAD
+    id: 3,
+    question: 'Vitor boiolinha gayzinho viadinho bichinha frutinha soca mole',
+=======
     question: "Vitor boiolinha gayzinho viadinho bichinha frutinha soca mole",
+>>>>>>> 1540162867a89e47a529e87b445d7a30fea5d633
     answers: [
       "Sim ele é!",
       "Com tosda certeza!",
@@ -47,7 +70,12 @@ const questions = [
     ],
   },
   {
+<<<<<<< HEAD
+    id: 4,
+    question: 'Vitor boiolinha gayzinho viadinho bichinha frutinha soca mole',
+=======
     question: "Vitor boiolinha gayzinho viadinho bichinha frutinha soca mole",
+>>>>>>> 1540162867a89e47a529e87b445d7a30fea5d633
     answers: [
       "Sim ele dé!",
       "Com toda certezaa!",
@@ -73,6 +101,9 @@ function Questionnaires() {
       </Helmet>
       <Layout>
         {questions.map((question) => (
+<<<<<<< HEAD
+          <Question question={question} />
+=======
           <RadioGroup value={selected} onChange={setSelected}>
             <div className="flex flex-col justify-between bg-[#F3F4F6] rounded-2xl mt-10">
               <span className="text-sm md:text-lg px-5 py-5">
@@ -130,6 +161,7 @@ function Questionnaires() {
               </div>
             </div>
           </RadioGroup>
+>>>>>>> 1540162867a89e47a529e87b445d7a30fea5d633
         ))}
         <div className="py-10">
           <Button title="ENVIAR" />
