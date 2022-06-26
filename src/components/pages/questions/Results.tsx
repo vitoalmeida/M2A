@@ -10,7 +10,10 @@ import { CompaniesActions } from '../../../redux/companies';
 import { useDispatch } from 'react-redux';
 import WaningModal from '../../WaningModal';
 import QuestionsEditForm from './QuestionsEditForm';
+<<<<<<< Updated upstream
 import { Question } from '../../../redux/questionnaire/types';
+=======
+>>>>>>> Stashed changes
 
 const Results = () => {
   const dispatch = useDispatch();
@@ -30,8 +33,13 @@ const Results = () => {
   }
 
   //ALTERAR PARA PERGUNTA
+<<<<<<< Updated upstream
   function handleOpenWarningModal(questionId: number) {
     setDeleteQuestionId(questionId);
+=======
+  function handleOpenWarningModal(companyId: number) {
+    setDeleteQuestionId(companyId);
+>>>>>>> Stashed changes
     setWarningOpen(true);
   }
 
@@ -123,7 +131,11 @@ const Results = () => {
                       <td className='relative pr-5 whitespace-nowrap py-4 text-right text-sm font-medium'>
                         <button
                           className='flex mx-auto text-[#d14f4f]'
+<<<<<<< Updated upstream
                           onClick={() => handleOpenWarningModal(question.id)}
+=======
+                          // onClick={() => handleOpenWarningModal(company.id)}
+>>>>>>> Stashed changes
                         >
                           <FaTrash />
                         </button>
