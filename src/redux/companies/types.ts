@@ -87,7 +87,7 @@ export interface RegisterCompanyFailure {
 }
 export interface DeleteCompany {
   type: CompaniesTypes.DELETE_COMPANY_REQUEST;
-  payload: { companyId: number };
+  payload: { companyId: number; type: number };
 }
 
 export interface DeleteCompanySuccess {
@@ -143,6 +143,7 @@ export interface CompaniesState {
 
 export interface Company {
   id?: number;
+  tipo?: number;
   cnpj?: string;
   email?: string;
   razao_social?: string;

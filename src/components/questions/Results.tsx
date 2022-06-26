@@ -37,7 +37,7 @@ const Results = () => {
 
   //ALTERAR PARA PERGUNTA
   function handleDeleteCompany() {
-    dispatch(CompaniesActions.deleteCompanyRequest(deleteCompanyId));
+    // dispatch(CompaniesActions.deleteCompanyRequest(deleteCompanyId));
   }
 
   return (

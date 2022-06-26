@@ -12,9 +12,14 @@ import { Helmet } from "react-helmet";
 import { useSelector } from "../redux/hooks";
 
 function Companies() {
-  const { account } = useSelector((state) => state);
+  const { companies } = useSelector((state) => state);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(CompaniesActions.getCompaniesRequest());
+  }, []);
+
+  console.log(companies.companies);
   return (
     <>
       <Helmet>

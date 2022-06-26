@@ -35,9 +35,25 @@ function* getCompanySuccess(data) {
 
 function* getCompanies() {
   try {
-    const { data: returnData } = yield call(api.companies.getCompanies);
+    const { data: companies } = yield call(api.companies.getCompanies);
+    const { data: masterCompanies } = yield call(
+      api.companies.getMasterCompanies
+    );
 
-    yield getCompaniesSuccess(returnData.results, returnData.count);
+    const formatedCompanies = companies.results.map((companies) => {
+      return { ...companies, tipo: 3 };
+    });
+
+    const formatedMasterCompanies = masterCompanies.results.map(
+      (masterCompanies) => {
+        return { ...masterCompanies, tipo: 4 };
+      }
+    );
+
+    yield getCompaniesSuccess(
+      [...formatedCompanies, ...formatedMasterCompanies],
+      20
+    );
   } catch (err) {
     yield put(CompaniesActions.getCompaniesFailure());
 
@@ -82,9 +98,13 @@ function* registerCompanySuccess(data) {
   customHistory.push("/companies");
 }
 
-function* deleteCompany({ payload: { companyId } }: DeleteCompany) {
+function* deleteCompany({ payload: { companyId, type } }: DeleteCompany) {
   try {
-    yield call(api.companies.deleteCompany, String(companyId));
+    if (type === 3) {
+      yield call(api.companies.deleteCompany, String(companyId));
+    } else {
+      yield call(api.companies.deleteMasterCompany, String(companyId));
+    }
 
     yield deleteCompanySuccess();
   } catch (err) {

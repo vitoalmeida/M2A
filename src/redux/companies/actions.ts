@@ -40,8 +40,11 @@ export function registerCompanyFailure(): CompaniesActionTypes {
   return action(CompaniesTypes.REGISTER_COMPANY_FAILURE);
 }
 
-export function deleteCompanyRequest(companyId: number): CompaniesActionTypes {
-  return action(CompaniesTypes.DELETE_COMPANY_REQUEST, { companyId });
+export function deleteCompanyRequest(
+  companyId: number,
+  type: number
+): CompaniesActionTypes {
+  return action(CompaniesTypes.DELETE_COMPANY_REQUEST, { companyId, type });
 }
 
 export function deleteCompanySuccess(): CompaniesActionTypes {

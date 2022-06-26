@@ -19,6 +19,7 @@ const Results = () => {
   const [editOpen, setEditOpen] = useState(false);
   const [warningOpen, setWarningOpen] = useState(false);
   const [deleteCompanyId, setDeleteCompanyId] = useState<number>();
+  const [companyType, setCompanyType] = useState<number>();
 
   function handleOpenEditModal(company?: Company) {
     if (company) dispatch(CompaniesActions.setEditCompany(company));
@@ -26,14 +27,17 @@ const Results = () => {
     setEditOpen(true);
   }
 
-  function handleOpenWarningModal(companyId: number) {
+  function handleOpenWarningModal(companyId: number, tipo: number) {
     console.log("companyId", companyId);
     setDeleteCompanyId(companyId);
+    setCompanyType(tipo);
     setWarningOpen(true);
   }
 
   function handleDeleteCompany() {
-    dispatch(CompaniesActions.deleteCompanyRequest(deleteCompanyId));
+    dispatch(
+      CompaniesActions.deleteCompanyRequest(deleteCompanyId, companyType)
+    );
   }
 
   return (
@@ -138,7 +142,9 @@ const Results = () => {
                         <td className="relative whitespace-nowrap py-4 text-right text-sm font-medium">
                           <button
                             className="flex mx-auto text-[#d14f4f]"
-                            onClick={() => handleOpenWarningModal(company.id)}
+                            onClick={() =>
+                              handleOpenWarningModal(company.id, company.tipo)
+                            }
                           >
                             <FaTrash />
                           </button>
