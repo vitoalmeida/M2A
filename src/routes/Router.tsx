@@ -1,18 +1,18 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import Authentication from "../pages/Authentication";
-import Companies from "../pages/Companies";
-import Diagnostics from "../pages/Diagnostics";
-import Questionnaires from "../pages/Questionnaires";
-import Users from "../pages/Users";
-import { useSelector } from "../redux/hooks";
-import { CustomBrowserRouter } from "./CustomBrowserRouter";
-import configApi from "../services/config";
-import NotFound from "../pages/NotFound";
-import Questions from "../pages/Questions";
-import { GeneralActions } from "../redux/general";
-import { useDispatch } from "react-redux";
-import { useEffect } from "react";
-import { CompaniesActions } from "../redux/companies";
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import Authentication from '../pages/Authentication';
+import Companies from '../pages/Companies';
+import Diagnostics from '../pages/Diagnostics';
+import Questionnaires from '../pages/Questionnaires';
+import Users from '../pages/Users';
+import { useSelector } from '../redux/hooks';
+import { CustomBrowserRouter } from './CustomBrowserRouter';
+import configApi from '../services/config';
+import NotFound from '../pages/NotFound';
+import Questions from '../pages/Questions';
+import { GeneralActions } from '../redux/general';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { CompaniesActions } from '../redux/companies';
 
 const Router = () => {
   const dispatch = useDispatch();
@@ -35,36 +35,36 @@ const Router = () => {
   }, []);
 
   return (
-    <CustomBrowserRouter basename={"/"}>
+    <CustomBrowserRouter basename={'/'}>
       <Routes>
         <Route
-          path="/"
+          path='/'
           element={
-            isAuthenticated ? <Navigate to="/companies" /> : <Authentication />
+            isAuthenticated ? <Navigate to='/companies' /> : <Authentication />
           }
         />
         <Route
-          path="companies"
+          path='companies'
           // element={<Companies />}
           element={isAuthenticated ? <Companies /> : <Authentication />}
         />
         <Route
-          path="questionnaires"
+          path='questionnaires'
           element={isAuthenticated ? <Questionnaires /> : <Authentication />}
         />
         <Route
-          path="diagnostics"
+          path='diagnostics'
           element={isAuthenticated ? <Diagnostics /> : <Authentication />}
         />
         <Route
-          path="users"
+          path='users'
           element={isAuthenticated ? <Users /> : <Authentication />}
         />
         <Route
-          path="questions"
+          path='questions'
           element={isAuthenticated ? <Questions /> : <Authentication />}
         />
-        <Route path="*" element={<NotFound />} />
+        <Route path='*' element={<NotFound />} />
       </Routes>
     </CustomBrowserRouter>
   );
