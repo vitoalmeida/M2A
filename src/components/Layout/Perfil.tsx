@@ -11,7 +11,7 @@ import { Company } from "../../redux/companies/types";
 const Perfil: React.FC = () => {
   let dispatch = useDispatch();
   const { account, general } = useSelector((state) => state);
-
+  console.log(account?.data?.user_inf);
   return (
     <div className="overflow-hidden sm:rounded-lg max-w-3xl">
       <div className="flex pl-4 sm:px-10 items-center py-3">
@@ -80,23 +80,34 @@ const Perfil: React.FC = () => {
               {`${account?.data.email}`}
             </dd>
           </div>
-          <div className="py-2 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-10">
-            <dt className="text-sm font-medium text-gray-500">Estado</dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-              {`${
-                general?.uf?.find(
-                  (uf) =>
-                    (account?.data?.user_inf as Company).endereco.uf === uf.id
-                ).label
-              }`}
-            </dd>
-          </div>
-          <div className="py-2 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-10">
-            <dt className="text-sm font-medium text-gray-500">Telefone</dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-              {`${(account?.data?.user_inf as Profile).telefone}`}
-            </dd>
-          </div>
+          {(account?.data?.user_inf as Profile)?.uf ||
+          (account?.data?.user_inf as Company)?.endereco?.uf ? (
+            <div className="py-2 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-10">
+              <dt className="text-sm font-medium text-gray-500">Estado</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                {`${
+                  (account?.data?.user_inf as Company).endereco.uf
+                    ? general?.uf?.find(
+                        (uf) =>
+                          (account?.data?.user_inf as Company).endereco.uf ===
+                          uf.id
+                      ).label
+                    : general?.uf?.find(
+                        (uf) =>
+                          (account?.data?.user_inf as Profile).uf === uf.id
+                      ).label
+                }`}
+              </dd>
+            </div>
+          ) : null}
+          {(account?.data?.user_inf as Profile).telefone && (
+            <div className="py-2 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-10">
+              <dt className="text-sm font-medium text-gray-500">Telefone</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                {`${(account?.data?.user_inf as Profile).telefone}`}
+              </dd>
+            </div>
+          )}
           {(account?.data?.user_inf as Company).resp_nome && (
             <div className="py-2 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-10">
               <dt className="text-sm font-medium text-gray-500">Responsável</dt>

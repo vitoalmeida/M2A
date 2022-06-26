@@ -12,12 +12,15 @@ function* getAccount({ payload: { data } }: GetAccount) {
   try {
     const { data: returnData } = yield call(api.account.login, data);
 
-    const { data: address } = yield call(
-      api.general.getAddress,
-      returnData.user.user_inf.endereco
-    );
+    if (returnData.user?.user_inf?.endereco) {
+      const { data: address } = yield call(
+        api.general.getAddress,
+        returnData.user.user_inf.endereco
+      );
 
-    returnData.user.user_inf.endereco = address;
+      returnData.user.user_inf.endereco = address;
+    }
+
     const isCompany = returnData.user.tipo === 3 || returnData.user.tipo === 4;
 
     showToast("Logado com sucesso!", "success");
