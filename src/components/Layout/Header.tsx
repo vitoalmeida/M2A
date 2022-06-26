@@ -9,11 +9,11 @@ import { Company } from "../../redux/companies/types";
 import { Profile } from "../../redux/account/types";
 
 const tabs = [
-  { name: "Empresas", href: "/companies" },
-  { name: "Questionários", href: "/questionnaires" },
-  { name: "Diagnósticos", href: "/diagnostics" },
-  { name: "Perguntas", href: "/questions" },
-  { name: "Usuários", href: "/users" },
+  { name: "Empresas", href: "/companies", allowed: [1, 2] },
+  { name: "Questionários", href: "/questionnaires", allowed: [1, 2, 3, 4] },
+  { name: "Diagnósticos", href: "/diagnostics", allowed: [1, 2] },
+  { name: "Perguntas", href: "/questions", allowed: [1, 2] },
+  { name: "Usuários", href: "/users", allowed: [1] },
 ];
 
 const Header = () => {
@@ -21,7 +21,6 @@ const Header = () => {
   const location = useLocation();
   const { account } = useSelector((state) => state);
   const activeTab = location.pathname;
-  console.log(account?.data);
 
   const [isProfileOpen, setProfileOpen] = useState(false);
 
@@ -89,30 +88,24 @@ const Header = () => {
           className="relative flex z-0 rounded-lg overflow-hidden shadow-md divide-x divide-gray-200 duration-500"
           aria-label="Tabs"
         >
-          {tabs.map((tab) => (
-            <Link to={tab.href} className="flex-1">
-              <div
-                key={tab.name}
-                className={`${
-                  tab.href === activeTab
-                    ? "text-white border-secondary-blue"
-                    : "text-[#cccccc] hover:text-[#e8e8e8] border-transparent border-[#99c3dd]"
-                } group relative min-w-0 flex-1 overflow-hidden bg-main-blue hover:bg-[#00558a]  py-[0.75rem] px-4 text-sm font-medium text-center border-b-2 focus:z-10 duration-500`}
-                aria-current={tab.href === activeTab ? "page" : undefined}
-              >
-                <span className="flex flex-col">
-                  {tab.name === "Usuários" ? (
-                    <div className="relative flex justify-center items-center">
-                      <BsFillGearFill className="text-[0.7rem] absolute ml-[5.5rem]" />
-                      <span>{tab.name}</span>
-                    </div>
-                  ) : (
-                    tab.name
-                  )}
-                </span>
-              </div>
-            </Link>
-          ))}
+          {tabs.map((tab) => {
+            // if (tab.allowed.includes(account.data.tipo))
+            return (
+              <Link to={tab.href} className="flex-1">
+                <div
+                  key={tab.name}
+                  className={`${
+                    tab.href === activeTab
+                      ? "text-white border-secondary-blue"
+                      : "text-[#cccccc] hover:text-[#e8e8e8] border-transparent border-[#99c3dd]"
+                  } group relative min-w-0 flex-1 overflow-hidden bg-main-blue hover:bg-[#00558a]  py-[0.75rem] px-4 text-sm font-medium text-center border-b-2 focus:z-10 duration-500`}
+                  aria-current={tab.href === activeTab ? "page" : undefined}
+                >
+                  {tab.name}
+                </div>
+              </Link>
+            );
+          })}
         </nav>
       </div>
     </div>

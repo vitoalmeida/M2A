@@ -6,6 +6,7 @@ import { useSelector } from "../../redux/hooks";
 import Button from "../Button";
 import { BsCircleFill } from "react-icons/bs";
 import { Profile } from "../../redux/account/types";
+import { Company } from "../../redux/companies/types";
 
 const Perfil: React.FC = () => {
   let dispatch = useDispatch();
@@ -47,11 +48,29 @@ const Perfil: React.FC = () => {
               </dd>
             </div>
           )}
+          {(account?.data?.user_inf as Company).fantasia && (
+            <div className="py-2 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-10">
+              <dt className="text-sm font-medium text-gray-500">
+                Nome fantasia
+              </dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                {`${(account?.data?.user_inf as Company).fantasia}`}
+              </dd>
+            </div>
+          )}
           {(account?.data?.user_inf as Profile).cpf && (
             <div className="py-2 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-10">
               <dt className="text-sm font-medium text-gray-500">CPF</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                 {`${(account?.data?.user_inf as Profile).cpf}`}
+              </dd>
+            </div>
+          )}
+          {(account?.data?.user_inf as Company).cnpj && (
+            <div className="py-2 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-10">
+              <dt className="text-sm font-medium text-gray-500">CNPJ</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                {`${(account?.data?.user_inf as Company).cnpj}`}
               </dd>
             </div>
           )}
@@ -64,11 +83,12 @@ const Perfil: React.FC = () => {
           <div className="py-2 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-10">
             <dt className="text-sm font-medium text-gray-500">Estado</dt>
             <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-              {/* {`${
+              {`${
                 general?.uf?.find(
-                  (uf) => (account?.data?.user_inf as Profile).uf === uf.id
+                  (uf) =>
+                    (account?.data?.user_inf as Company).endereco.uf === uf.id
                 ).label
-              }`} */}
+              }`}
             </dd>
           </div>
           <div className="py-2 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-10">
@@ -77,6 +97,16 @@ const Perfil: React.FC = () => {
               {`${(account?.data?.user_inf as Profile).telefone}`}
             </dd>
           </div>
+          {(account?.data?.user_inf as Company).resp_nome && (
+            <div className="py-2 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-10">
+              <dt className="text-sm font-medium text-gray-500">Responsável</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                {`${(account?.data?.user_inf as Company).resp_nome} ${
+                  (account?.data?.user_inf as Company).resp_sobrenome
+                }`}
+              </dd>
+            </div>
+          )}
           <div className="py-2 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-10">
             <dt className="text-sm font-medium text-gray-500">Situação</dt>
             <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">

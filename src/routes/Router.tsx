@@ -43,8 +43,8 @@ const Router = () => {
         />
         <Route
           path="companies"
-          element={<Companies />}
-          // element={isAuthenticated ? <Companies /> : <Authentication />}
+          // element={<Companies />}
+          element={isAuthenticated ? <Companies /> : <Authentication />}
         />
         <Route
           path="questionnaires"
