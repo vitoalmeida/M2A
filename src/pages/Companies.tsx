@@ -9,8 +9,12 @@ import Layout from "../components/Layout";
 import { CompaniesActions } from "../redux/companies";
 import { GeneralActions } from "../redux/general";
 import { Helmet } from "react-helmet";
+import { useSelector } from "../redux/hooks";
 
 function Companies() {
+  const { account } = useSelector((state) => state);
+  const dispatch = useDispatch();
+
   return (
     <>
       <Helmet>

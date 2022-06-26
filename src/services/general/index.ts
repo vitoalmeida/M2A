@@ -21,7 +21,7 @@ function getSegments() {
 }
 
 function getAddress(addressId: string) {
-  return client("endereco/").id(addressId).get();
+  return client(`endereco/${addressId}`).get();
 }
 
 function registerAddress(data: any) {
