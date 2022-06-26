@@ -1,21 +1,25 @@
 import { useState } from "react";
 import { RadioGroup } from "@headlessui/react";
+import { Question as QuestionType } from "../../redux/questionnaire/types";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
+interface Props {
+  question: QuestionType;
+}
 
-export default function Question({ question }) {
+const Question: React.FC<Props> = ({ question }: Props) => {
   const [selected, setSelected] = useState();
 
   return (
     <RadioGroup value={selected} onChange={setSelected}>
       <div className="flex flex-col justify-between shadow bg-[#F9FAFB] rounded-2xl mt-6 overflow-hidden">
         <span className="text-sm md:text-lg px-5 py-5">
-          {question.question}
+          {question.texto_pergunta}
         </span>
         <div className="bg-white rounded-md -space-y-px">
-          {question.answers.map((answer, answerIdx) => (
+          {question.formatadas.map((answer, answerIdx) => (
             <RadioGroup.Option
               key={answerIdx + "#" + question.id}
               value={String(question + answer + "#" + question.id)}
@@ -61,4 +65,6 @@ export default function Question({ question }) {
       </div>
     </RadioGroup>
   );
-}
+};
+
+export default Question;

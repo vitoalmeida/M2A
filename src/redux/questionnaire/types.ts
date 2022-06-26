@@ -37,5 +37,6 @@ export interface Question {
   id?: number;
   texto_pergunta: string;
   fundamento: number;
+  formatadas: any[];
   respostas: any[];
 }

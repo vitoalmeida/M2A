@@ -19,61 +19,10 @@ const settings = [
   },
 ];
 
-const questions = [
-  {
-    id: 1,
-    question:
-      "1. Vitor boiolinha gayzinho viadinho bichinha frutinha soca mole",
-    answers: [
-      "Sim elde é!",
-      "Com toda cerdteza!",
-      "Não haá mulher no mundo pra tornar ele macho!",
-      "Se peidar cheira a camisinha usada!",
-    ],
-  },
-  {
-    id: 2,
-    question:
-      "2. Vitor boiolinha gayzinho viadinho bichinha frutinha soca mole",
-    answers: [
-      "Sim egle é!",
-      "Com toda certeza!",
-      "Não há mdulher no mundo pra tornar ele macho!",
-      "Se peiadar cheira a camisinha usada!",
-    ],
-  },
-  {
-    id: 3,
-    question:
-      "3. Vitor boiolinha gayzinho viadinho bichinha frutinha soca mole",
-    answers: [
-      "Sim ele é!",
-      "Com tosda certeza!",
-      "Não há mulhers no mundo pra tornar ele macho!",
-      "Se peiddar cheira a camisinha usada!",
-    ],
-  },
-  {
-    id: 4,
-    question:
-      "4. Vitor boiolinha gayzinho viadinho bichinha frutinha soca mole",
-    answers: [
-      "Sim ele dé!",
-      "Com toda certezaa!",
-      "Não há mulherf no mundo pra tornar ele macho!",
-      "Se peidarf cheira a camisinha usada!",
-    ],
-  },
-];
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
 function Questionnaires() {
-  const [selected, setSelected] = useState(settings[0]);
-  const { account } = useSelector((state) => state);
+  const { questionnaire } = useSelector((state) => state);
   const dispatch = useDispatch();
+
   return (
     <>
       <Helmet>
@@ -90,7 +39,7 @@ function Questionnaires() {
             Qualidade, respondê-lo corretamente é de suma importância para uma
             devolutiva mais fundamentada.
           </p>
-          {questions.map((question) => (
+          {questionnaire.questions.map((question) => (
             <Question question={question} />
           ))}
           <div className="py-10">
