@@ -48,15 +48,14 @@ function* getAccountSuccess(data, token) {
 function* getAccounts() {
   try {
     const { data: admins } = yield call(api.account.getAdminUsers);
-    // const { data: consultants } = yield call(api.account.getColsultantUsers);
-    const consultants = { results: [] };
+    const { data: consultants } = yield call(api.account.getColsultantUsers);
 
     const formatedAdmins = admins.results.map((admin) => {
       return { ...admin, tipo: 1 };
     });
 
     const formatedConsultants = consultants.results.map((consultant) => {
-      return { ...consultant, tipo: 1 };
+      return { ...consultant, tipo: 2 };
     });
 
     yield getAccountsSuccess([...formatedAdmins, ...formatedConsultants], 20);
