@@ -59,12 +59,19 @@ const QuestionsEditForm = () => {
             <Tab.Panels>
               <Tab.Panel>
                 <div className='md:w-96'>
+                  <SelectFormik
+                    required
+                    name='Fundamento'
+                    data={general.uf}
+                    label='Fundamento'
+                  />
                   <InputFormik
                     textArea
                     required
                     name='pergunta'
                     label='Pergunta'
                   />
+                  <InputFormik textArea name='objetivo' label='Objetivo' />
                 </div>
               </Tab.Panel>
               <Tab.Panel className='md:w-[35rem] overflow-scroll max-h-96'>

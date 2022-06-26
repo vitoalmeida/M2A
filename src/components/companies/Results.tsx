@@ -28,7 +28,6 @@ const Results = () => {
   }
 
   function handleOpenWarningModal(companyId: number, tipo: number) {
-    console.log("companyId", companyId);
     setDeleteCompanyId(companyId);
     setCompanyType(tipo);
     setWarningOpen(true);
@@ -47,7 +46,9 @@ const Results = () => {
         closeButton
         onCloseModal={() => setEditOpen(false)}
       >
-        <EditForm closeForm={() => setEditOpen(false)} />
+        <div className="py-12 px-10 ">
+          <EditForm closeForm={() => setEditOpen(false)} />
+        </div>
       </Modal>
 
       <Modal
