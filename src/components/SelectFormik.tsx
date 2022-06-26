@@ -20,6 +20,7 @@ interface Props {
   descriptionMarginBottom?: number;
   vertical?: boolean;
   required?: boolean;
+  disabled?: boolean;
 }
 
 const SelectFormik: React.FC<Props> = ({
@@ -31,6 +32,7 @@ const SelectFormik: React.FC<Props> = ({
   disableErrorMessage,
   description,
   required,
+  disabled,
 }) => {
   const { values, errors, touched, setFieldValue, setErrors } =
     useFormikContext<any>();
@@ -73,6 +75,7 @@ const SelectFormik: React.FC<Props> = ({
             setErrors(newErrors);
           }}
           onBlur={() => setFocus(false)}
+          disabled={disabled}
           value={values[name]}
           placeholder={placeholder}
         >

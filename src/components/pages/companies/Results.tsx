@@ -13,7 +13,7 @@ import WaningModal from "../../WaningModal";
 const Results = () => {
   const dispatch = useDispatch();
 
-  const { companies, general } = useSelector((state) => state);
+  const { companies } = useSelector((state) => state);
   const companiesData = companies?.companies?.data;
 
   const [editOpen, setEditOpen] = useState(false);
@@ -126,11 +126,11 @@ const Results = () => {
                           {company.cnpj}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {
+                          {/* {
                             general?.uf?.find(
                               (uf) => uf.id === company.endereco.uf
                             ).label
-                          }
+                          } */}
                         </td>
                         <td className="relative whitespace-nowrap py-4 text-right text-sm font-medium">
                           <button

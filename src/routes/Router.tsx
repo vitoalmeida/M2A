@@ -12,10 +12,11 @@ import Questions from "../pages/Questions";
 import { GeneralActions } from "../redux/general";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
+import { CompaniesActions } from "../redux/companies";
 
 const Router = () => {
   const dispatch = useDispatch();
-  const { account, general } = useSelector((state) => state);
+  const { account, general, companies } = useSelector((state) => state);
   const isAuthenticated = account.token;
 
   if (isAuthenticated) {
@@ -27,7 +28,8 @@ const Router = () => {
 
   useEffect(() => {
     if (!general?.uf?.length) {
-      // dispatch(CompaniesActions.getCompaniesRequest());
+      // dispatch(GeneralActions.seedBackend());
+      dispatch(CompaniesActions.getMasterCompaniesRequest());
       dispatch(GeneralActions.getStaticValuesRequest());
     }
   }, []);

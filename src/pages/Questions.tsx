@@ -15,9 +15,6 @@ function Questions() {
     dispatch(QuestionnaireActions.getQuestionsRequest());
   }, []);
 
-  // Array de perguntas:
-  console.log(questionnaire.questions);
-
   return (
     <>
       <Helmet>

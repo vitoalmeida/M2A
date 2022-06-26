@@ -13,6 +13,20 @@ export function getCompanyFailure(): CompaniesActionTypes {
   return action(CompaniesTypes.GET_COMPANY_FAILURE);
 }
 
+export function getMasterCompaniesRequest(): CompaniesActionTypes {
+  return action(CompaniesTypes.GET_MASTER_COMPANIES_REQUEST);
+}
+
+export function getMasterCompaniesSuccess(
+  data: Company[]
+): CompaniesActionTypes {
+  return action(CompaniesTypes.GET_MASTER_COMPANIES_SUCCESS, { data });
+}
+
+export function getMasterCompaniesFailure(): CompaniesActionTypes {
+  return action(CompaniesTypes.GET_MASTER_COMPANIES_FAILURE);
+}
+
 export function getCompaniesRequest(): CompaniesActionTypes {
   return action(CompaniesTypes.GET_COMPANIES_REQUEST);
 }

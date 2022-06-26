@@ -1,5 +1,6 @@
 /* eslint-disable no-shadow */
 
+import { GenericData } from "../../types";
 import { Address } from "../general/types";
 
 /* eslint-disable no-unused-vars */
@@ -119,6 +120,9 @@ export type CompaniesActionTypes =
   | GetCompany
   | GetCompanySuccess
   | GetCompanyFailure
+  | GetMasterCompanies
+  | GetMasterCompaniesSuccess
+  | GetMasterCompaniesFailure
   | GetCompanies
   | GetCompaniesSuccess
   | GetCompaniesFailure
@@ -137,6 +141,7 @@ export interface CompaniesState {
   loading: boolean;
   editCompany: Company | null;
   company: { data: Company[] | null };
+  masterCompanies: GenericData[] | null;
   companies: { data: Company[] | null; count: number | null };
   error: boolean | null;
 }

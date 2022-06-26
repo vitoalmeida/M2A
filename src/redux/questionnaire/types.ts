@@ -34,7 +34,8 @@ export interface QuestionnaireState {
 }
 
 export interface Question {
-  texto_pergunta: Question[];
+  id?: number;
+  texto_pergunta: string;
   fundamento: number;
   respostas: any[];
 }

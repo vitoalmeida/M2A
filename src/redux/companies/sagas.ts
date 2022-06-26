@@ -33,6 +33,27 @@ function* getCompanySuccess(data) {
   yield put(CompaniesActions.getCompanySuccess(data));
 }
 
+function* getMasterCompanies() {
+  try {
+    const { data: masterCompanies } = yield call(
+      api.companies.getMasterCompanies
+    );
+
+    const formatedMasterCompanies = masterCompanies.results.map((company) => {
+      if (company.fantasia === "vazio") company.fantasia = "Nenhum vinculo";
+      return { id: company.id, label: company.fantasia };
+    });
+
+    yield put(
+      CompaniesActions.getMasterCompaniesSuccess(formatedMasterCompanies)
+    );
+  } catch (err) {
+    yield put(CompaniesActions.getMasterCompaniesFailure());
+
+    showToast(helpers.formErrors.formatError(err), "error");
+  }
+}
+
 function* getCompanies() {
   try {
     const { data: companies } = yield call(api.companies.getCompanies);
@@ -71,6 +92,16 @@ function* registerCompany({ payload: { data } }: RegisterCompany) {
       api.general.registerAddress,
       data.endereco
     );
+
+    let invoicings = [];
+    // for (let i = 0; i < data.faturamento.length; i++) {
+    //   const { data: invoicing } = yield call(
+    //     api.general.registerInvoicing,
+    //     data.faturamento[i]
+    //   );
+    //   invoicings.push(invoicing);
+    // }
+    console.log(invoicings);
 
     yield call(api.companies.registerCompany, {
       ...data,
@@ -132,6 +163,9 @@ function clearData() {
 function* companiesSaga() {
   yield all([takeLatest(CompaniesTypes.GET_COMPANY_REQUEST, getCompany)]);
   yield all([takeLatest(CompaniesTypes.GET_COMPANIES_REQUEST, getCompanies)]);
+  yield all([
+    takeLatest(CompaniesTypes.GET_MASTER_COMPANIES_REQUEST, getMasterCompanies),
+  ]);
   yield all([
     takeLatest(CompaniesTypes.REGISTER_COMPANY_REQUEST, registerCompany),
     takeLatest(CompaniesTypes.DELETE_COMPANY_REQUEST, deleteCompany),

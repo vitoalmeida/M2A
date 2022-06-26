@@ -128,11 +128,11 @@ const Results = () => {
                           {company.cnpj}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {
+                          {/* {
                             general?.uf?.find(
                               (uf) => uf.id === company.endereco.uf
                             ).label
-                          }
+                          } */}
                         </td>
                         <td className="relative whitespace-nowrap py-4 text-right text-lg font-medium">
                           <button

@@ -15,8 +15,7 @@ const Results = () => {
   const dispatch = useDispatch();
 
   //ALTERAR PARA PERGUNTA
-  const { companies, general } = useSelector((state) => state);
-  const companiesData = companies?.companies?.data;
+  const { questionnaire } = useSelector((state) => state);
 
   const [editOpen, setEditOpen] = useState(false);
   const [warningOpen, setWarningOpen] = useState(false);
@@ -91,15 +90,15 @@ const Results = () => {
                       Contéudo da Pergunta
                     </th>
                     <th
-                      onClick={() => handleOpenEditModal(companies[0])}
+                      // onClick={() => handleOpenEditModal(questionnaire.questions[0])}
                       scope="col"
-                      className="flex justify-center py-3.5 min-w-[2rem] text-sm font-semibold text-gray-900"
+                      className="flex pr-5 justify-center py-3.5 min-w-[2rem] text-sm font-semibold text-gray-900"
                     >
                       Editar
                     </th>
                     <th
                       scope="col"
-                      className="py-3.5 text-sm min-w-[2rem] font-semibold text-gray-900"
+                      className="py-3.5 pr-5 text-sm min-w-[2rem] font-semibold text-gray-900"
                     >
                       Excluir
                     </th>
@@ -107,31 +106,29 @@ const Results = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
                   {/* ALTERAR PARA DADOS DA PERGUNTA */}
-                  {companiesData &&
-                    companiesData.map((company) => (
-                      <tr key={company.id}>
-                        <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                          {/*COLOCAR A PERGUNTA DO BACK AQUI*/}
-                          Pergunta
-                        </td>
-                        <td className="relative whitespace-nowrap py-4 text-right text-sm font-medium">
-                          <button
-                            className="flex text-main-blue mx-auto"
-                            onClick={() => handleOpenEditModal(company)}
-                          >
-                            <FaEdit />
-                          </button>
-                        </td>
-                        <td className="relative whitespace-nowrap py-4 text-right text-sm font-medium">
-                          <button
-                            className="flex mx-auto text-[#d14f4f]"
-                            onClick={() => handleOpenWarningModal(company.id)}
-                          >
-                            <FaTrash />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                  {questionnaire?.questions?.map((question) => (
+                    <tr key={question.id}>
+                      <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                        {question.texto_pergunta}
+                      </td>
+                      <td className="relative pr-5  whitespace-nowrap py-4 text-right text-sm font-medium">
+                        <button
+                          className="flex text-main-blue mx-auto"
+                          // onClick={() => handleOpenEditModal(company)}
+                        >
+                          <FaEdit />
+                        </button>
+                      </td>
+                      <td className="relative pr-5 whitespace-nowrap py-4 text-right text-sm font-medium">
+                        <button
+                          className="flex mx-auto text-[#d14f4f]"
+                          // onClick={() => handleOpenWarningModal(company.id)}
+                        >
+                          <FaTrash />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>

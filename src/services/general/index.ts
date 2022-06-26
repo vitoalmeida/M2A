@@ -28,7 +28,12 @@ function registerAddress(data: any) {
   return client("endereco/").data(data).post();
 }
 
+function registerInvoicing(data: any) {
+  return client("faturamento/").data(data).post();
+}
+
 export default {
+  registerInvoicing,
   getIndustryTypes,
   getCollectionValues,
   getSectors,
