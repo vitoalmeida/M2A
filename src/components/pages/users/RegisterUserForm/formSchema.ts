@@ -1,6 +1,6 @@
 import * as Yup from "yup";
-import { formErrors } from "../../../helpers";
-import { RegisterAccountType } from "../../../redux/account/types";
+import { formErrors } from "../../../../helpers";
+import { RegisterAccountType } from "../../../../redux/account/types";
 
 const initialValues: any = {
   nome: "",

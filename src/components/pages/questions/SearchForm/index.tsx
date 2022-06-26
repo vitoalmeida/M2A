@@ -1,5 +1,5 @@
 import { Formik, Form } from "formik";
-import { InputFormik, SelectFormik, Button } from "../../index";
+import { InputFormik, SelectFormik, Button } from "../../../index";
 import formSchema from "./formSchema";
 import { IoMdTrash, IoMdSearch } from "react-icons/io";
 

@@ -10,7 +10,7 @@ import { Profile } from "../../redux/account/types";
 
 const tabs = [
   { name: "Empresas", href: "/companies", allowed: [1, 2] },
-  { name: "Questionários", href: "/questionnaires", allowed: [1, 2, 3, 4] },
+  { name: "Questionário", href: "/questionnaires", allowed: [1, 2, 3, 4] },
   { name: "Diagnósticos", href: "/diagnostics", allowed: [1, 2] },
   { name: "Perguntas", href: "/questions", allowed: [1, 2] },
   { name: "Usuários", href: "/users", allowed: [1] },

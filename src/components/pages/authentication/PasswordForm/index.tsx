@@ -1,10 +1,10 @@
 import { Form, Formik } from "formik";
 import { useDispatch } from "react-redux";
-import { AccountActions } from "../../../redux/account";
-import { CompaniesActions } from "../../../redux/companies";
-import { useSelector } from "../../../redux/hooks";
-import Button from "../../Button";
-import InputFormik from "../../InputFormik";
+import { AccountActions } from "../../../../redux/account";
+import { CompaniesActions } from "../../../../redux/companies";
+import { useSelector } from "../../../../redux/hooks";
+import Button from "../../../Button";
+import InputFormik from "../../../InputFormik";
 import formSchema from "./formSchema";
 
 interface Props {

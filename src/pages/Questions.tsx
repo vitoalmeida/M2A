@@ -1,7 +1,7 @@
-import SearchForm from "../components/questions/SearchForm";
+import SearchForm from "../components/pages/questions/SearchForm";
 import Layout from "../components/Layout";
 import { Helmet } from "react-helmet";
-import Results from "../components/questions/Results";
+import Results from "../components/pages/questions/Results";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "../redux/hooks";

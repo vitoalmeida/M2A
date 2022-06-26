@@ -19,8 +19,9 @@ const CompanyForm = ({ closeForm, onSubmit }: Props) => {
   const dispatch = useDispatch();
   const { general, account, companies } = useSelector((state) => state);
 
-  // const empty = companies.editCompany ? false : true;
-  const empty = false;
+  const empty = companies.editCompany ? false : true;
+  // const empty = false;
+  console.log(companies.editCompany);
 
   const [activeTab, setActiveTab] = useState<number>(0);
   const [tabs, setTabs] = useState([

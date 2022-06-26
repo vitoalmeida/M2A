@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { FaChevronLeft } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import { CompanyForm } from "..";
-import { AccountActions } from "../../redux/account";
-import { useSelector } from "../../redux/hooks";
+import { CompanyForm } from "../../";
+import { AccountActions } from "../../../redux/account";
+import { useSelector } from "../../../redux/hooks";
 import LoginForm from "./LoginForm";
 import PasswordForm from "./PasswordForm";
 
@@ -35,7 +35,7 @@ const AuthRegion = () => {
             {currentScreen === "login" && (
               <img
                 className="h-20 mx-auto w-auto"
-                src={require("../../assets/images/logo.png")}
+                src={require("../../../assets/images/logo.png")}
                 alt="Workflow"
               />
             )}
