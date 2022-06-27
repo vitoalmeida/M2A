@@ -1,7 +1,11 @@
 import client from "../client";
 
 function getCompany(companyId: string) {
-  return client("empresa/").id(companyId).get();
+  return client(`empresa/${companyId}`).get();
+}
+
+function getMasterCompany(companyId: string) {
+  return client(`empresa_master/${companyId}`).get();
 }
 
 function getCompanies() {
@@ -28,6 +32,7 @@ export default {
   getCompanies,
   getMasterCompanies,
   getCompany,
+  getMasterCompany,
   registerCompany,
   deleteCompany,
   deleteMasterCompany,

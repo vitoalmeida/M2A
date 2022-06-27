@@ -15,19 +15,6 @@ function Users() {
     dispatch(AccountActions.getAccountsRequest());
   }, []);
 
-  // Usuários estão aqui:
-  // Lembrando que são dois tipos de user que aparecem nessa tela:
-  // Administrador e Consultor
-  // E eles tem telas de edição com forms diferentes
-
-  // TB_ADMINISTRADOR:
-  // nome, sobrenome e cpf
-
-  // TB_CONSULTOR:
-  // nome, sobrenome, telefone, celular, formacao, uf, e cpf
-
-  console.log(account.accountList);
-
   return (
     <>
       <Helmet>

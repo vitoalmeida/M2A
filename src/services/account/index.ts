@@ -19,7 +19,12 @@ function getColsultantUsers() {
   return client("consultor/").get();
 }
 
+function getConsultant(consultantId: string) {
+  return client(`consultor/${consultantId}`).get();
+}
+
 export default {
+  getConsultant,
   getAdminUsers,
   getColsultantUsers,
   login,

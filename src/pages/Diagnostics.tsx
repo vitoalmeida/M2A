@@ -1,13 +1,23 @@
-import SearchForm from "../components/pages/companies/SearchForm";
+import SearchForm from "../components/pages/diagnostics/SearchForm";
 import Layout from "../components/Layout";
 import { Helmet } from "react-helmet";
 import { useSelector } from "../redux/hooks";
 import { useDispatch } from "react-redux";
 import Results from "../components/pages/diagnostics/Results";
+import { useEffect } from "react";
+import { DiagnosticsActions } from "../redux/diagnostics";
+import { QuestionnaireActions } from "../redux/questionnaire";
 
 function Diagnostics() {
-  const { account } = useSelector((state) => state);
+  const { diagnostics, questionnaire } = useSelector((state) => state);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!questionnaire.questions.length) {
+      dispatch(QuestionnaireActions.getQuestionsRequest());
+    }
+    dispatch(DiagnosticsActions.getDiagnosticsRequest());
+  }, []);
 
   return (
     <>

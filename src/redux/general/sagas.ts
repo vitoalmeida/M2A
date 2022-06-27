@@ -47,8 +47,12 @@ function* getStaticValues() {
 }
 
 function* seedBackend() {
-  for (let i = 0; i < perguntas.length; i++) {
-    yield call(api.questionnaire.registerQuestion, perguntas[i]);
+  const { data } = yield call(api.questionnaire.getQuestions);
+  // console.log()
+  if (!data.results.length) {
+    for (let i = 0; i < perguntas.length; i++) {
+      yield call(api.questionnaire.registerQuestion, perguntas[i]);
+    }
   }
 }
 
