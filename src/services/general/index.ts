@@ -21,14 +21,19 @@ function getSegments() {
 }
 
 function getAddress(addressId: string) {
-  return client("endereco/").id(addressId).get();
+  return client(`endereco/${addressId}`).get();
 }
 
 function registerAddress(data: any) {
   return client("endereco/").data(data).post();
 }
 
+function registerInvoicing(data: any) {
+  return client("faturamento/").data(data).post();
+}
+
 export default {
+  registerInvoicing,
   getIndustryTypes,
   getCollectionValues,
   getSectors,

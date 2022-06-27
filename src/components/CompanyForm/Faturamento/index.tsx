@@ -32,7 +32,12 @@ const Faturamento = ({ changeTab }: Props) => {
           {
             ...companies?.editCompany,
             valor_arrecadacao: values.valor_arrecadacao,
-            faturamento: values.faturamentoAno1,
+            faturamento: [
+              values.faturamentoAno1,
+              values.faturamentoAno2,
+              values.faturamentoAno3,
+              values.faturamentoAno4,
+            ],
           },
           companies?.editCompany
         )

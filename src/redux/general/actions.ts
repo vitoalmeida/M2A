@@ -25,3 +25,7 @@ export function getStaticValuesSuccess(
 export function getStaticValuesFailure(): GeneralActionTypes {
   return action(GeneralTypes.GET_STATIC_VALUES_FAILURE);
 }
+
+export function seedBackend(): GeneralActionTypes {
+  return action(GeneralTypes.SEED_BACKEND);
+}

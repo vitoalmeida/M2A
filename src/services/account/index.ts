@@ -12,12 +12,21 @@ function getSelfAccount(data: any) {
   return client("usuario/").data(data).post();
 }
 
-function getUsers() {
-  return client("usuario/").get();
+function getAdminUsers() {
+  return client("adm/").get();
+}
+function getColsultantUsers() {
+  return client("consultor/").get();
+}
+
+function getConsultant(consultantId: string) {
+  return client(`consultor/${consultantId}`).get();
 }
 
 export default {
-  getUsers,
+  getConsultant,
+  getAdminUsers,
+  getColsultantUsers,
   login,
   registerAccount,
   getSelfAccount,

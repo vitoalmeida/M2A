@@ -4,6 +4,7 @@ import { GeneralActions } from ".";
 import { GeneralTypes } from "./types";
 import * as api from "../../services/index";
 import * as helpers from "../../helpers/index";
+import { perguntas } from "../../services/seed";
 
 function* getStaticValues() {
   try {
@@ -45,9 +46,20 @@ function* getStaticValues() {
   }
 }
 
+function* seedBackend() {
+  const { data } = yield call(api.questionnaire.getQuestions);
+  // console.log()
+  if (!data.results.length) {
+    for (let i = 0; i < perguntas.length; i++) {
+      yield call(api.questionnaire.registerQuestion, perguntas[i]);
+    }
+  }
+}
+
 function* generalSaga() {
   yield all([
     takeLatest(GeneralTypes.GET_STATIC_VALUES_REQUEST, getStaticValues),
+    takeLatest(GeneralTypes.SEED_BACKEND, seedBackend),
   ]);
 }
 

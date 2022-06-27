@@ -12,10 +12,6 @@ function* getAccount({ payload: { data } }: GetAccount) {
   try {
     const { data: returnData } = yield call(api.account.login, data);
 
-<<<<<<< Updated upstream
-    showToast("Logado com sucesso!", "success");
-    yield getAccountSuccess(returnData.user, returnData.access);
-=======
     if (returnData.user?.user_inf?.endereco) {
       const { data: address } = yield call(
         api.general.getAddress,
@@ -33,7 +29,6 @@ function* getAccount({ payload: { data } }: GetAccount) {
       returnData.access,
       isCompany
     );
->>>>>>> Stashed changes
   } catch (err) {
     yield put(AccountActions.getAccountFailure());
 
@@ -41,21 +36,32 @@ function* getAccount({ payload: { data } }: GetAccount) {
   }
 }
 
-function* getAccountSuccess(data, token) {
+function* getAccountSuccess(data, token, isCompany) {
   configApi.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${token}`;
     return config;
   });
 
   yield put(AccountActions.getAccountSuccess(data, token));
-  customHistory.push("/companies");
+
+  if (isCompany) customHistory.push("/questionnaires");
+  else customHistory.push("/companies");
 }
 
 function* getAccounts() {
   try {
-    const { data: returnData } = yield call(api.account.getUsers);
+    const { data: admins } = yield call(api.account.getAdminUsers);
+    const { data: consultants } = yield call(api.account.getColsultantUsers);
 
-    yield getAccountsSuccess(returnData.results, returnData.count);
+    const formatedAdmins = admins.results.map((admin) => {
+      return { ...admin, tipo: 1 };
+    });
+
+    const formatedConsultants = consultants.results.map((consultant) => {
+      return { ...consultant, tipo: 2 };
+    });
+
+    yield getAccountsSuccess([...formatedAdmins, ...formatedConsultants], 20);
   } catch (err) {
     yield put(AccountActions.getAccountsFailure());
 
@@ -74,13 +80,12 @@ function* registerAccount({ payload: { data } }: RegisterAccount) {
       data.user_inf?.endereco
     );
 
-    console.log(address.id);
+    data.user_inf.endereco = address.id;
 
     yield call(api.account.registerAccount, {
       ...data,
       endereco: address.id,
     });
-    console.log("registro");
 
     showToast("Registrado com sucesso!", "success");
     yield registerAccountSuccess(data);

@@ -2,6 +2,7 @@ import { ErrorType } from "../types/";
 
 export const errorMessages = {
   required: "Campo necessário",
+  answerRequired: "Escolha uma das alternativas",
   invalidEmail: "Digite um e-mail válido",
   shortPassword: "A senha deve conter no mínimo 6 dígitos",
   differentPassword: "A senhas não correspondem",
