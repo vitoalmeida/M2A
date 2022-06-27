@@ -10,6 +10,7 @@ import { CompaniesActions } from "../../../redux/companies";
 import { useDispatch } from "react-redux";
 import WaningModal from "../../WaningModal";
 import QuestionsEditForm from "./QuestionsEditForm";
+import { Question } from "../../../redux/questionnaire/types";
 
 const Results = () => {
   const dispatch = useDispatch();
@@ -19,23 +20,23 @@ const Results = () => {
 
   const [editOpen, setEditOpen] = useState(false);
   const [warningOpen, setWarningOpen] = useState(false);
-  const [deleteCompanyId, setDeleteCompanyId] = useState<number>();
+  const [deleteQuestionId, setDeleteQuestionId] = useState<number>();
 
   //ALTERAR PARA PERGUNTA
-  function handleOpenEditModal(company?: Company) {
-    if (company) dispatch(CompaniesActions.setEditCompany(company));
-    else dispatch(CompaniesActions.removeEditCompany());
+  function handleOpenEditModal(question?: Question) {
+    // if (question) dispatch(CompaniesActions.setEditCompany(question));
+    // else dispatch(CompaniesActions.removeEditCompany());
     setEditOpen(true);
   }
 
   //ALTERAR PARA PERGUNTA
   function handleOpenWarningModal(companyId: number) {
-    setDeleteCompanyId(companyId);
+    setDeleteQuestionId(companyId);
     setWarningOpen(true);
   }
 
   //ALTERAR PARA PERGUNTA
-  function handleDeleteCompany() {
+  function handleDeleteQuestion() {
     // dispatch(CompaniesActions.deleteCompanyRequest(deleteCompanyId));
   }
 
@@ -57,7 +58,7 @@ const Results = () => {
         <WaningModal
           title="Excluir pergunta?"
           description="Tem certeza que deseja excluir esta pergunta permanentemente?"
-          actionButton={handleDeleteCompany}
+          actionButton={handleDeleteQuestion}
           closeModal={() => setWarningOpen(false)}
         />
       </Modal>
@@ -114,7 +115,7 @@ const Results = () => {
                       <td className="relative pr-5  whitespace-nowrap py-4 text-right text-sm font-medium">
                         <button
                           className="flex text-main-blue mx-auto"
-                          // onClick={() => handleOpenEditModal(company)}
+                          onClick={() => handleOpenEditModal(question)}
                         >
                           <FaEdit />
                         </button>
@@ -122,7 +123,7 @@ const Results = () => {
                       <td className="relative pr-5 whitespace-nowrap py-4 text-right text-sm font-medium">
                         <button
                           className="flex mx-auto text-[#d14f4f]"
-                          // onClick={() => handleOpenWarningModal(company.id)}
+                          onClick={() => handleOpenWarningModal(question.id)}
                         >
                           <FaTrash />
                         </button>

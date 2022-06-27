@@ -10,7 +10,7 @@ import { CompaniesActions } from "../../../redux/companies";
 import { useDispatch } from "react-redux";
 import WaningModal from "../../WaningModal";
 import { BsCircleFill } from "react-icons/bs";
-import { Profile } from "../../../redux/account/types";
+import { Account, Profile } from "../../../redux/account/types";
 import RegisterForm from "./RegisterUserForm";
 
 const Results = () => {
@@ -20,15 +20,17 @@ const Results = () => {
   const [editOpen, setEditOpen] = useState(false);
   const [warningOpen, setWarningOpen] = useState(false);
 
-  function handleOpenModal(company?: Company) {
-    if (company) dispatch(CompaniesActions.setEditCompany(company));
-    else dispatch(CompaniesActions.removeEditCompany());
+  function handleOpenModal(account?: Account) {
+    // if (company) dispatch(CompaniesActions.setEditCompany(company));
+    // else dispatch(CompaniesActions.removeEditCompany());
     setEditOpen(true);
   }
 
-  function handleDeleteCompany(company?: Company) {
+  function handleDeleteAccount(account?: Account) {
     setWarningOpen(true);
   }
+
+  console.log(account.accountList.data);
 
   return (
     <div className="mb-32 mt-10">
