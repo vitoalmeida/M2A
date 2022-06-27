@@ -23,7 +23,6 @@ const Header = () => {
   const activeTab = location.pathname;
 
   const [isProfileOpen, setProfileOpen] = useState(false);
-
   return (
     <div>
       <Modal
@@ -89,22 +88,22 @@ const Header = () => {
           aria-label="Tabs"
         >
           {tabs.map((tab) => {
-            // if (tab.allowed.includes(account.data.tipo))
-            return (
-              <Link to={tab.href} className="flex-1">
-                <div
-                  key={tab.name}
-                  className={`${
-                    tab.href === activeTab
-                      ? "text-white border-secondary-blue"
-                      : "text-[#cccccc] hover:text-[#e8e8e8] border-transparent border-[#99c3dd]"
-                  } group relative min-w-0 flex-1 overflow-hidden bg-main-blue hover:bg-[#00558a]  py-[0.75rem] px-4 text-sm font-medium text-center border-b-2 focus:z-10 duration-500`}
-                  aria-current={tab.href === activeTab ? "page" : undefined}
-                >
-                  {tab.name}
-                </div>
-              </Link>
-            );
+            if (tab.allowed.includes(account.data.tipo))
+              return (
+                <Link to={tab.href} className="flex-1">
+                  <div
+                    key={tab.name}
+                    className={`${
+                      tab.href === activeTab
+                        ? "text-white border-secondary-blue"
+                        : "text-[#cccccc] hover:text-[#e8e8e8] border-transparent border-[#99c3dd]"
+                    } group relative min-w-0 flex-1 overflow-hidden bg-main-blue hover:bg-[#00558a]  py-[0.75rem] px-4 text-sm font-medium text-center border-b-2 focus:z-10 duration-500`}
+                    aria-current={tab.href === activeTab ? "page" : undefined}
+                  >
+                    {tab.name}
+                  </div>
+                </Link>
+              );
           })}
         </nav>
       </div>

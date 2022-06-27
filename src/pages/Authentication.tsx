@@ -2,6 +2,8 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "../redux/hooks";
 import { Helmet } from "react-helmet";
 import AuthRegion from "../components/pages/authentication";
+import { GeneralActions } from "../redux/general";
+import { useEffect, useState } from "react";
 
 function Authentication() {
   const { account } = useSelector((state) => state);

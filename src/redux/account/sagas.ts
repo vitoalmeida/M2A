@@ -26,7 +26,8 @@ function* getAccount({ payload: { data } }: GetAccount) {
     showToast("Logado com sucesso!", "success");
     yield getAccountSuccess(
       { ...returnData.user, isCompany },
-      returnData.access
+      returnData.access,
+      isCompany
     );
   } catch (err) {
     yield put(AccountActions.getAccountFailure());
@@ -35,14 +36,16 @@ function* getAccount({ payload: { data } }: GetAccount) {
   }
 }
 
-function* getAccountSuccess(data, token) {
+function* getAccountSuccess(data, token, isCompany) {
   configApi.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${token}`;
     return config;
   });
 
   yield put(AccountActions.getAccountSuccess(data, token));
-  customHistory.push("/companies");
+
+  if (isCompany) customHistory.push("/questionnaires");
+  else customHistory.push("/companies");
 }
 
 function* getAccounts() {

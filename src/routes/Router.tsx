@@ -13,6 +13,7 @@ import { GeneralActions } from "../redux/general";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { CompaniesActions } from "../redux/companies";
+import { QuestionnaireActions } from "../redux/questionnaire";
 
 const Router = () => {
   const dispatch = useDispatch();
@@ -29,6 +30,7 @@ const Router = () => {
   useEffect(() => {
     if (!general?.uf?.length) {
       // dispatch(GeneralActions.seedBackend());
+      dispatch(QuestionnaireActions.getQuestionsRequest());
       dispatch(CompaniesActions.getMasterCompaniesRequest());
       dispatch(GeneralActions.getStaticValuesRequest());
     }
@@ -45,8 +47,17 @@ const Router = () => {
         />
         <Route
           path="companies"
-          // element={<Companies />}
-          element={isAuthenticated ? <Companies /> : <Authentication />}
+          element={
+            isAuthenticated ? (
+              !account.data.isCompany ? (
+                <Companies />
+              ) : (
+                <Questionnaires />
+              )
+            ) : (
+              <Authentication />
+            )
+          }
         />
         <Route
           path="questionnaires"
@@ -54,15 +65,45 @@ const Router = () => {
         />
         <Route
           path="diagnostics"
-          element={isAuthenticated ? <Diagnostics /> : <Authentication />}
+          element={
+            isAuthenticated ? (
+              !account.data.isCompany ? (
+                <Diagnostics />
+              ) : (
+                <Questionnaires />
+              )
+            ) : (
+              <Authentication />
+            )
+          }
         />
         <Route
           path="users"
-          element={isAuthenticated ? <Users /> : <Authentication />}
+          element={
+            isAuthenticated ? (
+              !account.data.isCompany ? (
+                <Users />
+              ) : (
+                <Questionnaires />
+              )
+            ) : (
+              <Authentication />
+            )
+          }
         />
         <Route
           path="questions"
-          element={isAuthenticated ? <Questions /> : <Authentication />}
+          element={
+            isAuthenticated ? (
+              !account.data.isCompany ? (
+                <Questions />
+              ) : (
+                <Questionnaires />
+              )
+            ) : (
+              <Authentication />
+            )
+          }
         />
         <Route path="*" element={<NotFound />} />
       </Routes>

@@ -15,9 +15,7 @@ import RegisterForm from "./RegisterUserForm";
 
 const Results = () => {
   const dispatch = useDispatch();
-
   const { companies, general, account } = useSelector((state) => state);
-  const companiesData = companies?.companies?.data;
 
   const [editOpen, setEditOpen] = useState(false);
   const [warningOpen, setWarningOpen] = useState(false);
@@ -50,8 +48,8 @@ const Results = () => {
         onCloseModal={() => setWarningOpen(false)}
       >
         <WaningModal
-          title="Excluir empresa?"
-          description="Tem certeza que deseja excluir esta empresa permanentemente?"
+          title="Excluir usuário?"
+          description="Tem certeza que deseja excluir este usuário permanentemente?"
           actionButton={() => console.log("ac")}
           closeModal={() => setWarningOpen(false)}
         />

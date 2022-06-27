@@ -12,7 +12,9 @@ function Questions() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(QuestionnaireActions.getQuestionsRequest());
+    if (!questionnaire.questions.length) {
+      dispatch(QuestionnaireActions.getQuestionsRequest());
+    }
   }, []);
 
   return (
@@ -22,7 +24,7 @@ function Questions() {
         <meta name="description" content="Login to M2A application" />
       </Helmet>
       <Layout>
-        <SearchForm />
+        {/* <SearchForm /> */}
         <Results />
       </Layout>
     </>

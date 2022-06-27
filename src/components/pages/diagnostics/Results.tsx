@@ -9,27 +9,33 @@ import { Company } from "../../../redux/companies/types";
 import { CompaniesActions } from "../../../redux/companies";
 import { useDispatch } from "react-redux";
 import WaningModal from "../../WaningModal";
+import { Questionnaire } from "../../../redux/questionnaire/types";
+import { Profile } from "../../../redux/account/types";
+import { BsCircleFill } from "react-icons/bs";
+import { Diagnostic } from "../../../redux/diagnostics/types";
+import DiagnosticForm from "./DiagnosticForm";
+import { QuestionnaireActions } from "../../../redux/questionnaire";
 
 const Results = () => {
   const dispatch = useDispatch();
 
-  const { companies, general } = useSelector((state) => state);
-  const companiesData = companies?.companies?.data;
-
-  const [editOpen, setEditOpen] = useState(false);
+  const { companies, diagnostics } = useSelector((state) => state);
+  console.log(diagnostics);
+  const [viewOpen, setViewOpen] = useState(false);
   const [warningOpen, setWarningOpen] = useState(false);
   const [deleteCompanyId, setDeleteCompanyId] = useState<number>();
   const [companyType, setCompanyType] = useState<number>();
 
-  function handleOpenEditModal(company?: Company) {
-    if (company) dispatch(CompaniesActions.setEditCompany(company));
-    else dispatch(CompaniesActions.removeEditCompany());
-    setEditOpen(true);
+  function handleOpenViewModal(diagnostic?: Diagnostic) {
+    dispatch(
+      QuestionnaireActions.getQuestionnairesAnswersRequest(
+        (diagnostic.empresa_questionario as Questionnaire).id
+      )
+    );
+    setViewOpen(true);
   }
 
-  function handleOpenWarningModal(companyId: number, tipo: number) {
-    setDeleteCompanyId(companyId);
-    setCompanyType(tipo);
+  function handleOpenWarningModal(companyId: number) {
     setWarningOpen(true);
   }
 
@@ -42,12 +48,12 @@ const Results = () => {
   return (
     <div className="mb-32 mt-10">
       <Modal
-        showModal={editOpen}
+        showModal={viewOpen}
         closeButton
-        onCloseModal={() => setEditOpen(false)}
+        onCloseModal={() => setViewOpen(false)}
       >
-        <div className="py-12 px-10 ">
-          <EditForm closeForm={() => setEditOpen(false)} />
+        <div className="py-12 px-10">
+          <DiagnosticForm closeForm={() => setViewOpen(false)} />
         </div>
       </Modal>
 
@@ -57,14 +63,14 @@ const Results = () => {
         onCloseModal={() => setWarningOpen(false)}
       >
         <WaningModal
-          title="Excluir empresa?"
-          description="Tem certeza que deseja excluir esta empresa permanentemente?"
+          title="Excluir diagnóstico?"
+          description="Tem certeza que deseja excluir este diagnóstico permanentemente?"
           actionButton={handleDeleteCompany}
           closeModal={() => setWarningOpen(false)}
         />
       </Modal>
 
-      <div className="sm:flex sm:items-center"></div>
+      <div className="sm:flex sm:items-center duration-500"></div>
       <div className="mt-8 flex flex-col">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 px-1 sm:px-0">
           <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
@@ -73,87 +79,107 @@ const Results = () => {
                 <h2 className="ml-0 text-2xl font-medium">
                   Lista de Diagnósticos
                 </h2>
-                <div className="mr-0">
+                {/* <div className="mr-0">
                   <Button
                     onClick={() => handleOpenEditModal()}
                     title="Cadastrar empresa"
                     color="#32c841"
                     icon={<IoMdAdd />}
                   />
-                </div>
+                </div> */}
               </div>
               <table className="min-w-full divide-y divide-gray-300">
                 <thead className="bg-gray-50 w-full">
                   <tr>
                     <th
                       scope="col"
-                      className="py-3.5 pl-4 pr-3 text-left text-sm min-w-[12rem] font-semibold text-gray-900 sm:pl-6"
+                      className="py-3.5 px-4 text-center text-sm max-w-[3.5rem] xl:max-w-[3rem] font-semibold text-gray-900 overflow-hidden"
                     >
-                      Status
+                      Tempo
                     </th>
                     <th
                       scope="col"
-                      className="px-3 py-3.5 text-left text-sm min-w-[12rem] font-semibold text-gray-900"
+                      className="py-3.5 px-4 text-center text-sm max-w-[7rem] sm:max-w-[6.5rem] xl:max-w-[5.5rem] font-semibold text-gray-900 overflow-hidden"
+                    >
+                      Diagnosticado
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-3 py-3.5 text-left text-sm min-w-[12rem] font-semibold text-gray-900 overflow-hidden"
                     >
                       Empresa
                     </th>
                     <th
                       scope="col"
-                      className="px-3 py-3.5 text-left text-sm min-w-[10rem] font-semibold text-gray-900"
+                      className="px-3 py-3.5 text-left text-sm min-w-[10rem] font-semibold text-gray-900 overflow-hidden"
                     >
                       Consultor
                     </th>
                     <th
                       scope="col"
-                      className="px-3 flex justify-center py-3.5 min-w-[2rem] text-sm font-semibold text-gray-900"
+                      className="px-3 text-center py-3.5 w-[4rem] text-sm font-semibold text-gray-900"
                     >
                       Visualizar
                     </th>
-                    {/* <th
+                    <th
                       scope="col"
-                      className="px-3 text-center py-3.5 text-left text-sm min-w-[2rem] font-semibold text-gray-900"
+                      className="px-3 text-center py-3.5 text-sm w-[3rem] font-semibold text-gray-900 lg:pr-6"
                     >
                       Excluir
-                    </th> */}
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
-                  {companiesData &&
-                    companiesData.map((company) => (
-                      <tr key={company.id}>
-                        <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                          {company.razao_social}
-                        </td>
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {company.cnpj}
-                        </td>
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {/* {
-                            general?.uf?.find(
-                              (uf) => uf.id === company.endereco.uf
-                            ).label
-                          } */}
-                        </td>
-                        <td className="relative whitespace-nowrap py-4 text-right text-lg font-medium">
-                          <button
-                            className="flex text-main-blue mx-auto"
-                            onClick={() => handleOpenEditModal(company)}
-                          >
-                            <FaEye />
-                          </button>
-                        </td>
-                        {/* <td className="relative whitespace-nowrap py-4 text-right text-sm font-medium">
-                          <button
-                            className="flex mx-auto text-[#d14f4f]"
-                            onClick={() =>
-                              handleOpenWarningModal(company.id, company.tipo)
-                            }
-                          >
-                            <FaTrash />
-                          </button>
-                        </td> */}
-                      </tr>
-                    ))}
+                  {diagnostics.diagnostics.map((diagnostic) => (
+                    <tr key={diagnostic.id}>
+                      <td className="whitespace-nowrap text-ellipsis text-center text-sm text-gray-500">
+                        {"T" +
+                          (diagnostic.empresa_questionario as Questionnaire)
+                            .tempo}
+                      </td>
+                      <td className="relative text-center">
+                        <BsCircleFill
+                          className="flex mx-auto"
+                          color={diagnostic.consultor ? "#46cd51" : "#cd4646"}
+                        />
+                      </td>
+                      <td className="whitespace-nowrap text-ellipsis px-3 py-4 text-sm text-gray-500">
+                        {typeof (
+                          diagnostic.empresa_questionario as Questionnaire
+                        ).empresa !== "number"
+                          ? (
+                              (diagnostic.empresa_questionario as Questionnaire)
+                                .empresa as Company
+                            ).fantasia
+                          : (
+                              (diagnostic.empresa_questionario as Questionnaire)
+                                .empresa_master as Company
+                            ).fantasia}
+                      </td>
+
+                      <td className="whitespace-nowrap text-ellipsis px-3 py-4 text-sm text-gray-500">
+                        {`${(diagnostic?.consultor as Profile)?.nome || ""} ${
+                          (diagnostic?.consultor as Profile)?.sobrenome || ""
+                        }`}
+                      </td>
+                      <td className="relative py-4 text-right text-lg font-medium">
+                        <button
+                          className="flex text-main-blue mx-auto"
+                          onClick={() => handleOpenViewModal(diagnostic)}
+                        >
+                          <FaEye />
+                        </button>
+                      </td>
+                      <td className="relative py-4 text-right text-sm font-medium lg:pr-3">
+                        <button
+                          className="flex mx-auto text-[#d14f4f]"
+                          onClick={() => handleOpenWarningModal(diagnostic.id)}
+                        >
+                          <FaTrash />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>

@@ -71,10 +71,23 @@ function* getCompanies() {
       }
     );
 
-    yield getCompaniesSuccess(
-      [...formatedCompanies, ...formatedMasterCompanies],
-      20
-    );
+    const allCompanies: Company[] = [
+      ...formatedCompanies,
+      ...formatedMasterCompanies,
+    ];
+    console.log("allCompanies", allCompanies);
+
+    for (let i = 0; i < allCompanies.length; i++) {
+      if (typeof allCompanies[i].endereco === "number") {
+        const { data: address } = yield call(
+          api.general.getAddress,
+          String(allCompanies[i].endereco)
+        );
+        allCompanies[i].endereco = address;
+      }
+    }
+
+    yield getCompaniesSuccess(allCompanies, 20);
   } catch (err) {
     yield put(CompaniesActions.getCompaniesFailure());
 
