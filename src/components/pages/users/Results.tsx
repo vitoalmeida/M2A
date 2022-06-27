@@ -20,6 +20,7 @@ const Results = () => {
   const [editOpen, setEditOpen] = useState(false);
   const [warningOpen, setWarningOpen] = useState(false);
 
+  console.log(account.accountList);
   function handleOpenModal(account?: Account) {
     // if (company) dispatch(CompaniesActions.setEditCompany(company));
     // else dispatch(CompaniesActions.removeEditCompany());
@@ -121,7 +122,7 @@ const Results = () => {
                       <td className="relative whitespace-nowrap py-4 text-right text-sm font-medium">
                         <BsCircleFill
                           className="flex mx-auto"
-                          color={user.ativo ? "#46cd51" : "#cd4646"}
+                          color={!user.ativo ? "#46cd51" : "#cd4646"}
                         />
                       </td>
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
@@ -130,10 +131,14 @@ const Results = () => {
                         }`}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {user.email}
+                        {account.data.email}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {(account?.data?.user_inf as Profile).perfil}
+                        {user.tipo > 2
+                          ? "Empresa"
+                          : user.tipo === 1
+                          ? "Administrador"
+                          : "Consultor"}
                       </td>
                       <td className="relative whitespace-nowrap py-4 text-right text-sm font-medium">
                         <button

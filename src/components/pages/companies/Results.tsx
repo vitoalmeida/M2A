@@ -128,15 +128,15 @@ const Results = () => {
                               {
                                 companies.masterCompanies.find(
                                   (company) =>
-                                    company.id === companiesData[1].master
-                                ).label
+                                    company.id === companiesData[1]?.master
+                                )?.label
                               }
                             </td>
                             <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                               {
                                 general?.uf?.find(
-                                  (uf) => uf.id === company.endereco.uf
-                                ).label
+                                  (uf) => uf.id === company.endereco?.uf
+                                )?.label
                               }
                             </td>
                             <td className="relative whitespace-nowrap py-4 text-right text-sm font-medium">

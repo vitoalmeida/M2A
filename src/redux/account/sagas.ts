@@ -23,7 +23,7 @@ function* getAccount({ payload: { data } }: GetAccount) {
 
     const isCompany = returnData.user.tipo === 3 || returnData.user.tipo === 4;
 
-    showToast("Logado com sucesso!", "success");
+    showToast("Login realizado com sucesso!", "success");
     yield getAccountSuccess(
       { ...returnData.user, isCompany },
       returnData.access,
@@ -108,7 +108,7 @@ function* registerAccountSuccess(data) {
 }
 
 function clearData() {
-  showToast("Deslogado com sucesso!");
+  showToast("Desconectado com sucesso!");
 }
 
 function* generalSaga() {

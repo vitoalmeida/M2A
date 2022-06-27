@@ -30,7 +30,7 @@ const Perfil: React.FC = () => {
             Dados do usuário
           </h3>
           <p className="mt-1 max-w-2xl text-sm text-gray-500">
-            Detalhes pessoais do usuário logado.
+            Detalhes pessoais do usuário conectado.
           </p>
         </div>
       </div>
