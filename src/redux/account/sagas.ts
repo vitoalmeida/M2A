@@ -12,8 +12,28 @@ function* getAccount({ payload: { data } }: GetAccount) {
   try {
     const { data: returnData } = yield call(api.account.login, data);
 
+<<<<<<< Updated upstream
     showToast("Logado com sucesso!", "success");
     yield getAccountSuccess(returnData.user, returnData.access);
+=======
+    if (returnData.user?.user_inf?.endereco) {
+      const { data: address } = yield call(
+        api.general.getAddress,
+        returnData.user.user_inf.endereco
+      );
+
+      returnData.user.user_inf.endereco = address;
+    }
+
+    const isCompany = returnData.user.tipo === 3 || returnData.user.tipo === 4;
+
+    showToast("Login realizado com sucesso!", "success");
+    yield getAccountSuccess(
+      { ...returnData.user, isCompany },
+      returnData.access,
+      isCompany
+    );
+>>>>>>> Stashed changes
   } catch (err) {
     yield put(AccountActions.getAccountFailure());
 
@@ -83,7 +103,7 @@ function* registerAccountSuccess(data) {
 }
 
 function clearData() {
-  showToast("Deslogado com sucesso!");
+  showToast("Desconectado com sucesso!");
 }
 
 function* generalSaga() {

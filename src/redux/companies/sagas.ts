@@ -106,7 +106,7 @@ function* deleteCompanySuccess() {
 }
 
 function clearData() {
-  showToast("Deslogado com sucesso!");
+  showToast("Desconectado com sucesso!");
 }
 
 function* companiesSaga() {
