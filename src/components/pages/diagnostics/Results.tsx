@@ -18,9 +18,10 @@ import { QuestionnaireActions } from "../../../redux/questionnaire";
 
 const Results = () => {
   const dispatch = useDispatch();
-
   const { companies, diagnostics } = useSelector((state) => state);
-  console.log(diagnostics);
+
+  const [selected, setSelected] = useState<Diagnostic>();
+
   const [viewOpen, setViewOpen] = useState(false);
   const [warningOpen, setWarningOpen] = useState(false);
   const [deleteCompanyId, setDeleteCompanyId] = useState<number>();
@@ -53,7 +54,10 @@ const Results = () => {
         onCloseModal={() => setViewOpen(false)}
       >
         <div className="py-12 px-10">
-          <DiagnosticForm closeForm={() => setViewOpen(false)} />
+          <DiagnosticForm
+            diagnostic={selected}
+            closeForm={() => setViewOpen(false)}
+          />
         </div>
       </Modal>
 
@@ -165,7 +169,10 @@ const Results = () => {
                       <td className="relative py-4 text-right text-lg font-medium">
                         <button
                           className="flex text-main-blue mx-auto"
-                          onClick={() => handleOpenViewModal(diagnostic)}
+                          onClick={() => {
+                            setSelected(diagnostic);
+                            handleOpenViewModal(diagnostic);
+                          }}
                         >
                           <FaEye />
                         </button>

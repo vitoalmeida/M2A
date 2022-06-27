@@ -9,6 +9,10 @@ export enum DiagnosticsTypes {
   GET_DIAGNOSTICS_REQUEST = "@general/GET_DIAGNOSTICS_REQUEST",
   GET_DIAGNOSTICS_SUCCESS = "@general/GET_DIAGNOSTICS_SUCCESS",
   GET_DIAGNOSTICS_FAILURE = "@general/GET_DIAGNOSTICS_FAILURE",
+
+  REGISTER_DIAGNOSTIC_REQUEST = "@general/REGISTER_DIAGNOSTIC_REQUEST",
+  REGISTER_DIAGNOSTIC_SUCCESS = "@general/REGISTER_DIAGNOSTIC_SUCCESS",
+  REGISTER_DIAGNOSTIC_FAILURE = "@general/REGISTER_DIAGNOSTIC_FAILURE",
 }
 
 export interface GetDiagnostics {
@@ -26,7 +30,25 @@ export interface GetDiagnosticsFailure {
   type: DiagnosticsTypes.GET_DIAGNOSTICS_FAILURE;
 }
 
+export interface RegisterDiagnostic {
+  type: DiagnosticsTypes.REGISTER_DIAGNOSTIC_REQUEST;
+  payload: {
+    data: Diagnostic;
+  };
+}
+
+export interface RegisterDiagnosticSuccess {
+  type: DiagnosticsTypes.REGISTER_DIAGNOSTIC_SUCCESS;
+}
+
+export interface RegisterDiagnosticFailure {
+  type: DiagnosticsTypes.REGISTER_DIAGNOSTIC_FAILURE;
+}
+
 export type DiagnosticsActionTypes =
+  | RegisterDiagnostic
+  | RegisterDiagnosticSuccess
+  | RegisterDiagnosticFailure
   | GetDiagnostics
   | GetDiagnosticsSuccess
   | GetDiagnosticsFailure;
@@ -40,6 +62,6 @@ export interface Diagnostic {
   id?: number;
   data?: string;
   empresa_questionario?: number | Questionnaire;
-  consultor?: number | Profile;
+  consultor?: string | number | Profile;
   tipo_diagnostico?: number | string;
 }

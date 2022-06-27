@@ -84,7 +84,6 @@ export interface RegisterQuestionnaireSuccess {
 export interface RegisterQuestionnaireFailure {
   type: QuestionnaireTypes.REGISTER_QUESTIONNAIRE_FAILURE;
 }
-
 export type QuestionnaireActionTypes =
   | GetQuestions
   | GetQuestionsSuccess

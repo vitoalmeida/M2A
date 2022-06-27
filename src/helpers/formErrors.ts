@@ -37,7 +37,7 @@ function translateError(codes: string[], label: string) {
     case "numericality":
       return `${label} deve ser um número`;
     default:
-      return `Erro no ${label}`;
+      return `Erro no campo ${label}`;
   }
 }
 

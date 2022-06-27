@@ -1,13 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import Questionnaires from "../../../pages/Questionnaires";
+import account from "../../../redux/account";
+import { DiagnosticsActions } from "../../../redux/diagnostics";
+import { Diagnostic } from "../../../redux/diagnostics/types";
 import { useSelector } from "../../../redux/hooks";
+import { QuestionnaireActions } from "../../../redux/questionnaire";
+import showToast from "../../../helpers/showToast";
+import { Questionnaire } from "../../../redux/questionnaire/types";
 
 interface Props {
+  diagnostic: Diagnostic;
   closeForm?: () => any;
 }
-const DiagnosticForm: React.FC<Props> = ({ closeForm }) => {
+const DiagnosticForm: React.FC<Props> = ({ closeForm, diagnostic }) => {
   const dispatch = useDispatch();
-  const { questionnaire } = useSelector((state) => state);
+  const { questionnaire, account } = useSelector((state) => state);
 
   const total = questionnaire.questionnaireAnswers.reduce(
     (previousQuestion, currentQuestion) =>
@@ -15,7 +23,21 @@ const DiagnosticForm: React.FC<Props> = ({ closeForm }) => {
     0
   );
 
-  function handleDiagnosticate() {}
+  function handleDiagnosticate() {
+    if (account.data.tipo !== 2) {
+      showToast("Apenas consultores poodem fornecer uma devolutiva!", "error");
+      return;
+    }
+
+    dispatch(
+      DiagnosticsActions.registerDiagnosticRequest({
+        empresa_questionario: (diagnostic.empresa_questionario as Questionnaire)
+          .id,
+        consultor: String(account.data.user_inf.id),
+        tipo_diagnostico: 1,
+      })
+    );
+  }
 
   function returnRisk() {
     if (total < 24) {
@@ -147,7 +169,14 @@ const DiagnosticForm: React.FC<Props> = ({ closeForm }) => {
             </div>
           </div>
           <div className="mt-5 md:mt-0 md:col-span-2">
-            <form action="#" method="POST">
+            <form
+              onSubmit={(e) => {
+                {
+                  e.preventDefault();
+                  handleDiagnosticate();
+                }
+              }}
+            >
               <div className="shadow sm:rounded-md sm:overflow-hidden">
                 <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
                   <div className="grid grid-cols-3 gap-6">
@@ -233,8 +262,8 @@ const DiagnosticForm: React.FC<Props> = ({ closeForm }) => {
                 </div>
                 <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                   <button
-                    type="submit"
                     className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary-blue"
+                    type="submit"
                   >
                     Enviar
                   </button>

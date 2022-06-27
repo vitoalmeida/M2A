@@ -1,9 +1,11 @@
 // eslint-disable-next-line no-unused-vars
 import { all, call, put, takeLatest } from "redux-saga/effects";
 import { DiagnosticsActions } from ".";
-import { DiagnosticsTypes } from "./types";
+import { DiagnosticsTypes, RegisterDiagnostic } from "./types";
 import * as api from "../../services/index";
 import * as helpers from "../../helpers/index";
+import showToast from "../../helpers/showToast";
+import { customHistory } from "../../routes/CustomBrowserRouter";
 
 function* getDiagnostics() {
   try {
@@ -60,17 +62,38 @@ function* getDiagnostics() {
       }
     }
 
-    console.log("chegou aquiu");
     yield put(DiagnosticsActions.getDiagnosticsSuccess(formatedDiagnostics));
   } catch (err) {
     yield put(DiagnosticsActions.getDiagnosticsFailure());
     console.log(err);
   }
 }
+function* registerDiagnostic({ payload: { data } }: RegisterDiagnostic) {
+  try {
+    console.log(data);
+    const { data: diagnostic } = yield call(
+      api.diagnostics.registerDiagnostic,
+      data
+    );
+    console.log(diagnostic);
+
+    showToast("Diagnóstico salvo com sucesso!", "success");
+    yield put(DiagnosticsActions.registerDiagnosticSuccess());
+    yield put(DiagnosticsActions.getDiagnosticsRequest());
+  } catch (err) {
+    console.log(err);
+    showToast(helpers.formErrors.formatError(err), "error");
+    yield put(DiagnosticsActions.registerDiagnosticFailure());
+  }
+}
 
 function* generalSaga() {
   yield all([
     takeLatest(DiagnosticsTypes.GET_DIAGNOSTICS_REQUEST, getDiagnostics),
+    takeLatest(
+      DiagnosticsTypes.REGISTER_DIAGNOSTIC_REQUEST,
+      registerDiagnostic
+    ),
   ]);
 }
 
