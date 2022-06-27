@@ -1,8 +1,14 @@
-import SearchForm from "../components/companies/SearchForm";
+import SearchForm from "../components/pages/companies/SearchForm";
 import Layout from "../components/Layout";
 import { Helmet } from "react-helmet";
+import { useSelector } from "../redux/hooks";
+import { useDispatch } from "react-redux";
+import Results from "../components/pages/diagnostics/Results";
 
 function Diagnostics() {
+  const { account } = useSelector((state) => state);
+  const dispatch = useDispatch();
+
   return (
     <>
       <Helmet>
@@ -11,6 +17,7 @@ function Diagnostics() {
       </Helmet>
       <Layout>
         <SearchForm />
+        <Results />
       </Layout>
     </>
   );

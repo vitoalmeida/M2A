@@ -1,5 +1,6 @@
 /* eslint-disable no-shadow */
 
+import { GenericData } from "../../types";
 import { Address } from "../general/types";
 
 /* eslint-disable no-unused-vars */
@@ -87,7 +88,7 @@ export interface RegisterCompanyFailure {
 }
 export interface DeleteCompany {
   type: CompaniesTypes.DELETE_COMPANY_REQUEST;
-  payload: { companyId: number };
+  payload: { companyId: number; type: number };
 }
 
 export interface DeleteCompanySuccess {
@@ -119,6 +120,9 @@ export type CompaniesActionTypes =
   | GetCompany
   | GetCompanySuccess
   | GetCompanyFailure
+  | GetMasterCompanies
+  | GetMasterCompaniesSuccess
+  | GetMasterCompaniesFailure
   | GetCompanies
   | GetCompaniesSuccess
   | GetCompaniesFailure
@@ -137,12 +141,14 @@ export interface CompaniesState {
   loading: boolean;
   editCompany: Company | null;
   company: { data: Company[] | null };
+  masterCompanies: GenericData[] | null;
   companies: { data: Company[] | null; count: number | null };
   error: boolean | null;
 }
 
 export interface Company {
   id?: number;
+  tipo?: number;
   cnpj?: string;
   email?: string;
   razao_social?: string;

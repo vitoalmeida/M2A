@@ -1,11 +1,11 @@
 import { Formik, Field, Form } from "formik";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { AccountActions } from "../../../redux/account";
-import { useSelector } from "../../../redux/hooks";
-import { InputFormik, Button } from "../../index";
+import { AccountActions } from "../../../../redux/account";
+import { useSelector } from "../../../../redux/hooks";
+import { InputFormik, Button } from "../../../index";
 import formSchema from "./formSchema";
-import { customHistory } from "../../../routes/CustomBrowserRouter";
+import { customHistory } from "../../../../routes/CustomBrowserRouter";
 
 const LoginForm = () => {
   const dispatch = useDispatch();

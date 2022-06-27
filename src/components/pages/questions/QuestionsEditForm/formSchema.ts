@@ -1,13 +1,9 @@
 import * as Yup from "yup";
 
-const initialValues: any = {
-  pergunta: "",
-  resposta: "",
-};
-
 const validationSchema = Yup.object().shape({
   pergunta: Yup.string(),
   resposta: Yup.string(),
+  objetivo: Yup.string(),
 });
 
 // async function validate({ birthday, email }: AccountRegister) {
@@ -38,7 +34,6 @@ const validationSchema = Yup.object().shape({
 
 export default {
   // validate,
-  initialValues,
   validationSchema,
   validateOnBlur: false,
   validateOnChange: false,

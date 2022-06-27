@@ -10,6 +10,8 @@ export enum GeneralTypes {
   REGISTER_ADDRESS_REQUEST = "@general/REGISTER_ADDRESS_REQUEST",
   REGISTER_ADDRESS_SUCCESS = "@general/REGISTER_ADDRESS_SUCCESS",
   REGISTER_ADDRESS_FAILURE = "@general/REGISTER_ADDRESS_FAILURE",
+
+  SEED_BACKEND = "@general/SEED_BACKEND",
 }
 
 export interface GetStaticValuesGeneral {
@@ -45,7 +47,12 @@ export interface RegisterAddressFailure {
   type: GeneralTypes.REGISTER_ADDRESS_FAILURE;
 }
 
+export interface SeedBackend {
+  type: GeneralTypes.SEED_BACKEND;
+}
+
 export type GeneralActionTypes =
+  | SeedBackend
   | RegisterAddress
   | RegisterAddressSuccess
   | RegisterAddressFailure

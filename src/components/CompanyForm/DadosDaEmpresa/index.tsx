@@ -138,12 +138,13 @@ const DadosDaEmpresa = ({ changeTab }: Props) => {
                 </div>
 
                 <div className="flex mx-auto w-full flex-col col-span-12 sm:col-span-7">
-                  <InputFormik
+                  <SelectFormik
                     placeholder=""
                     disabled={values.bool_master ? true : false}
                     required={values.bool_master ? false : true}
                     name="master"
                     label="Empresa Vinculada"
+                    data={companies.masterCompanies}
                   />
                 </div>
                 <div className="flex mx-auto w-full flex-col col-span-12 sm:col-span-5">

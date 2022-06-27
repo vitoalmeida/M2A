@@ -2,21 +2,29 @@ import { Tab } from '@headlessui/react';
 import { Formik, Field, Form } from 'formik';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { AccountActions } from '../../../redux/account';
-import { GeneralActions } from '../../../redux/general';
-import { useSelector } from '../../../redux/hooks';
-import Button from '../../Button';
-import { InputFormik, SelectFormik } from '../../index';
+import { AccountActions } from '../../../../redux/account';
+import { GeneralActions } from '../../../../redux/general';
+import { useSelector } from '../../../../redux/hooks';
+import Button from '../../../Button';
+import { InputFormik, SelectFormik } from '../../../index';
 import formSchema from './formSchema';
 import { FaArrowRight } from 'react-icons/fa';
-import { CompaniesActions } from '../../../redux/companies';
-import * as helpers from '../../../helpers/index';
+import { CompaniesActions } from '../../../../redux/companies';
+import * as helpers from '../../../../helpers/index';
 
 const QuestionsEditForm = () => {
   const dispatch = useDispatch();
-  const { general, account, companies } = useSelector((state) => state);
+  const { general, account, companies, questionnaire } = useSelector(
+    (state) => state
+  );
   const [activeTab, setActiveTab] = useState<number>(0);
   const [answers, setAnswers] = useState([{ teste: 'teste' }]);
+
+  const initialValues: any = {
+    pergunta: 'x',
+    resposta: '',
+    objetivo: '',
+  };
 
   function handleSubmit(values) {
     const verifiedCompany = companies?.editCompany
@@ -34,6 +42,7 @@ const QuestionsEditForm = () => {
   return (
     <>
       <Formik
+        initialValues={initialValues}
         onSubmit={(values) => handleSubmit({ ...values })}
         {...formSchema}
       >
@@ -59,12 +68,19 @@ const QuestionsEditForm = () => {
             <Tab.Panels>
               <Tab.Panel>
                 <div className='md:w-96'>
+                  <SelectFormik
+                    required
+                    name='Fundamento'
+                    data={general.uf}
+                    label='Fundamento'
+                  />
                   <InputFormik
                     textArea
                     required
                     name='pergunta'
                     label='Pergunta'
                   />
+                  <InputFormik textArea name='objetivo' label='Objetivo' />
                 </div>
               </Tab.Panel>
               <Tab.Panel className='md:w-[35rem] overflow-scroll max-h-96'>

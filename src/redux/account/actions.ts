@@ -1,13 +1,14 @@
 import { action } from "typesafe-actions";
 import {
+  Account,
   AccountActionTypes,
   AccountTypes,
-  LoginProfile,
+  LoginAccount,
   Profile,
-  RegisterProfile,
+  RegisterAccountType,
 } from "./types";
 
-export function getAccountRequest(data: LoginProfile): AccountActionTypes {
+export function getAccountRequest(data: LoginAccount): AccountActionTypes {
   return action(AccountTypes.GET_ACCOUNT_REQUEST, { data });
 }
 
@@ -35,12 +36,12 @@ export function getAccountsFailure(): AccountActionTypes {
 }
 
 export function registerAccountRequest(
-  data: RegisterProfile
+  data: RegisterAccountType
 ): AccountActionTypes {
   return action(AccountTypes.REGISTER_ACCOUNT_REQUEST, { data });
 }
 
-export function registerAccountSuccess(data: Profile): AccountActionTypes {
+export function registerAccountSuccess(data: Account): AccountActionTypes {
   return action(AccountTypes.REGISTER_ACCOUNT_SUCCESS, { data });
 }
 
