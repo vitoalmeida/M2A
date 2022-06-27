@@ -117,84 +117,52 @@ const Results = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
                   {companiesData &&
-                    companiesData.map((company) => (
-                      <tr key={company.id}>
-                        <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                          {company.razao_social}
-                        </td>
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {company.cnpj}
-                        </td>
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {
-                            general?.uf?.find(
-                              (uf) => uf.id === company.endereco.uf
-                            ).label
-                          }
-                        </td>
-                        <td className="relative whitespace-nowrap py-4 text-right text-sm font-medium">
-                          <button
-                            className="flex text-main-blue mx-auto"
-                            onClick={() => handleOpenEditModal(company)}
-                          >
-                            <FaEdit />
-                          </button>
-                        </td>
-                        <td className="relative whitespace-nowrap py-4 text-right text-sm font-medium">
-                          <button
-                            className="flex mx-auto text-[#d14f4f]"
-                            onClick={() =>
-                              handleOpenWarningModal(company.id, company.tipo)
-                            }
-                          >
-                            <FaTrash />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  {companiesData.map((company) => {
-                    if (Number(company.cnpj) > 1)
-                      return (
-                        <tr key={company.id}>
-                          <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                            {company.razao_social}
-                          </td>
-                          <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                            {
-                              companies.masterCompanies.find(
-                                (company) =>
-                                  company.id === companiesData[1]?.master
-                              )?.label
-                            }
-                          </td>
-                          <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                            {
-                              general?.uf?.find(
-                                (uf) => uf.id === company.endereco?.uf
-                              )?.label
-                            }
-                          </td>
-                          <td className="relative whitespace-nowrap py-4 text-right text-sm font-medium">
-                            <button
-                              className="flex text-main-blue mx-auto"
-                              onClick={() => handleOpenEditModal(company)}
-                            >
-                              <FaEdit />
-                            </button>
-                          </td>
-                          <td className="relative whitespace-nowrap py-4 text-right text-sm font-medium">
-                            <button
-                              className="flex mx-auto text-[#d14f4f]"
-                              onClick={() =>
-                                handleOpenWarningModal(company.id, company.tipo)
+                    companiesData.map((company) => {
+                      if (Number(company.cnpj) > 1)
+                        return (
+                          <tr key={company.id}>
+                            <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                              {company.razao_social}
+                            </td>
+                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                              {
+                                companies.masterCompanies.find(
+                                  (company) =>
+                                    company.id === companiesData[1]?.master
+                                )?.label
                               }
-                            >
-                              <FaTrash />
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                  })}
+                            </td>
+                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                              {
+                                general?.uf?.find(
+                                  (uf) => uf.id === company.endereco?.uf
+                                )?.label
+                              }
+                            </td>
+                            <td className="relative whitespace-nowrap py-4 text-right text-sm font-medium">
+                              <button
+                                className="flex text-main-blue mx-auto"
+                                onClick={() => handleOpenEditModal(company)}
+                              >
+                                <FaEdit />
+                              </button>
+                            </td>
+                            <td className="relative whitespace-nowrap py-4 text-right text-sm font-medium">
+                              <button
+                                className="flex mx-auto text-[#d14f4f]"
+                                onClick={() =>
+                                  handleOpenWarningModal(
+                                    company.id,
+                                    company.tipo
+                                  )
+                                }
+                              >
+                                <FaTrash />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                    })}
                 </tbody>
               </table>
             </div>
