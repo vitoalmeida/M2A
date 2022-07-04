@@ -43,8 +43,8 @@ const reducer: Reducer<CompaniesState> = (
     case CompaniesTypes.GET_MASTER_COMPANIES_SUCCESS:
       return {
         ...state,
-        loading: false,
         masterCompanies: payload.data,
+        loading: false,
       };
 
     case CompaniesTypes.GET_MASTER_COMPANIES_FAILURE:
@@ -66,7 +66,7 @@ const reducer: Reducer<CompaniesState> = (
 
     // REGISTER COMPANY
     case CompaniesTypes.REGISTER_COMPANY_REQUEST:
-      return { ...state, loading: true, status: null };
+      return { ...state, loading: true, error: null };
 
     case CompaniesTypes.REGISTER_COMPANY_SUCCESS:
       return { ...state, loading: false, data: payload.data, error: false };
@@ -74,8 +74,23 @@ const reducer: Reducer<CompaniesState> = (
     case CompaniesTypes.REGISTER_COMPANY_FAILURE:
       return { ...state, loading: false, error: true };
 
-    case CompaniesTypes.SET_EDIT_COMPANY:
-      return { ...state, editCompany: payload.data };
+    case CompaniesTypes.SET_EDIT_COMPANY_REQUEST:
+      return { ...state, loading: true };
+
+    case CompaniesTypes.SET_EDIT_COMPANY_SUCCESS:
+      return { ...state, loading: false, editCompany: payload.data };
+
+    case CompaniesTypes.SET_EDIT_COMPANY_FAILURE:
+      return { ...state, loading: false };
+
+    case CompaniesTypes.EDIT_COMPANY_REQUEST:
+      return { ...state, loading: true, error: null };
+
+    case CompaniesTypes.EDIT_COMPANY_SUCCESS:
+      return { ...state, loading: false, error: false };
+
+    case CompaniesTypes.EDIT_COMPANY_FAILURE:
+      return { ...state, loading: false, error: true };
 
     case CompaniesTypes.REMOVE_EDIT_COMPANY:
       return { ...state, editCompany: null };

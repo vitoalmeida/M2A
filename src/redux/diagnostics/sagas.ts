@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import { all, call, put, takeLatest } from "redux-saga/effects";
 import { DiagnosticsActions } from ".";
-import { DiagnosticsTypes, RegisterDiagnostic } from "./types";
+import { DeleteDiagnostic, DiagnosticsTypes, RegisterDiagnostic } from "./types";
 import * as api from "../../services/index";
 import * as helpers from "../../helpers/index";
 import showToast from "../../helpers/showToast";
@@ -68,6 +68,7 @@ function* getDiagnostics() {
     console.log(err);
   }
 }
+
 function* registerDiagnostic({ payload: { data } }: RegisterDiagnostic) {
   try {
     console.log(data);
@@ -87,9 +88,38 @@ function* registerDiagnostic({ payload: { data } }: RegisterDiagnostic) {
   }
 }
 
+function* deleteDiagnostic({ payload: { diagnosticId, questionnaireId } }: DeleteDiagnostic) {
+  try {
+    console.log(diagnosticId, questionnaireId)
+
+    if (diagnosticId) yield call(api.diagnostics.deleteDiagnostic, String(diagnosticId))
+
+    yield call(api.questionnaire.deleteQuestionnaire, String(questionnaireId))
+
+    yield deleteDiagnosticSuccess()
+  } catch (err) {
+    yield deleteDiagnosticFailure(err)
+  }
+}
+
+function* deleteDiagnosticSuccess() {
+  yield put(DiagnosticsActions.deleteDiagnosticSuccess())
+  yield put(DiagnosticsActions.getDiagnosticsRequest())
+  showToast("Diagnóstico deletado com sucesso!", "success");
+
+}
+
+function* deleteDiagnosticFailure(err: any) {
+  console.log(err)
+  showToast(helpers.formErrors.formatError(err), "error");
+  yield put(DiagnosticsActions.deleteDiagnosticSuccess())
+}
+
+
 function* generalSaga() {
   yield all([
     takeLatest(DiagnosticsTypes.GET_DIAGNOSTICS_REQUEST, getDiagnostics),
+    takeLatest(DiagnosticsTypes.DELETE_DIAGNOSTIC_REQUEST, deleteDiagnostic),
     takeLatest(
       DiagnosticsTypes.REGISTER_DIAGNOSTIC_REQUEST,
       registerDiagnostic

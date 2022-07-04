@@ -38,6 +38,15 @@ const reducer: Reducer<DiagnosticsState> = (
     case DiagnosticsTypes.REGISTER_DIAGNOSTIC_FAILURE:
       return { ...state, loading: false };
 
+    case DiagnosticsTypes.DELETE_DIAGNOSTIC_REQUEST:
+      return { ...state, loading: true };
+
+    case DiagnosticsTypes.DELETE_DIAGNOSTIC_SUCCESS:
+      return { ...state, loading: false };
+
+    case DiagnosticsTypes.DELETE_DIAGNOSTIC_FAILURE:
+      return { ...state, loading: false };
+
     default:
       return state;
   }

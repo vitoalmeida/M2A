@@ -25,7 +25,14 @@ export enum CompaniesTypes {
   DELETE_COMPANY_SUCCESS = "@companies/DELETE_COMPANY_SUCCESS",
   DELETE_COMPANY_FAILURE = "@companies/DELETE_COMPANY_FAILURE",
 
-  SET_EDIT_COMPANY = "@companies/SET_EDIT_COMPANY",
+  SET_EDIT_COMPANY_REQUEST = "@companies/SET_EDIT_COMPANY_REQUEST",
+  SET_EDIT_COMPANY_SUCCESS = "@companies/SET_EDIT_COMPANY_SUCCESS",
+  SET_EDIT_COMPANY_FAILURE = "@companies/SET_EDIT_COMPANY_FAILURE",
+
+  EDIT_COMPANY_REQUEST = "@companies/EDIT_COMPANY_REQUEST",
+  EDIT_COMPANY_SUCCESS = "@companies/EDIT_COMPANY_SUCCESS",
+  EDIT_COMPANY_FAILURE = "@companies/EDIT_COMPANY_FAILURE",
+
   REMOVE_EDIT_COMPANY = "@companies/REMOVE_EDIT_COMPANY",
 
   CLEAR_ERROR = "@companies/CLEAR_ERROR",
@@ -88,7 +95,7 @@ export interface RegisterCompanyFailure {
 }
 export interface DeleteCompany {
   type: CompaniesTypes.DELETE_COMPANY_REQUEST;
-  payload: { companyId: number; type: number };
+  payload: { companyId: number; userId: number; type: number };
 }
 
 export interface DeleteCompanySuccess {
@@ -100,8 +107,26 @@ export interface DeleteCompanyFailure {
 }
 
 export interface SetEditCompany {
-  type: CompaniesTypes.SET_EDIT_COMPANY;
+  type: CompaniesTypes.SET_EDIT_COMPANY_REQUEST;
   payload: { data: Company };
+}
+export interface SetEditCompanySuccess {
+  type: CompaniesTypes.SET_EDIT_COMPANY_SUCCESS;
+  payload: { data: Company };
+}
+export interface SetEditCompanyFailure {
+  type: CompaniesTypes.SET_EDIT_COMPANY_FAILURE;
+}
+
+export interface EditCompany {
+  type: CompaniesTypes.EDIT_COMPANY_REQUEST;
+  payload: { data: Company };
+}
+export interface EditCompanySuccess {
+  type: CompaniesTypes.EDIT_COMPANY_SUCCESS;
+}
+export interface EditCompanyFailure {
+  type: CompaniesTypes.EDIT_COMPANY_FAILURE;
 }
 
 export interface RemoveEditCompany {
@@ -133,6 +158,11 @@ export type CompaniesActionTypes =
   | DeleteCompanySuccess
   | DeleteCompanyFailure
   | SetEditCompany
+  | SetEditCompanySuccess
+  | SetEditCompanyFailure
+  | EditCompany
+  | EditCompanySuccess
+  | EditCompanyFailure
   | RemoveEditCompany
   | ClearError
   | ClearData;
@@ -160,6 +190,7 @@ export interface Company {
   inscricao_estadual?: string;
   fax?: string;
   master?: number;
+  usuario?: number;
   bool_master?: boolean;
   ds_negocio?: string;
   missao?: string;

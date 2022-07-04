@@ -10,6 +10,7 @@ const INITIAL_STATE: AccountState = {
   data: null,
   token: null,
   accountList: { data: null, count: null },
+  editAccount: null,
 };
 
 const reducer: Reducer<AccountState> = (
@@ -55,6 +56,27 @@ const reducer: Reducer<AccountState> = (
 
     case AccountTypes.REGISTER_ACCOUNT_FAILURE:
       return { ...state, loading: false };
+
+    case AccountTypes.SET_EDIT_ACCOUNT_REQUEST:
+      return { ...state, loading: true };
+
+    case AccountTypes.SET_EDIT_ACCOUNT_SUCCESS:
+      return { ...state, loading: false, editAccount: payload.data };
+
+    case AccountTypes.SET_EDIT_ACCOUNT_FAILURE:
+      return { ...state, loading: false };
+
+    case AccountTypes.EDIT_ACCOUNT_REQUEST:
+      return { ...state, loading: true };
+
+    case AccountTypes.EDIT_ACCOUNT_SUCCESS:
+      return { ...state, loading: false };
+
+    case AccountTypes.EDIT_ACCOUNT_FAILURE:
+      return { ...state, loading: false };
+
+    case AccountTypes.REMOVE_EDIT_ACCOUNT:
+      return { ...state, editAccount: null };
 
     case AccountTypes.CLEAR_DATA:
       return INITIAL_STATE;

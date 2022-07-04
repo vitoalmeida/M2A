@@ -28,22 +28,19 @@ const Faturamento = ({ changeTab }: Props) => {
 
   function handleSubmit(values) {
     const verifiedCompany = companies?.editCompany
-      ? helpers.companies.verifyCompanyToEdit(
-          {
-            ...companies?.editCompany,
-            valor_arrecadacao: values.valor_arrecadacao,
-            faturamento: [
-              values.faturamentoAno1,
-              values.faturamentoAno2,
-              values.faturamentoAno3,
-              values.faturamentoAno4,
-            ],
-          },
-          companies?.editCompany
-        )
+      ? helpers.companies.verifyCompanyToEdit(companies?.editCompany, {
+          ...companies?.editCompany,
+          valor_arrecadacao: values.valor_arrecadacao,
+          faturamento: [
+            values.faturamentoAno1,
+            values.faturamentoAno2,
+            values.faturamentoAno3,
+            values.faturamentoAno4,
+          ],
+        })
       : values;
 
-    dispatch(CompaniesActions.setEditCompany({ ...verifiedCompany }));
+    dispatch(CompaniesActions.setEditCompany(verifiedCompany));
     changeTab();
   }
 

@@ -5,7 +5,7 @@ export function verifyCompanyToEdit(oldCompany: Company, newCompany: Company) {
   const formatedCompany: any = oldCompany;
 
   if (newCompany.cnpj && newCompany.cnpj !== oldCompany.cnpj) {
-    formatedCompany.cnpj = newCompany.cnpj;
+    formatedCompany.cnpj = String(newCompany.cnpj);
   }
 
   if (
@@ -116,6 +116,41 @@ export function verifyCompanyToEdit(oldCompany: Company, newCompany: Company) {
     formatedCompany.valor_arrecadacao = newCompany.valor_arrecadacao;
   }
 
+  if (
+    newCompany.resp_nome &&
+    newCompany.resp_nome !== oldCompany.resp_nome
+  ) {
+    formatedCompany.resp_nome = newCompany.resp_nome;
+  }
+
+  if (
+    newCompany.resp_sobrenome &&
+    newCompany.resp_sobrenome !== oldCompany.resp_sobrenome
+  ) {
+    formatedCompany.resp_sobrenome = newCompany.resp_sobrenome;
+  }
+
+  if (
+    newCompany.resp_email &&
+    newCompany.resp_email !== oldCompany.resp_email
+  ) {
+    formatedCompany.resp_email = newCompany.resp_email;
+  }
+
+  if (
+    newCompany.resp_sexo &&
+    newCompany.resp_sexo !== oldCompany.resp_sexo
+  ) {
+    formatedCompany.resp_sexo = newCompany.resp_sexo;
+  }
+
+  if (
+    newCompany.resp_formacao_academica &&
+    newCompany.resp_formacao_academica !== oldCompany.resp_formacao_academica
+  ) {
+    formatedCompany.resp_formacao_academica = newCompany.resp_formacao_academica;
+  }
+
   if (newCompany.endereco) {
     verifyAddressToEdit(oldCompany.endereco, newCompany.endereco);
   }
@@ -138,6 +173,10 @@ export function verifyAddressToEdit(oldAddress: Address, newAddress: Address) {
     newAddress.logradouro !== oldAddress.logradouro
   ) {
     formatedAddress.logradouro = newAddress.logradouro;
+  }
+
+  if (newAddress.bairro && newAddress.bairro !== oldAddress.bairro) {
+    formatedAddress.bairro = newAddress.bairro;
   }
 
   if (newAddress.bairro && newAddress.bairro !== oldAddress.bairro) {

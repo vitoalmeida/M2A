@@ -7,6 +7,7 @@ const INITIAL_STATE: QuestionnaireState = {
   questions: [],
   questionnaireAnswers: [],
   loading: null,
+  editQuestion: null,
 };
 
 const reducer: Reducer<QuestionnaireState> = (
@@ -44,6 +45,30 @@ const reducer: Reducer<QuestionnaireState> = (
 
     case QuestionnaireTypes.GET_QUESTIONNAIRES_ANSWERS_FAILURE:
       return { ...state, loading: false };
+
+    case QuestionnaireTypes.SET_EDIT_QUESTION_REQUEST:
+      return { ...state, loading: true };
+
+    case QuestionnaireTypes.SET_EDIT_QUESTION_SUCCESS:
+      return { ...state, loading: false, editQuestion: payload.data };
+
+    case QuestionnaireTypes.SET_EDIT_QUESTION_FAILURE:
+      return { ...state, loading: false };
+
+    case QuestionnaireTypes.EDIT_QUESTION_REQUEST:
+      return { ...state, loading: true };
+
+    case QuestionnaireTypes.EDIT_QUESTION_SUCCESS:
+      return { ...state, loading: false };
+
+    case QuestionnaireTypes.EDIT_QUESTION_FAILURE:
+      return { ...state, loading: false };
+
+    case QuestionnaireTypes.REMOVE_EDIT_QUESTION:
+      return { ...state, editQuestion: null };
+
+    case QuestionnaireTypes.CLEAR_DATA:
+      return INITIAL_STATE;
 
     default:
       return state;

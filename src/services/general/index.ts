@@ -24,6 +24,10 @@ function getAddress(addressId: string) {
   return client(`endereco/${addressId}`).get();
 }
 
+function editAddress(addressId: string, data: any) {
+  return client(`endereco/${addressId}/`).data(data).put();
+}
+
 function registerAddress(data: any) {
   return client("endereco/").data(data).post();
 }
@@ -33,6 +37,7 @@ function registerInvoicing(data: any) {
 }
 
 export default {
+  editAddress,
   registerInvoicing,
   getIndustryTypes,
   getCollectionValues,

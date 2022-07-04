@@ -9,7 +9,8 @@ import DadosDaEmpresa from "./DadosDaEmpresa";
 import Endereco from "./Endereco";
 import Faturamento from "./Faturamento";
 import InformacoesComplementares from "./InformacoesComplementares";
-
+import { Spinner } from "react-activity";
+import "react-activity/dist/library.css";
 interface Props {
   closeForm?: () => any;
   onSubmit?: () => any;
@@ -17,16 +18,44 @@ interface Props {
 
 const CompanyForm = ({ closeForm, onSubmit }: Props) => {
   const dispatch = useDispatch();
-  const { general, account, companies } = useSelector((state) => state);
+  const { companies } = useSelector((state) => state);
 
-  const empty = companies.editCompany ? false : true;
-  // const empty = false;
-  console.log(companies.editCompany);
+  const [empty, setEmpty] = useState(companies.editCompany ? false : true);
+
+  useEffect(() => {
+    setEmpty(companies.editCompany ? false : true);
+    setTabs([
+      { name: "Dados da Empresa", mobileName: "1", id: 0, active: true },
+      {
+        name: "Endereço",
+        mobileName: "2",
+        id: 1,
+        active: !companies.editCompany ? false : true,
+      },
+      {
+        name: "Faturamento",
+        mobileName: "3",
+        id: 2,
+        active: !companies.editCompany ? false : true,
+      },
+      {
+        name: "Informações Complementares",
+        mobileName: "4",
+        id: 3,
+        active: !companies.editCompany ? false : true,
+      },
+    ]);
+  }, [companies.editCompany]);
 
   const [activeTab, setActiveTab] = useState<number>(0);
   const [tabs, setTabs] = useState([
     { name: "Dados da Empresa", mobileName: "1", id: 0, active: true },
-    { name: "Endereço", mobileName: "2", id: 1, active: !empty ? true : false },
+    {
+      name: "Endereço",
+      mobileName: "2",
+      id: 1,
+      active: !empty ? true : false,
+    },
     {
       name: "Faturamento",
       mobileName: "3",
@@ -53,12 +82,6 @@ const CompanyForm = ({ closeForm, onSubmit }: Props) => {
       onSubmit();
     } else {
       console.log(companies.editCompany);
-      // dispatch(
-      //   AccountActions.registerAccountRequest({
-      //     ...companies.editCompany,
-      //     tipo: companies?.editCompany?.bool_master ? 4 : 3,
-      //   })
-      // );
     }
   }
 
@@ -100,23 +123,31 @@ const CompanyForm = ({ closeForm, onSubmit }: Props) => {
             </Tab>
           ))}
         </Tab.List>
-        <Tab.Panels className="mt-3">
-          <Tab.Panel>
-            <DadosDaEmpresa changeTab={handleNextTab} />
-          </Tab.Panel>
+        <>
+          {!companies.loading ? (
+            <Tab.Panels className="mt-3">
+              <Tab.Panel>
+                <DadosDaEmpresa changeTab={handleNextTab} />
+              </Tab.Panel>
 
-          <Tab.Panel>
-            <Endereco changeTab={handleNextTab} />
-          </Tab.Panel>
+              <Tab.Panel>
+                <Endereco changeTab={handleNextTab} />
+              </Tab.Panel>
 
-          <Tab.Panel>
-            <Faturamento changeTab={handleNextTab} />
-          </Tab.Panel>
+              <Tab.Panel>
+                <Faturamento changeTab={handleNextTab} />
+              </Tab.Panel>
 
-          <Tab.Panel>
-            <InformacoesComplementares onSubmit={handleSubmit} />
-          </Tab.Panel>
-        </Tab.Panels>
+              <Tab.Panel>
+                <InformacoesComplementares onSubmit={handleSubmit} />
+              </Tab.Panel>
+            </Tab.Panels>
+          ) : (
+            <div className="flex justify-center items-center h-[30rem]">
+              <Spinner color="#089CFF" size={25} />
+            </div>
+          )}
+        </>
       </Tab.Group>
     </div>
   );

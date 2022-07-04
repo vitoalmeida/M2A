@@ -18,6 +18,7 @@ interface Props {
   required?: boolean;
   disabled?: boolean;
   pattern?: string;
+  autoComplete?: boolean;
 }
 
 const InputFormik: React.FC<Props> = ({
@@ -34,6 +35,7 @@ const InputFormik: React.FC<Props> = ({
   type,
   pattern,
   textArea,
+  autoComplete,
 }) => {
   const { values, errors, touched, setFieldValue, setErrors } =
     useFormikContext<any>();
@@ -77,6 +79,7 @@ const InputFormik: React.FC<Props> = ({
             delete newErrors[name];
             setErrors(newErrors);
           }}
+          autoComplete={autoComplete}
           type={type === "currency" ? "number" : type}
           disabled={disabled}
           onBlur={() => setFocus(false)}

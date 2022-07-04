@@ -21,11 +21,17 @@ function registerQuestion(data: any) {
 function registerQuestionnaire(data: any) {
   return client("empresa_questionario/").data(data).post();
 }
+
 function registerQuestionnaireAnswer(data: any) {
   return client("questionario/").data(data).post();
 }
+function deleteQuestionnaire(questionnaireId: string) {
+  return client(`empresa_questionario/${questionnaireId}`).delete();
+}
+
 
 export default {
+  deleteQuestionnaire,
   getQuestionnaires,
   getQuestionnairesAnswers,
   registerQuestionnaireAnswer,

@@ -79,3 +79,63 @@ export function registerQuestionnairesSuccess(): QuestionnaireActionTypes {
 export function registerQuestionnairesFailure(): QuestionnaireActionTypes {
   return action(QuestionnaireTypes.REGISTER_QUESTIONNAIRE_FAILURE);
 }
+
+export function registerAccountRequest(
+  data: Question
+): QuestionnaireActionTypes {
+  return action(QuestionnaireTypes.REGISTER_QUESTION_REQUEST, { data });
+}
+
+export function registerAccountSuccess(data: Question): QuestionnaireActionTypes {
+  return action(QuestionnaireTypes.REGISTER_QUESTION_SUCCESS, { data });
+}
+
+export function registerAccountFailure(): QuestionnaireActionTypes {
+  return action(QuestionnaireTypes.REGISTER_QUESTION_FAILURE);
+}
+
+export function deleteAccountRequest(
+  questionId: number
+): QuestionnaireActionTypes {
+  return action(QuestionnaireTypes.DELETE_QUESTION_REQUEST, { questionId });
+}
+
+export function deleteAccountSuccess(): QuestionnaireActionTypes {
+  return action(QuestionnaireTypes.DELETE_QUESTION_SUCCESS);
+}
+
+export function deleteAccountFailure(): QuestionnaireActionTypes {
+  return action(QuestionnaireTypes.DELETE_QUESTION_FAILURE);
+}
+
+export function setEditAccountRequest(data: Question): QuestionnaireActionTypes {
+  return action(QuestionnaireTypes.SET_EDIT_QUESTION_REQUEST, { data });
+}
+
+export function setEditAccountSuccess(data: Question): QuestionnaireActionTypes {
+  return action(QuestionnaireTypes.SET_EDIT_QUESTION_SUCCESS, { data });
+}
+
+export function setEditAccountFailure(): QuestionnaireActionTypes {
+  return action(QuestionnaireTypes.SET_EDIT_QUESTION_FAILURE);
+}
+
+export function editAccountRequest(data: Question): QuestionnaireActionTypes {
+  return action(QuestionnaireTypes.EDIT_QUESTION_REQUEST, { data });
+}
+
+export function editAccountSuccess(): QuestionnaireActionTypes {
+  return action(QuestionnaireTypes.EDIT_QUESTION_SUCCESS);
+}
+
+export function editAccountFailure(): QuestionnaireActionTypes {
+  return action(QuestionnaireTypes.EDIT_QUESTION_FAILURE);
+}
+
+export function removeEditAccountRequest(): QuestionnaireActionTypes {
+  return action(QuestionnaireTypes.REMOVE_EDIT_QUESTION);
+}
+
+export function clearData(): QuestionnaireActionTypes {
+  return action(QuestionnaireTypes.CLEAR_DATA);
+}

@@ -34,20 +34,18 @@ const Endereco = ({ changeTab }: Props) => {
 
   function handleSubmit(values) {
     const verifiedCompany = companies?.editCompany
-      ? helpers.companies.verifyCompanyToEdit(
-          {
-            ...companies?.editCompany,
-            endereco: {
-              ...values,
-              // uf: general.uf.find((uf) => uf.value === values.uf)?.id,
-            },
-            telefone: values.telefone,
-            celular: values.celular,
-            fax: values.fax,
-            email: values.email,
+      ? helpers.companies.verifyCompanyToEdit(companies?.editCompany, {
+          ...companies?.editCompany,
+          endereco: {
+            ...values,
+            id: companies?.editCompany?.endereco?.id,
+            // uf: general.uf.find((uf) => uf.value === values.uf)?.id,
           },
-          companies?.editCompany
-        )
+          celular: String(values.celular),
+          email: String(values.email),
+          fax: String(values.fax),
+          telefone: String(values.telefone),
+        })
       : values;
 
     dispatch(CompaniesActions.setEditCompany({ ...verifiedCompany }));
