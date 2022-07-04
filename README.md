@@ -1,46 +1,101 @@
-# Getting Started with Create React App
+<!-- PROJECT LOGO -->
+<h1 align="center">
+<br>
+  <a href="">
+    <img src="./src/assets/images/capa.png" alt="Logo">
+  </a>
+<br>
+<br>
+M2A
+</h1>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<!-- ABOUT THE PROJECT -->
 
-## Available Scripts
+## 💡 Sobre o Projeto
 
-In the project directory, you can run:
+Este projeto trata-se de uma aplicação, onde empresas podem utilziar para responder um questionário, e consultores irão avaliar o potencial de risco desta empresa, entregando uma devolutiva de como a mesma pode evoluir, baseado nas respostas deste questionário.
 
-### `npm start`
+<!-- TECHNOLOGIES -->
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 🚧 Feito Com
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Segue abaixo o que foi utilizado na criação deste aplicativo:
 
-### `npm test`
+- ⚛️ [React](https://pt-br.reactjs.org/)
+- 🐋 [Firebase](https://www.docker.com/)
+- 🐍 [Django REST Framework](https://www.django-rest-framework.org/)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🔨 Instalação
 
-### `npm run build`
+Para rodar o projeto localmente em sua máquina, você precisa rodar o back-end, o front-end e alimentar o servidor com alguns dados. Siga estes passos:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Back-end:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1 - Instale o [Docker](https://www.docker.com/) em sua máquina. <br/>
+2 - Busque a imagem 983515929/gabriel_api.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+docker pull 983515929/gabriel_api
+```
 
-### `npm run eject`
+3 - Rode o compose.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
+docker-compose up
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Pronto o back-end está rodando localmente via docker.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Front-end:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+1 - Instale o NPM. <br/>
+2 - Rode o npm install.
 
-## Learn More
+```
+npm install
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+2 - Inicie o servidor node front-end.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```
+npm start
+```
+
+Pronto o front-end está rodando localmente utilizando ReactJS.
+
+### Alimentando o back-end:
+
+Na raiz do projeto existe um arquivo de nome `users.json`, que contém um array com alguns usuários. Com este arquivos em mãos, você acessará `http://localhost:8000/swagger/` e realizará um POST em ​`/usuario​/`, para cada um dos itens do array de `users`.<br/>
+Exemplo:
+<img src="./src/assets/images/seeduser.png" alt="Logo">
+
+<br/>
+Após isto você deverá popular o back-end com as perguntas, para isto basta ir até o arquivo `/src/routes/Router.tsx` e decomentar a linha:
+
+```
+// dispatch(GeneralActions.seedBackend());
+```
+
+Dê um refresh onde está rodando o front-end (`http://localhost:3000/`), e comente esta linha novamente, senão ele vai gerar 30 perguntas a cada refresh na página.
+
+Pronto! O projeto está pronto para uso!
+
+<!-- DEMONSTRATION -->
+
+<!-- ## :alembic: Demonstração
+
+Para ilustrar melhor o projeto, abaixo estão algumas demonstrações:
+
+### Login/Registro
+
+![Alt Text](https://media.giphy.com/media/CwUKfX4rCpE2UUoWEP/giphy.gif)
+
+### Feed
+
+![Alt Text](https://media.giphy.com/media/ZRd5rCxXEkGdQO1s19/giphy.gif) -->
+
+<!-- CONTACT -->
+
+<!-- ## :speech_balloon: Contato -->
+
+<!-- 🔘 LinkedIn - [Clique Aqui](https://www.linkedin.com/in/vitormachado-code/) -->
