@@ -98,7 +98,6 @@ const reducer: Reducer<CompaniesState> = (
     case CompaniesTypes.CLEAR_ERROR:
       return { ...state, error: null };
 
-    // CLEAR DATA
     case CompaniesTypes.CLEAR_DATA:
       return INITIAL_STATE;
 

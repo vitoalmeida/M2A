@@ -21,6 +21,8 @@ const DadosDaEmpresa = ({ changeTab }: Props) => {
   const dispatch = useDispatch();
   const { general, account, companies } = useSelector((state) => state);
 
+  const isAuthenticated = account.token ? true : false;
+
   const initialValues: Company = {
     cnpj: companies?.editCompany?.cnpj,
     razao_social: companies?.editCompany?.razao_social,
@@ -28,7 +30,8 @@ const DadosDaEmpresa = ({ changeTab }: Props) => {
     num_empregados: companies?.editCompany?.num_empregados || "0",
     dt_ano_inicio: companies?.editCompany?.dt_ano_inicio,
     master: companies?.editCompany?.master,
-    bool_master: companies?.editCompany?.bool_master,
+    bool_master:
+      companies?.editCompany?.bool_master || companies?.editCompany?.tipo === 4,
     inscricao_estadual: companies?.editCompany?.inscricao_estadual,
     // grupo: companies?.editCompany?.grupo,
     segmento: companies?.editCompany?.segmento,
@@ -140,8 +143,16 @@ const DadosDaEmpresa = ({ changeTab }: Props) => {
                 <div className="flex mx-auto w-full flex-col col-span-12 sm:col-span-7">
                   <SelectFormik
                     placeholder=""
-                    disabled={values.bool_master ? true : false}
-                    required={values.bool_master ? false : true}
+                    disabled={
+                      values.bool_master || companies?.editCompany?.tipo === 4
+                        ? true
+                        : false
+                    }
+                    required={
+                      values.bool_master || companies?.editCompany?.tipo === 4
+                        ? false
+                        : true
+                    }
                     name="master"
                     label="Empresa Vinculada"
                     data={companies.masterCompanies}
@@ -162,9 +173,15 @@ const DadosDaEmpresa = ({ changeTab }: Props) => {
                 {/* <div className="flex mx-auto w-full flex-col col-span-12 sm:col-span-5">
                 <InputFormik required name="projeto" label="Projeto" />
               </div> */}
-                {!companies?.editCompany && (
+                {!isAuthenticated ? (
                   <ToggleFormik
                     disabled={values.master ? true : false}
+                    name="bool_master"
+                    label="Empresa master"
+                  />
+                ) : (
+                  <ToggleFormik
+                    disabled={true}
                     name="bool_master"
                     label="Empresa master"
                   />

@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 // eslint-disable-next-line no-unused-vars
 import { all, call, put, takeLatest } from "redux-saga/effects";
 import { QuestionnaireActions } from ".";
@@ -169,12 +170,12 @@ function* deleteQuestionFailure(err: any) {
 
 function* editQuestion({ payload: { data } }: EditQuestion) {
   try {
-
+    console.log(data)
     for (let i = 0; i < data.formatadas.length; i++) {
       console.log('for ', data.formatadas[i])
       yield call(api.questionnaire.editAnswer, String(data.formatadas[i].id), data.formatadas[i])
     }
-    console.log('chegou')
+
     delete data.formatadas
 
     yield call(api.questionnaire.editQuestion, String(data.id), data)
@@ -199,47 +200,34 @@ function* editQuestionFailure(err: any) {
   console.log(err)
 }
 
-function* clearData() {
-  yield put(QuestionnaireActions.clearData())
-  showToast("Desconectado com sucesso!");
-}
-
-function* generalSaga() {
-  yield all([
-    takeLatest(QuestionnaireTypes.GET_QUESTIONS_REQUEST, getQuestions),
-    takeLatest(
-      QuestionnaireTypes.GET_QUESTIONNAIRES_ANSWERS_REQUEST,
-      getQuestionnairesAnswers
-    ),
-    takeLatest(
-      QuestionnaireTypes.REGISTER_QUESTIONNAIRE_REQUEST,
-      registerQuestionnaire
-    ),
-    takeLatest(
-      QuestionnaireTypes.GET_QUESTIONNAIRES_REQUEST,
-      getQuestionnaires
-    ),
-    takeLatest(
-      QuestionnaireTypes.REGISTER_QUESTION_REQUEST,
-      registerQuestion
-    ),
-    takeLatest(
-      QuestionnaireTypes.SET_EDIT_QUESTION_REQUEST,
-      setEditQuestion
-    ),
-    takeLatest(
-      QuestionnaireTypes.EDIT_QUESTION_REQUEST,
-      editQuestion
-    ),
-    takeLatest(
-      QuestionnaireTypes.DELETE_QUESTION_REQUEST,
-      deleteQuestion
-    ),
-    takeLatest(
-      QuestionnaireTypes.CLEAR_DATA,
-      clearData
-    ),
-  ]);
-}
-
-export default generalSaga;
+export default [
+  takeLatest(QuestionnaireTypes.GET_QUESTIONS_REQUEST, getQuestions),
+  takeLatest(
+    QuestionnaireTypes.GET_QUESTIONNAIRES_ANSWERS_REQUEST,
+    getQuestionnairesAnswers
+  ),
+  takeLatest(
+    QuestionnaireTypes.REGISTER_QUESTIONNAIRE_REQUEST,
+    registerQuestionnaire
+  ),
+  takeLatest(
+    QuestionnaireTypes.GET_QUESTIONNAIRES_REQUEST,
+    getQuestionnaires
+  ),
+  takeLatest(
+    QuestionnaireTypes.REGISTER_QUESTION_REQUEST,
+    registerQuestion
+  ),
+  takeLatest(
+    QuestionnaireTypes.SET_EDIT_QUESTION_REQUEST,
+    setEditQuestion
+  ),
+  takeLatest(
+    QuestionnaireTypes.EDIT_QUESTION_REQUEST,
+    editQuestion
+  ),
+  takeLatest(
+    QuestionnaireTypes.DELETE_QUESTION_REQUEST,
+    deleteQuestion
+  ),
+]

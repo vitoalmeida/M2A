@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 // eslint-disable-next-line no-unused-vars
 import { all, call, delay, put, takeLatest } from "redux-saga/effects";
 import { CompaniesActions } from ".";
@@ -62,13 +63,19 @@ function* getCompanies() {
       api.companies.getMasterCompanies
     );
 
-    const formatedCompanies = companies.results.map((companies) => {
-      return { ...companies, tipo: 3 };
+    const formatedCompanies = companies.results.map((company) => {
+      return { ...company, tipo: 3 };
     });
 
     const formatedMasterCompanies = masterCompanies.results.map(
-      (masterCompanies) => {
-        return { ...masterCompanies, tipo: 4 };
+      (masterCompany) => {
+        return {
+          ...masterCompany,
+          tipo: 4, segmento: masterCompany.segmento.id,
+          setor: masterCompany.setor.id,
+          tipo_industria: masterCompany.tipo_industria.id,
+          valor_arrecadacao: masterCompany.valor_arrecadacao.id
+        };
       }
     );
 
@@ -183,9 +190,13 @@ function* deleteCompanyFailure(err: any) {
 
 function* setEditCompany({ payload: { data } }: SetEditCompany) {
   try {
-    const { data: user } = yield call(api.account.getAccount, String(data.usuario));
+    if (data.usuario) {
+      const { data: user } = yield call(api.account.getAccount, String(data.usuario));
 
-    yield setEditCompanySuccess({ ...data, email: user.email });
+      yield setEditCompanySuccess({ ...data, email: user.email });
+    } else {
+      yield setEditCompanySuccess(data);
+    }
   } catch (err) {
     yield setEditCompanyFailure(err)
   }
@@ -243,23 +254,12 @@ function* editCompanyFailure(err: any) {
 
 }
 
-function clearData() {
-  showToast("Desconectado com sucesso!");
-}
-
-function* companiesSaga() {
-  yield all([takeLatest(CompaniesTypes.GET_COMPANY_REQUEST, getCompany)]);
-  yield all([takeLatest(CompaniesTypes.GET_COMPANIES_REQUEST, getCompanies)]);
-  yield all([
-    takeLatest(CompaniesTypes.GET_MASTER_COMPANIES_REQUEST, getMasterCompanies),
-  ]);
-  yield all([
-    takeLatest(CompaniesTypes.REGISTER_COMPANY_REQUEST, registerCompany),
-    takeLatest(CompaniesTypes.DELETE_COMPANY_REQUEST, deleteCompany),
-  ]);
-  yield all([takeLatest(CompaniesTypes.CLEAR_DATA, clearData)]);
-  yield all([takeLatest(CompaniesTypes.SET_EDIT_COMPANY_REQUEST, setEditCompany)]);
-  yield all([takeLatest(CompaniesTypes.EDIT_COMPANY_REQUEST, editCompany)]);
-}
-
-export default companiesSaga;
+export default [
+  takeLatest(CompaniesTypes.GET_COMPANY_REQUEST, getCompany),
+  takeLatest(CompaniesTypes.GET_COMPANIES_REQUEST, getCompanies),
+  takeLatest(CompaniesTypes.GET_MASTER_COMPANIES_REQUEST, getMasterCompanies),
+  takeLatest(CompaniesTypes.REGISTER_COMPANY_REQUEST, registerCompany),
+  takeLatest(CompaniesTypes.DELETE_COMPANY_REQUEST, deleteCompany),
+  takeLatest(CompaniesTypes.SET_EDIT_COMPANY_REQUEST, setEditCompany),
+  takeLatest(CompaniesTypes.EDIT_COMPANY_REQUEST, editCompany)
+]

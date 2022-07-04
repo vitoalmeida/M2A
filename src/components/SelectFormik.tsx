@@ -61,9 +61,10 @@ const SelectFormik: React.FC<Props> = ({
       )}
       <div className={`${error ? "" : "pb-6"} relative flex`}>
         <Field
-          className={`${
-            error ? "border-red-300" : "border-gray-300"
-          } appearance-none block w-full px-3 py-2 border text-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+          className={`${error ? "border-red-300" : "border-gray-300"} 
+          ${
+            disabled ? "text-gray-500 bg-gray-100" : "text-gray-600"
+          } appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
           as="select"
           name={name}
           error={!disableErrorMessage ? error : undefined}

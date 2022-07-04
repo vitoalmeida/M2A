@@ -47,7 +47,11 @@ const Results = () => {
         onCloseModal={() => setEditOpen(false)}
       >
         <div className="py-12 px-10">
-          <RegisterForm />
+          <RegisterForm
+            onSubmit={() => {
+              setEditOpen(false);
+            }}
+          />
         </div>
       </Modal>
 

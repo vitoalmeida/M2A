@@ -51,7 +51,11 @@ export function formatError(err: ErrorType) {
   //   return "Requisição invalida";
   // }
   if (error.status === 401) {
-    return "Não autorizado";
+    if (error.data.detail === "No active account found with the given credentials") {
+      return "Credenciais incorretas"
+    } else {
+      return "Não autorizado";
+    }
   }
   if (error.status === 403) {
     return "Não autorizado";
@@ -67,6 +71,7 @@ export function formatError(err: ErrorType) {
   }
 
   if (error.status === 400) {
+    if (error.data?.username[0] === "usuario with this username already exists.") return "Email já cadastrado"
     const details = error.data;
     const keys = Object.keys(details);
 

@@ -52,16 +52,16 @@ const Router = () => {
               !account.data.isCompany ? (
                 <Companies />
               ) : (
-                <Questionnaires />
+                <Navigate to="/questionnaires" />
               )
             ) : (
-              <Authentication />
+              <Navigate to="/" />
             )
           }
         />
         <Route
           path="questionnaires"
-          element={isAuthenticated ? <Questionnaires /> : <Authentication />}
+          element={isAuthenticated ? <Questionnaires /> : <Navigate to="/" />}
         />
         <Route
           path="diagnostics"
@@ -70,10 +70,10 @@ const Router = () => {
               !account.data.isCompany ? (
                 <Diagnostics />
               ) : (
-                <Questionnaires />
+                <Navigate to="/questionnaires" />
               )
             ) : (
-              <Authentication />
+              <Navigate to="/" />
             )
           }
         />
@@ -84,10 +84,10 @@ const Router = () => {
               !account.data.isCompany ? (
                 <Users />
               ) : (
-                <Questionnaires />
+                <Navigate to="/questionnaires" />
               )
             ) : (
-              <Authentication />
+              <Navigate to="/" />
             )
           }
         />
@@ -98,10 +98,10 @@ const Router = () => {
               !account.data.isCompany ? (
                 <Questions />
               ) : (
-                <Questionnaires />
+                <Navigate to="/questionnaires" />
               )
             ) : (
-              <Authentication />
+              <Navigate to="/" />
             )
           }
         />
