@@ -207,6 +207,8 @@ export interface Question {
   id?: number;
   texto_pergunta: string;
   fundamento: number;
+  objetivo: string;
+  conceito: string;
   formatadas: Answer[];
   respostas: number[];
 }

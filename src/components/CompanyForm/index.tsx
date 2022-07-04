@@ -115,7 +115,7 @@ const CompanyForm = ({ closeForm, onSubmit }: Props) => {
                   : tab.id === activeTab
                   ? "text-secondary-blue py-2 border-b border-secondary-blue"
                   : ""
-              } font-medium`}
+              } font-medium outline-none`}
               disabled={!tabs.find((t) => t.id === tab.id).active}
               onClick={() => setActiveTab(tab.id)}
             >

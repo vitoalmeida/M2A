@@ -80,59 +80,59 @@ export function registerQuestionnairesFailure(): QuestionnaireActionTypes {
   return action(QuestionnaireTypes.REGISTER_QUESTIONNAIRE_FAILURE);
 }
 
-export function registerAccountRequest(
+export function registerQuestionRequest(
   data: Question
 ): QuestionnaireActionTypes {
   return action(QuestionnaireTypes.REGISTER_QUESTION_REQUEST, { data });
 }
 
-export function registerAccountSuccess(data: Question): QuestionnaireActionTypes {
+export function registerQuestionSuccess(data: Question): QuestionnaireActionTypes {
   return action(QuestionnaireTypes.REGISTER_QUESTION_SUCCESS, { data });
 }
 
-export function registerAccountFailure(): QuestionnaireActionTypes {
+export function registerQuestionFailure(): QuestionnaireActionTypes {
   return action(QuestionnaireTypes.REGISTER_QUESTION_FAILURE);
 }
 
-export function deleteAccountRequest(
+export function deleteQuestionRequest(
   questionId: number
 ): QuestionnaireActionTypes {
   return action(QuestionnaireTypes.DELETE_QUESTION_REQUEST, { questionId });
 }
 
-export function deleteAccountSuccess(): QuestionnaireActionTypes {
+export function deleteQuestionSuccess(): QuestionnaireActionTypes {
   return action(QuestionnaireTypes.DELETE_QUESTION_SUCCESS);
 }
 
-export function deleteAccountFailure(): QuestionnaireActionTypes {
+export function deleteQuestionFailure(): QuestionnaireActionTypes {
   return action(QuestionnaireTypes.DELETE_QUESTION_FAILURE);
 }
 
-export function setEditAccountRequest(data: Question): QuestionnaireActionTypes {
+export function setEditQuestionRequest(data: Question): QuestionnaireActionTypes {
   return action(QuestionnaireTypes.SET_EDIT_QUESTION_REQUEST, { data });
 }
 
-export function setEditAccountSuccess(data: Question): QuestionnaireActionTypes {
+export function setEditQuestionSuccess(data: Question): QuestionnaireActionTypes {
   return action(QuestionnaireTypes.SET_EDIT_QUESTION_SUCCESS, { data });
 }
 
-export function setEditAccountFailure(): QuestionnaireActionTypes {
+export function setEditQuestionFailure(): QuestionnaireActionTypes {
   return action(QuestionnaireTypes.SET_EDIT_QUESTION_FAILURE);
 }
 
-export function editAccountRequest(data: Question): QuestionnaireActionTypes {
+export function editQuestionRequest(data: Question): QuestionnaireActionTypes {
   return action(QuestionnaireTypes.EDIT_QUESTION_REQUEST, { data });
 }
 
-export function editAccountSuccess(): QuestionnaireActionTypes {
+export function editQuestionSuccess(): QuestionnaireActionTypes {
   return action(QuestionnaireTypes.EDIT_QUESTION_SUCCESS);
 }
 
-export function editAccountFailure(): QuestionnaireActionTypes {
+export function editQuestionFailure(): QuestionnaireActionTypes {
   return action(QuestionnaireTypes.EDIT_QUESTION_FAILURE);
 }
 
-export function removeEditAccountRequest(): QuestionnaireActionTypes {
+export function removeEditQuestion(): QuestionnaireActionTypes {
   return action(QuestionnaireTypes.REMOVE_EDIT_QUESTION);
 }
 

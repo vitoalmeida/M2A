@@ -20,6 +20,10 @@ function getSegments() {
   return client("segmento/").get();
 }
 
+function getFundamentals() {
+  return client("fundamento/").get();
+}
+
 function getAddress(addressId: string) {
   return client(`endereco/${addressId}`).get();
 }
@@ -43,6 +47,7 @@ export default {
   getCollectionValues,
   getSectors,
   getSegments,
+  getFundamentals,
   getUf,
   getAddress,
   registerAddress,

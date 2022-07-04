@@ -31,13 +31,19 @@ function* getStaticValues() {
       segments.results
     );
 
+    const { data: fundamentals } = yield call(api.general.getFundamentals);
+    const formatedFundamentals = helpers.formData.formatGenericData(
+      fundamentals.results
+    );
+
     yield put(
       GeneralActions.getStaticValuesSuccess(
         formatedUf,
         formatedCollections,
         formatedIndustryTypes,
         formatedSectors,
-        formatedSegments
+        formatedSegments,
+        formatedFundamentals,
       )
     );
   } catch (err) {

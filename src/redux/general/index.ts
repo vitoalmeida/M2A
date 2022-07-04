@@ -10,6 +10,7 @@ const INITIAL_STATE: GeneralState = {
   industryTypes: null,
   collectionValues: null,
   sectors: null,
+  fundamentals: null,
 };
 
 const reducer: Reducer<GeneralState> = (
@@ -29,6 +30,7 @@ const reducer: Reducer<GeneralState> = (
         industryTypes: payload.formatedIndustryTypes,
         collectionValues: payload.formatedCollections,
         sectors: payload.formatedSectors,
+        fundamentals: payload.formatedFundamentals,
       };
 
     case GeneralTypes.GET_STATIC_VALUES_FAILURE:
