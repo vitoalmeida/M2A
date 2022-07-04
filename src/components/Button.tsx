@@ -7,6 +7,7 @@ interface Props {
   iconRight?: boolean;
   title: string;
   color?: string;
+  textColor?: string;
   loading?: boolean;
   onClick?: () => any;
 }
@@ -15,6 +16,7 @@ const Button: React.FC<Props> = ({
   loading,
   title,
   color,
+  textColor,
   onClick,
   icon,
   iconRight,
@@ -26,7 +28,10 @@ const Button: React.FC<Props> = ({
   return (
     <div onClick={handleClick}>
       <button
-        style={{ backgroundColor: color ? color : "none" }}
+        style={{
+          backgroundColor: color ? color : "none",
+          color: textColor ? textColor : "none",
+        }}
         disabled={loading}
         type="submit"
         className={`${

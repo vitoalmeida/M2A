@@ -32,12 +32,15 @@ const Endereco = ({ changeTab }: Props) => {
     email: companies?.editCompany?.email,
   };
 
+  const isAuthenticated = account.token ? true : false;
+
   function handleSubmit(values) {
     const verifiedCompany = companies?.editCompany
       ? helpers.companies.verifyCompanyToEdit(companies?.editCompany, {
           ...companies?.editCompany,
           endereco: {
             ...values,
+            cep: String(values.cep),
             id: companies?.editCompany?.endereco?.id,
             // uf: general.uf.find((uf) => uf.value === values.uf)?.id,
           },
@@ -66,6 +69,7 @@ const Endereco = ({ changeTab }: Props) => {
                 <InputFormik
                   placeholder="exemplo@email.com"
                   required
+                  disabled={isAuthenticated}
                   name="email"
                   label="Email da empresa"
                 />
@@ -74,7 +78,7 @@ const Endereco = ({ changeTab }: Props) => {
                 <InputFormik
                   placeholder="(00) 0 0000-0000"
                   required
-                  type="number"
+                  type="string"
                   name="telefone"
                   label="Telefone"
                 />
@@ -82,7 +86,7 @@ const Endereco = ({ changeTab }: Props) => {
               <div className="flex mx-auto w-full flex-col col-span-12 sm:col-span-5">
                 <InputFormik
                   placeholder="(000) 000 0000"
-                  type="number"
+                  type="string"
                   name="fax"
                   label="Fax"
                 />
@@ -90,7 +94,7 @@ const Endereco = ({ changeTab }: Props) => {
               <div className="flex mx-auto w-full flex-col col-span-12 sm:col-span-5">
                 <InputFormik
                   placeholder="(00) 0 0000-0000"
-                  type="number"
+                  type="string"
                   name="celular"
                   label="Celular"
                 />
@@ -98,7 +102,7 @@ const Endereco = ({ changeTab }: Props) => {
               <div className="flex w-60 sm:w-full flex-col col-span-12 sm:col-span-7">
                 <InputFormik
                   placeholder="00000-000"
-                  type="number"
+                  type="string"
                   required
                   name="cep"
                   label="CEP"

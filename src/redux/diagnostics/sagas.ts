@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 // eslint-disable-next-line no-unused-vars
 import { all, call, put, takeLatest } from "redux-saga/effects";
 import { DiagnosticsActions } from ".";
@@ -116,15 +117,11 @@ function* deleteDiagnosticFailure(err: any) {
 }
 
 
-function* generalSaga() {
-  yield all([
-    takeLatest(DiagnosticsTypes.GET_DIAGNOSTICS_REQUEST, getDiagnostics),
-    takeLatest(DiagnosticsTypes.DELETE_DIAGNOSTIC_REQUEST, deleteDiagnostic),
-    takeLatest(
-      DiagnosticsTypes.REGISTER_DIAGNOSTIC_REQUEST,
-      registerDiagnostic
-    ),
-  ]);
-}
-
-export default generalSaga;
+export default [
+  takeLatest(DiagnosticsTypes.GET_DIAGNOSTICS_REQUEST, getDiagnostics),
+  takeLatest(DiagnosticsTypes.DELETE_DIAGNOSTIC_REQUEST, deleteDiagnostic),
+  takeLatest(
+    DiagnosticsTypes.REGISTER_DIAGNOSTIC_REQUEST,
+    registerDiagnostic
+  ),
+]

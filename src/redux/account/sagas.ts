@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 // eslint-disable-next-line no-unused-vars
 import { all, call, delay, put, takeLatest } from "redux-saga/effects";
 import { AccountActions } from ".";
@@ -32,7 +33,7 @@ function* getAccount({ payload: { data } }: GetAccount) {
     );
   } catch (err) {
     yield put(AccountActions.getAccountFailure());
-
+    console.log(err)
     showToast(helpers.formErrors.formatError(err), "error");
   }
 }
@@ -218,18 +219,12 @@ function* clearData() {
   showToast("Desconectado com sucesso!");
 }
 
-function* generalSaga() {
-  yield all([takeLatest(AccountTypes.GET_ACCOUNT_REQUEST, getAccount)]);
-  yield all([takeLatest(AccountTypes.GET_ACCOUNTS_REQUEST, getAccounts)]);
-  yield all([
-    takeLatest(AccountTypes.REGISTER_ACCOUNT_REQUEST, registerAccount),
-  ]);
-  yield all([
-    takeLatest(AccountTypes.SET_EDIT_ACCOUNT_REQUEST, setEditAccount),
-  ]);
-  yield all([takeLatest(AccountTypes.DELETE_ACCOUNT_REQUEST, deleteAccount)]);
-  yield all([takeLatest(AccountTypes.EDIT_ACCOUNT_REQUEST, editAccount)]);
-  yield all([takeLatest(AccountTypes.CLEAR_DATA, clearData)]);
-}
-
-export default generalSaga;
+export default [
+  takeLatest(AccountTypes.GET_ACCOUNT_REQUEST, getAccount),
+  takeLatest(AccountTypes.GET_ACCOUNTS_REQUEST, getAccounts),
+  takeLatest(AccountTypes.REGISTER_ACCOUNT_REQUEST, registerAccount),
+  takeLatest(AccountTypes.SET_EDIT_ACCOUNT_REQUEST, setEditAccount),
+  takeLatest(AccountTypes.DELETE_ACCOUNT_REQUEST, deleteAccount),
+  takeLatest(AccountTypes.EDIT_ACCOUNT_REQUEST, editAccount),
+  takeLatest(AccountTypes.CLEAR_DATA, clearData)
+]

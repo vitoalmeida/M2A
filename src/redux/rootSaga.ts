@@ -8,10 +8,10 @@ import diagnosticsSaga from "./diagnostics/sagas";
 
 export default function* rootSaga() {
   yield all([
-    fork(accountSaga),
-    fork(generalSaga),
-    fork(companiesSaga),
-    fork(questionnaireSaga),
-    fork(diagnosticsSaga),
+    ...accountSaga,
+    ...generalSaga,
+    ...companiesSaga,
+    ...questionnaireSaga,
+    ...diagnosticsSaga,
   ]);
 }

@@ -135,7 +135,3 @@ export function editQuestionFailure(): QuestionnaireActionTypes {
 export function removeEditQuestion(): QuestionnaireActionTypes {
   return action(QuestionnaireTypes.REMOVE_EDIT_QUESTION);
 }
-
-export function clearData(): QuestionnaireActionTypes {
-  return action(QuestionnaireTypes.CLEAR_DATA);
-}

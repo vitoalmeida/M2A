@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AccountActions } from "../../redux/account";
 import { GeneralActions } from "../../redux/general";
@@ -7,14 +7,74 @@ import Button from "../Button";
 import { BsCircleFill } from "react-icons/bs";
 import { Profile } from "../../redux/account/types";
 import { Company } from "../../redux/companies/types";
+import { CompaniesActions } from "../../redux/companies";
+import Modal from "../Modal";
+import RegisterForm from "../pages/users/RegisterUserForm";
+import CompanyForm from "../CompanyForm";
 
 const Perfil: React.FC = () => {
   let dispatch = useDispatch();
-  const { account, general } = useSelector((state) => state);
-  console.log(account.data);
+  const { account, general, companies } = useSelector((state) => state);
+
+  const [editAccountOpen, setEditAccountOpen] = useState(false);
+  const [editCompanyOpen, setEditCompanyOpen] = useState(false);
+
+  function handleOpenEditModal() {
+    if (account.data.isCompany) {
+      dispatch(
+        CompaniesActions.setEditCompany(account.data.user_inf as Company)
+      );
+      setEditCompanyOpen(true);
+    } else {
+      dispatch(
+        AccountActions.setEditAccountRequest({
+          ...(account.data.user_inf as Profile),
+          email: account.data.email,
+          tipo: account.data.tipo,
+        })
+      );
+      setEditAccountOpen(true);
+    }
+  }
+
+  function handleEditCompany() {
+    dispatch(
+      CompaniesActions.editCompanyRequest({
+        ...companies.editCompany,
+        tipo: account.data.tipo,
+      })
+    );
+  }
 
   return (
     <div className="overflow-hidden sm:rounded-lg max-w-3xl">
+      <Modal
+        showModal={editAccountOpen}
+        closeButton
+        onCloseModal={() => setEditAccountOpen(false)}
+      >
+        <div className="py-12 px-10">
+          <RegisterForm
+            onSubmit={() => {
+              setEditAccountOpen(false);
+            }}
+          />
+        </div>
+      </Modal>
+
+      <Modal
+        showModal={editCompanyOpen}
+        closeButton
+        onCloseModal={() => setEditCompanyOpen(false)}
+      >
+        <div className="py-12 px-10 ">
+          <CompanyForm
+            onSubmit={handleEditCompany}
+            closeForm={() => setEditCompanyOpen(false)}
+          />
+        </div>
+      </Modal>
+
       <div className="flex pl-4 sm:px-10 items-center py-3">
         <span className="flex-none sm:inline-block h-10 w-10 rounded-full overflow-hidden bg-gray-100">
           <svg
@@ -27,10 +87,13 @@ const Perfil: React.FC = () => {
         </span>
         <div className="px-4 py-5 sm:px-10">
           <h3 className="text-lg leading-6 font-medium text-gray-900">
-            Dados do usuário
+            Dados {account.data.isCompany ? " da empresa" : " do usuário"}
           </h3>
           <p className="mt-1 max-w-2xl text-sm text-gray-500">
-            Detalhes pessoais do usuário conectado.
+            Detalhes pessoais{" "}
+            {account.data.isCompany
+              ? " da empresa conectada."
+              : " do usuário conectado."}
           </p>
         </div>
       </div>
@@ -139,7 +202,16 @@ const Perfil: React.FC = () => {
           </div>
         </dl>
       </div>
-      <div className="mx-4 sm:mx-10 sm:mt-6 mb-10 sm:mb-12">
+      <div className="mx-4 sm:mx-10 sm:mt-6 mb-6">
+        <Button
+          title="Editar"
+          color="#f2f2f2"
+          textColor="#181818"
+          loading={account.loading}
+          onClick={handleOpenEditModal}
+        />
+      </div>
+      <div className="mx-4 sm:mx-10 mb-10 sm:mb-12">
         <Button
           title="Sair"
           color="#e34444"

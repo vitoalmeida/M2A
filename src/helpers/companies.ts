@@ -99,6 +99,13 @@ export function verifyCompanyToEdit(oldCompany: Company, newCompany: Company) {
   }
 
   if (
+    newCompany.email &&
+    newCompany.email !== oldCompany.email
+  ) {
+    formatedCompany.email = newCompany.email;
+  }
+
+  if (
     newCompany.faturamento &&
     newCompany.faturamento !== oldCompany.faturamento
   ) {
@@ -151,8 +158,10 @@ export function verifyCompanyToEdit(oldCompany: Company, newCompany: Company) {
     formatedCompany.resp_formacao_academica = newCompany.resp_formacao_academica;
   }
 
-  if (newCompany.endereco) {
+  if (newCompany.endereco && oldCompany.endereco && typeof oldCompany.endereco !== "number") {
     verifyAddressToEdit(oldCompany.endereco, newCompany.endereco);
+  } else {
+    formatedCompany.endereco = newCompany.endereco
   }
 
   return formatedCompany;
@@ -164,9 +173,6 @@ export function verifyAddressToEdit(oldAddress: Address, newAddress: Address) {
   if (newAddress.cep && newAddress.cep !== oldAddress.cep) {
     formatedAddress.cep = newAddress.cep;
   }
-  if (newAddress.cep && newAddress.cep !== oldAddress.cep) {
-    formatedAddress.cep = newAddress.cep;
-  }
 
   if (
     newAddress.logradouro &&
@@ -175,13 +181,6 @@ export function verifyAddressToEdit(oldAddress: Address, newAddress: Address) {
     formatedAddress.logradouro = newAddress.logradouro;
   }
 
-  if (newAddress.bairro && newAddress.bairro !== oldAddress.bairro) {
-    formatedAddress.bairro = newAddress.bairro;
-  }
-
-  if (newAddress.bairro && newAddress.bairro !== oldAddress.bairro) {
-    formatedAddress.bairro = newAddress.bairro;
-  }
 
   if (newAddress.cidade && newAddress.cidade !== oldAddress.cidade) {
     formatedAddress.cidade = newAddress.cidade;

@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 // eslint-disable-next-line no-unused-vars
 import { all, call, put, takeLatest } from "redux-saga/effects";
 import { GeneralActions } from ".";
@@ -62,11 +63,7 @@ function* seedBackend() {
   }
 }
 
-function* generalSaga() {
-  yield all([
-    takeLatest(GeneralTypes.GET_STATIC_VALUES_REQUEST, getStaticValues),
-    takeLatest(GeneralTypes.SEED_BACKEND, seedBackend),
-  ]);
-}
-
-export default generalSaga;
+export default [
+  takeLatest(GeneralTypes.GET_STATIC_VALUES_REQUEST, getStaticValues),
+  takeLatest(GeneralTypes.SEED_BACKEND, seedBackend),
+]

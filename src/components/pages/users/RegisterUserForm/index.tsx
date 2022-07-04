@@ -12,7 +12,11 @@ import { status, tipo } from "../../../../helpers/staticData";
 import { Profile } from "../../../../redux/account/types";
 import PasswordForm from "../PasswordForm";
 
-const RegisterForm = () => {
+interface Props {
+  onSubmit?: () => void;
+}
+
+const RegisterForm = ({ onSubmit }) => {
   const dispatch = useDispatch();
   const { general, account } = useSelector((state) => state);
 
@@ -65,6 +69,7 @@ const RegisterForm = () => {
       )
     );
     setPasswordScreen(false);
+    if (onSubmit) onSubmit();
   }
 
   return (
