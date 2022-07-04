@@ -12,6 +12,7 @@ import WaningModal from "../../WaningModal";
 import { BsCircleFill } from "react-icons/bs";
 import { Account, Profile } from "../../../redux/account/types";
 import RegisterForm from "./RegisterUserForm";
+import { AccountActions } from "../../../redux/account";
 
 const Results = () => {
   const dispatch = useDispatch();
@@ -20,18 +21,23 @@ const Results = () => {
   const [editOpen, setEditOpen] = useState(false);
   const [warningOpen, setWarningOpen] = useState(false);
 
-  console.log(account.accountList);
-  function handleOpenModal(account?: Account) {
-    // if (company) dispatch(CompaniesActions.setEditCompany(company));
-    // else dispatch(CompaniesActions.removeEditCompany());
+  const [profileId, setProfileId] = useState<number>();
+  const [userId, setUserId] = useState<number>();
+  const [type, setType] = useState<number>();
+
+  function handleOpenEditModal(user?: Profile) {
+    if (user) dispatch(AccountActions.setEditAccountRequest(user));
+    else dispatch(AccountActions.removeEditAccountRequest());
+
     setEditOpen(true);
   }
 
-  function handleDeleteAccount(account?: Account) {
+  function handleDeleteAccount(account?: Profile) {
+    setProfileId(account.id);
+    setUserId(Number(account.usuario));
+    setType(account.tipo);
     setWarningOpen(true);
   }
-
-  console.log(account.accountList.data);
 
   return (
     <div className="mb-32 mt-10">
@@ -53,7 +59,11 @@ const Results = () => {
         <WaningModal
           title="Excluir usuário?"
           description="Tem certeza que deseja excluir este usuário permanentemente?"
-          actionButton={() => console.log("ac")}
+          actionButton={() =>
+            dispatch(
+              AccountActions.deleteAccountRequest(profileId, userId, type)
+            )
+          }
           closeModal={() => setWarningOpen(false)}
         />
       </Modal>
@@ -67,7 +77,7 @@ const Results = () => {
                 <h2 className="ml-0 text-2xl font-medium">Lista de Usuários</h2>
                 <div className="mr-0">
                   <Button
-                    onClick={() => handleOpenModal()}
+                    onClick={() => handleOpenEditModal()}
                     title="Cadastrar usuário"
                     color="#32c841"
                     icon={<IoMdAdd />}
@@ -117,21 +127,19 @@ const Results = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
-                  {account?.accountList?.data?.map((user) => (
-                    <tr key={(account?.data?.user_inf as Profile).id}>
+                  {account?.accountList?.data?.map((user: Profile) => (
+                    <tr key={user.id}>
                       <td className="relative whitespace-nowrap py-4 text-right text-sm font-medium">
                         <BsCircleFill
                           className="flex mx-auto"
-                          color={!user.ativo ? "#46cd51" : "#cd4646"}
+                          color={user.ativo ? "#46cd51" : "#cd4646"}
                         />
                       </td>
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                        {`${(account?.data?.user_inf as Profile).nome} ${
-                          (account?.data?.user_inf as Profile).sobrenome
-                        }`}
+                        {`${user.nome} ${user.sobrenome}`}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {account.data.email}
+                        {user.email}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                         {user.tipo > 2
@@ -143,7 +151,7 @@ const Results = () => {
                       <td className="relative whitespace-nowrap py-4 text-right text-sm font-medium">
                         <button
                           className="flex text-main-blue mx-auto"
-                          onClick={() => handleOpenModal(user)}
+                          onClick={() => handleOpenEditModal(user)}
                         >
                           <FaEdit />
                         </button>
@@ -151,7 +159,7 @@ const Results = () => {
                       <td className="relative whitespace-nowrap py-4 text-right text-sm font-medium">
                         <button
                           className="flex mx-auto text-[#d14f4f]"
-                          // onClick={() => handleDeleteCompany(user)}
+                          onClick={() => handleDeleteAccount(user)}
                         >
                           <FaTrash />
                         </button>

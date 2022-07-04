@@ -13,6 +13,10 @@ export enum DiagnosticsTypes {
   REGISTER_DIAGNOSTIC_REQUEST = "@general/REGISTER_DIAGNOSTIC_REQUEST",
   REGISTER_DIAGNOSTIC_SUCCESS = "@general/REGISTER_DIAGNOSTIC_SUCCESS",
   REGISTER_DIAGNOSTIC_FAILURE = "@general/REGISTER_DIAGNOSTIC_FAILURE",
+
+  DELETE_DIAGNOSTIC_REQUEST = "@general/DELETE_DIAGNOSTIC_REQUEST",
+  DELETE_DIAGNOSTIC_SUCCESS = "@general/DELETE_DIAGNOSTIC_SUCCESS",
+  DELETE_DIAGNOSTIC_FAILURE = "@general/DELETE_DIAGNOSTIC_FAILURE",
 }
 
 export interface GetDiagnostics {
@@ -45,10 +49,29 @@ export interface RegisterDiagnosticFailure {
   type: DiagnosticsTypes.REGISTER_DIAGNOSTIC_FAILURE;
 }
 
+export interface DeleteDiagnostic {
+  type: DiagnosticsTypes.DELETE_DIAGNOSTIC_REQUEST;
+  payload: {
+    diagnosticId: number;
+    questionnaireId: number;
+  };
+}
+
+export interface DeleteDiagnosticSuccess {
+  type: DiagnosticsTypes.DELETE_DIAGNOSTIC_SUCCESS;
+}
+
+export interface DeleteDiagnosticFailure {
+  type: DiagnosticsTypes.DELETE_DIAGNOSTIC_FAILURE;
+}
+
 export type DiagnosticsActionTypes =
   | RegisterDiagnostic
   | RegisterDiagnosticSuccess
   | RegisterDiagnosticFailure
+  | DeleteDiagnostic
+  | DeleteDiagnosticSuccess
+  | DeleteDiagnosticFailure
   | GetDiagnostics
   | GetDiagnosticsSuccess
   | GetDiagnosticsFailure;

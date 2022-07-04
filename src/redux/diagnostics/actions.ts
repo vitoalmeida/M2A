@@ -32,3 +32,21 @@ export function registerDiagnosticSuccess(): DiagnosticsActionTypes {
 export function registerDiagnosticFailure(): DiagnosticsActionTypes {
   return action(DiagnosticsTypes.REGISTER_DIAGNOSTIC_FAILURE);
 }
+
+export function deleteDiagnosticRequest(
+  diagnosticId: number,
+  questionnaireId: number
+): DiagnosticsActionTypes {
+  return action(DiagnosticsTypes.DELETE_DIAGNOSTIC_REQUEST, {
+    diagnosticId,
+    questionnaireId,
+  });
+}
+
+export function deleteDiagnosticSuccess(): DiagnosticsActionTypes {
+  return action(DiagnosticsTypes.DELETE_DIAGNOSTIC_SUCCESS);
+}
+
+export function deleteDiagnosticFailure(): DiagnosticsActionTypes {
+  return action(DiagnosticsTypes.DELETE_DIAGNOSTIC_FAILURE);
+}

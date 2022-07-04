@@ -19,6 +19,26 @@ export enum QuestionnaireTypes {
   REGISTER_QUESTIONNAIRE_REQUEST = "@general/REGISTER_QUESTIONNAIRE_REQUEST",
   REGISTER_QUESTIONNAIRE_SUCCESS = "@general/REGISTER_QUESTIONNAIRE_SUCCESS",
   REGISTER_QUESTIONNAIRE_FAILURE = "@general/REGISTER_QUESTIONNAIRE_FAILURE",
+
+  REGISTER_QUESTION_REQUEST = "@general/REGISTER_QUESTION_REQUEST",
+  REGISTER_QUESTION_SUCCESS = "@general/REGISTER_QUESTION_SUCCESS",
+  REGISTER_QUESTION_FAILURE = "@general/REGISTER_QUESTION_FAILURE",
+
+  DELETE_QUESTION_REQUEST = "@general/DELETE_QUESTION_REQUEST",
+  DELETE_QUESTION_SUCCESS = "@general/DELETE_QUESTION_SUCCESS",
+  DELETE_QUESTION_FAILURE = "@general/DELETE_QUESTION_FAILURE",
+
+  SET_EDIT_QUESTION_REQUEST = "@companies/SET_EDIT_QUESTION_REQUEST",
+  SET_EDIT_QUESTION_SUCCESS = "@companies/SET_EDIT_QUESTION_SUCCESS",
+  SET_EDIT_QUESTION_FAILURE = "@companies/SET_EDIT_QUESTION_FAILURE",
+
+  EDIT_QUESTION_REQUEST = "@companies/EDIT_QUESTION_REQUEST",
+  EDIT_QUESTION_SUCCESS = "@companies/EDIT_QUESTION_SUCCESS",
+  EDIT_QUESTION_FAILURE = "@companies/EDIT_QUESTION_FAILURE",
+
+  REMOVE_EDIT_QUESTION = "@general/REMOVE_EDIT_QUESTION",
+
+  CLEAR_DATA = "@general/CLEAR_DATA",
 }
 
 export interface GetQuestions {
@@ -84,6 +104,70 @@ export interface RegisterQuestionnaireSuccess {
 export interface RegisterQuestionnaireFailure {
   type: QuestionnaireTypes.REGISTER_QUESTIONNAIRE_FAILURE;
 }
+
+export interface RegisterQuestion {
+  type: QuestionnaireTypes.REGISTER_QUESTION_REQUEST;
+  payload: { data: Question };
+}
+
+export interface RegisterQuestionSuccess {
+  type: QuestionnaireTypes.REGISTER_QUESTION_SUCCESS;
+  payload: { data: Question };
+}
+
+export interface RegisterQuestionFailure {
+  type: QuestionnaireTypes.REGISTER_QUESTION_FAILURE;
+}
+
+export interface DeleteQuestionRequest {
+  type: QuestionnaireTypes.DELETE_QUESTION_REQUEST;
+  payload: { questionId: number; };
+
+}
+
+export interface DeleteQuestionSuccess {
+  type: QuestionnaireTypes.DELETE_QUESTION_SUCCESS;
+}
+
+export interface DeleteQuestionFailure {
+  type: QuestionnaireTypes.DELETE_QUESTION_FAILURE;
+}
+
+export interface SetEditQuestion {
+  type: QuestionnaireTypes.SET_EDIT_QUESTION_REQUEST;
+  payload: { data: Question };
+}
+
+export interface SetEditQuestionSuccess {
+  type: QuestionnaireTypes.SET_EDIT_QUESTION_SUCCESS;
+  payload: { data: Question };
+}
+
+export interface SetEditQuestionFailure {
+  type: QuestionnaireTypes.SET_EDIT_QUESTION_FAILURE;
+}
+
+export interface EditQuestion {
+  type: QuestionnaireTypes.EDIT_QUESTION_REQUEST;
+  payload: { data: Question };
+}
+
+export interface EditQuestionSuccess {
+  type: QuestionnaireTypes.EDIT_QUESTION_SUCCESS;
+}
+
+export interface EditQuestionFailure {
+  type: QuestionnaireTypes.EDIT_QUESTION_FAILURE;
+}
+
+export interface RemoveEditQuestion {
+  type: QuestionnaireTypes.REMOVE_EDIT_QUESTION;
+}
+
+export interface ClearData {
+  type: QuestionnaireTypes.CLEAR_DATA;
+}
+
 export type QuestionnaireActionTypes =
   | GetQuestions
   | GetQuestionsSuccess
@@ -96,18 +180,35 @@ export type QuestionnaireActionTypes =
   | GetQuestionnairesAnswersFailure
   | RegisterQuestionnaire
   | RegisterQuestionnaireSuccess
-  | RegisterQuestionnaireFailure;
+  | RegisterQuestionnaireFailure
+  | RegisterQuestion
+  | RegisterQuestionSuccess
+  | RegisterQuestionFailure
+  | DeleteQuestionRequest
+  | DeleteQuestionSuccess
+  | DeleteQuestionFailure
+  | SetEditQuestion
+  | SetEditQuestionSuccess
+  | SetEditQuestionFailure
+  | EditQuestion
+  | EditQuestionSuccess
+  | EditQuestionFailure
+  | RemoveEditQuestion
+  | ClearData;
 
 export interface QuestionnaireState {
   questions: Question[];
   questionnaireAnswers: QuestionnaireAnswer[];
   loading: boolean;
+  editQuestion: Question;
 }
 
 export interface Question {
   id?: number;
   texto_pergunta: string;
   fundamento: number;
+  objetivo: string;
+  conceito: string;
   formatadas: Answer[];
   respostas: number[];
 }

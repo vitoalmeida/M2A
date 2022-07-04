@@ -2,13 +2,19 @@
 import { all, call, put, takeLatest } from "redux-saga/effects";
 import { QuestionnaireActions } from ".";
 import {
+  DeleteQuestionRequest,
+  EditQuestion,
   GetQuestionnairesAnswers,
+  Question,
   QuestionnaireTypes,
+  RegisterQuestion,
   RegisterQuestionnaire,
+  SetEditQuestion,
 } from "./types";
 import * as api from "../../services/index";
 import * as helpers from "../../helpers/index";
 import * as selectors from "../selectors";
+import showToast from "../../helpers/showToast";
 
 function* getQuestions() {
   try {
@@ -101,6 +107,103 @@ function* registerQuestionnaire({
   }
 }
 
+function* registerQuestion({ payload: { data } }: RegisterQuestion) {
+  try {
+
+    yield registerQuestionSuccess();
+  } catch (err) {
+    yield put(QuestionnaireActions.registerQuestionFailure());
+
+    console.log(err);
+    showToast(helpers.formErrors.formatError(err), "error");
+  }
+}
+
+function* registerQuestionSuccess() {
+  showToast("Pergunta registrada com sucesso!", "success");
+
+  yield put(QuestionnaireActions.getQuestionsRequest())
+
+}
+
+function* setEditQuestion({ payload: { data } }: SetEditQuestion) {
+  try {
+    yield setEditQuestionSuccess(data);
+  } catch (err) {
+    yield setEditQuestionFailure(err)
+  }
+}
+
+function* setEditQuestionSuccess(data: Question) {
+  yield put(QuestionnaireActions.setEditQuestionSuccess(data));
+
+}
+
+function* setEditQuestionFailure(err: any) {
+  yield put(QuestionnaireActions.setEditQuestionFailure());
+  console.log(err)
+}
+
+function* deleteQuestion({ payload: { questionId } }: DeleteQuestionRequest) {
+  try {
+    yield call(api.questionnaire.deleteQuestion, String(questionId))
+
+    yield deleteQuestionSuccess();
+  } catch (err) {
+    yield deleteQuestionFailure(err)
+  }
+}
+
+function* deleteQuestionSuccess() {
+  yield put(QuestionnaireActions.deleteQuestionSuccess());
+  yield put(QuestionnaireActions.getQuestionsRequest());
+  showToast("Pergunta deletada com sucesso!", "success");
+
+}
+
+function* deleteQuestionFailure(err: any) {
+  yield put(QuestionnaireActions.deleteQuestionFailure());
+  showToast(helpers.formErrors.formatError(err), "error");
+  console.log(err)
+}
+
+function* editQuestion({ payload: { data } }: EditQuestion) {
+  try {
+
+    for (let i = 0; i < data.formatadas.length; i++) {
+      console.log('for ', data.formatadas[i])
+      yield call(api.questionnaire.editAnswer, String(data.formatadas[i].id), data.formatadas[i])
+    }
+    console.log('chegou')
+    delete data.formatadas
+
+    yield call(api.questionnaire.editQuestion, String(data.id), data)
+
+    console.log(data)
+    yield editQuestionSuccess();
+  } catch (err) {
+    yield editQuestionFailure(err)
+  }
+}
+
+function* editQuestionSuccess() {
+  yield put(QuestionnaireActions.editQuestionSuccess());
+  yield put(QuestionnaireActions.getQuestionsRequest());
+  showToast("Pergunta editada com sucesso!", "success");
+
+}
+
+function* editQuestionFailure(err: any) {
+  yield put(QuestionnaireActions.editQuestionFailure());
+  showToast(helpers.formErrors.formatError(err), "error");
+  console.log(err)
+}
+
+function* clearData() {
+  yield put(QuestionnaireActions.clearData())
+  showToast("Desconectado com sucesso!");
+}
+
 function* generalSaga() {
   yield all([
     takeLatest(QuestionnaireTypes.GET_QUESTIONS_REQUEST, getQuestions),
@@ -115,6 +218,26 @@ function* generalSaga() {
     takeLatest(
       QuestionnaireTypes.GET_QUESTIONNAIRES_REQUEST,
       getQuestionnaires
+    ),
+    takeLatest(
+      QuestionnaireTypes.REGISTER_QUESTION_REQUEST,
+      registerQuestion
+    ),
+    takeLatest(
+      QuestionnaireTypes.SET_EDIT_QUESTION_REQUEST,
+      setEditQuestion
+    ),
+    takeLatest(
+      QuestionnaireTypes.EDIT_QUESTION_REQUEST,
+      editQuestion
+    ),
+    takeLatest(
+      QuestionnaireTypes.DELETE_QUESTION_REQUEST,
+      deleteQuestion
+    ),
+    takeLatest(
+      QuestionnaireTypes.CLEAR_DATA,
+      clearData
     ),
   ]);
 }

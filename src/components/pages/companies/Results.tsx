@@ -18,7 +18,9 @@ const Results = () => {
 
   const [editOpen, setEditOpen] = useState(false);
   const [warningOpen, setWarningOpen] = useState(false);
+
   const [deleteCompanyId, setDeleteCompanyId] = useState<number>();
+  const [userId, setUserId] = useState<number>();
   const [companyType, setCompanyType] = useState<number>();
 
   function handleOpenEditModal(company?: Company) {
@@ -27,16 +29,29 @@ const Results = () => {
     setEditOpen(true);
   }
 
-  function handleOpenWarningModal(companyId: number, tipo: number) {
+  function handleOpenWarningModal(
+    companyId: number,
+    userId: number,
+    tipo: number
+  ) {
     setDeleteCompanyId(companyId);
+    setUserId(userId);
     setCompanyType(tipo);
     setWarningOpen(true);
   }
 
   function handleDeleteCompany() {
     dispatch(
-      CompaniesActions.deleteCompanyRequest(deleteCompanyId, companyType)
+      CompaniesActions.deleteCompanyRequest(
+        deleteCompanyId,
+        userId,
+        companyType
+      )
     );
+  }
+
+  function handleEditCompany() {
+    dispatch(CompaniesActions.editCompanyRequest(companies.editCompany));
   }
 
   return (
@@ -47,7 +62,10 @@ const Results = () => {
         onCloseModal={() => setEditOpen(false)}
       >
         <div className="py-12 px-10 ">
-          <EditForm closeForm={() => setEditOpen(false)} />
+          <EditForm
+            onSubmit={handleEditCompany}
+            closeForm={() => setEditOpen(false)}
+          />
         </div>
       </Modal>
 
@@ -117,7 +135,7 @@ const Results = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
                   {companiesData &&
-                    companiesData.map((company) => {
+                    companiesData?.map((company) => {
                       if (Number(company.cnpj) > 1)
                         return (
                           <tr key={company.id}>
@@ -125,12 +143,12 @@ const Results = () => {
                               {company.razao_social}
                             </td>
                             <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                              {
-                                companies.masterCompanies.find(
-                                  (company) =>
-                                    company.id === companiesData[1]?.master
-                                )?.label
-                              }
+                              {company.tipo === 4
+                                ? "Empresa Master"
+                                : companies?.masterCompanies?.find(
+                                    (company) =>
+                                      company.id === companiesData[1]?.master
+                                  )?.label || "Nenhum vinculo"}
                             </td>
                             <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                               {
@@ -153,6 +171,7 @@ const Results = () => {
                                 onClick={() =>
                                   handleOpenWarningModal(
                                     company.id,
+                                    company.usuario,
                                     company.tipo
                                   )
                                 }

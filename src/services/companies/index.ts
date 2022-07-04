@@ -12,6 +12,14 @@ function getCompanies() {
   return client("empresa/").get();
 }
 
+function editCompany(companyId: string, data: any) {
+  return client(`empresa/${companyId}/`).data(data).put();
+}
+
+function editMasterCompany(companyId: string, data: any) {
+  return client(`empresa_master/${companyId}/`).data(data).put();
+}
+
 function getMasterCompanies() {
   return client("empresa_master/").get();
 }
@@ -21,14 +29,16 @@ function registerCompany(data: any) {
 }
 
 function deleteCompany(companyId: string) {
-  return client("empresa").remoteMethod(companyId).delete();
+  return client(`empresa/${companyId}/`).delete();
 }
 
 function deleteMasterCompany(companyId: string) {
-  return client("empresa_master").remoteMethod(companyId).delete();
+  return client(`empresa_master/${companyId}/`).delete();
 }
 
 export default {
+  editCompany,
+  editMasterCompany,
   getCompanies,
   getMasterCompanies,
   getCompany,

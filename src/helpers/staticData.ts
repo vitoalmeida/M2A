@@ -15,4 +15,14 @@ const sexo = [
   { label: "Feminino", id: "feminino" },
 ];
 
-export { formacao, sexo };
+const tipo = [
+  { label: "Administrador", id: 1 },
+  { label: "Consultor", id: 2 },
+];
+
+const status = [
+  { label: "Ativo", id: "true" },
+  { label: "Inativo", id: "false" },
+];
+
+export { formacao, sexo, tipo, status };

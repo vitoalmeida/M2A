@@ -1,5 +1,5 @@
 import { Formik, Field, Form } from "formik";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AccountActions } from "../../../../redux/account";
 import { GeneralActions } from "../../../../redux/general";
@@ -8,105 +8,214 @@ import Button from "../../../Button";
 import { InputFormik, SelectFormik } from "../../../index";
 import formSchema from "./formSchema";
 import * as helpers from "../../../../helpers/index";
+import { status, tipo } from "../../../../helpers/staticData";
+import { Profile } from "../../../../redux/account/types";
+import PasswordForm from "../PasswordForm";
 
 const RegisterForm = () => {
   const dispatch = useDispatch();
   const { general, account } = useSelector((state) => state);
 
-  function handleSubmit(values) {
-    console.log(values);
-    // delete values.confirmPassword;
-    // dispatch(
-    //   AccountActions.registerAccountRequest({
-    //     ...values,
-    //     uf: general.uf.find((uf) => uf.value === values.uf).id,
-    //     username: values.email,
-    //   })
-    // );
+  const [empty, setEmpty] = useState(account.editAccount ? false : true);
+  const [passwordScreen, setPasswordScreen] = useState(false);
+
+  const initialValues: any = {
+    nome: account?.editAccount?.nome || "",
+    sobrenome: account?.editAccount?.sobrenome || "",
+    cpf: account?.editAccount?.cpf || "",
+    telefone: account?.editAccount?.telefone || "",
+    celular: account?.editAccount?.celular || "",
+    formacao: account?.editAccount?.formacao || "",
+    tipo: account?.editAccount?.tipo || "",
+    uf: account?.editAccount?.uf || "",
+    email: account?.editAccount?.email || "",
+    ativo: String(account?.editAccount?.ativo) || "",
+  };
+
+  function handleSubmit(values: Profile) {
+    if (empty) {
+      dispatch(AccountActions.setEditAccountRequest(values));
+      setPasswordScreen(true);
+    } else {
+      dispatch(
+        AccountActions.editAccountRequest({
+          ...values,
+          id: account?.editAccount?.id,
+          usuario: account?.editAccount?.usuario,
+          ativo: String(values.ativo) === "true",
+        })
+      );
+    }
+  }
+
+  function createAccount(password: string) {
+    dispatch(
+      AccountActions.registerAccountRequest(
+        {
+          email: account?.editAccount?.email,
+          username: account?.editAccount?.email,
+          password,
+          tipo: account?.editAccount?.tipo,
+          ativo: true,
+          user_inf: {
+            ...account.editAccount,
+          },
+        },
+        false
+      )
+    );
+    setPasswordScreen(false);
   }
 
   return (
-    <Formik onSubmit={(values) => handleSubmit({ ...values })} {...formSchema}>
-      <Form>
-        <div className="flex">
-          <div className="md:col-span-2">
-            <div className="grid grid-cols-12 gap-x-6">
-              <div className="flex flex-col col-span-12 sm:col-span-6">
-                <InputFormik name="nome" placeholder="João" label="Nome" />
-              </div>
-              <div className="flex flex-col col-span-12 sm:col-span-6">
-                <InputFormik
-                  name="sobrenome"
-                  placeholder="Silva"
-                  label="Sobrenome"
-                />
-              </div>
+    <>
+      <h3 className="text-xl mb-1 -mt-2 leading-6 font-medium text-gray-900">
+        Dados do usuário
+      </h3>
+      <span className="flex mb-5 h-px w-full bg-gray-200" />
+      {!passwordScreen ? (
+        <Formik
+          initialValues={initialValues}
+          onSubmit={(values) => handleSubmit({ ...values })}
+          {...formSchema}
+        >
+          {({ values }) => (
+            <Form autoComplete="off">
+              <div className="flex">
+                <div className="flexmd:col-span-2">
+                  <div className="grid grid-cols-12 gap-x-6">
+                    {empty && (
+                      <div className="col-span-12 sm:col-span-12">
+                        <SelectFormik
+                          required={empty}
+                          disabled={!empty}
+                          name="tipo"
+                          label="Tipo de Perfil"
+                          data={tipo}
+                        />
+                      </div>
+                    )}
+                    {values.tipo && (
+                      <>
+                        <div className="flex flex-col col-span-12 sm:col-span-6">
+                          <InputFormik
+                            required
+                            name="nome"
+                            placeholder="João"
+                            label="Nome"
+                          />
+                        </div>
+                        <div className="flex flex-col col-span-12 sm:col-span-6">
+                          <InputFormik
+                            required
+                            name="sobrenome"
+                            placeholder="Silva"
+                            label="Sobrenome"
+                          />
+                        </div>
 
-              <div className="flex flex-col col-span-12 sm:col-span-7">
-                <InputFormik
-                  name="cpf"
-                  placeholder="000.000.000-00"
-                  label="CPF"
-                />
-              </div>
-              <div className="flex flex-col col-span-12 sm:col-span-5">
-                <InputFormik
-                  name="telefone"
-                  placeholder="(00) 0 0000-0000"
-                  label="Telefone"
-                />
-              </div>
+                        <div className="flex flex-col col-span-12 sm:col-span-12">
+                          <InputFormik
+                            required
+                            name="cpf"
+                            placeholder="000.000.000-00"
+                            label="CPF"
+                          />
+                        </div>
+                        {String(values.tipo) === "2" && (
+                          <>
+                            <div className="flex flex-col col-span-12 sm:col-span-6">
+                              <InputFormik
+                                required
+                                name="telefone"
+                                placeholder="(00) 0 0000-0000"
+                                label="Telefone"
+                              />
+                            </div>
+                            <div className="flex flex-col col-span-12 sm:col-span-6">
+                              <InputFormik
+                                required
+                                name="celular"
+                                placeholder="(00) 0 0000-0000"
+                                label="Celular"
+                              />
+                            </div>
+                          </>
+                        )}
 
-              <div className="flex flex-col col-span-12 sm:col-span-12">
-                <InputFormik
-                  name="email"
-                  placeholder="exemplo@email.com"
-                  label="Email"
-                />
-              </div>
+                        <div className="flex flex-col col-span-12 sm:col-span-12">
+                          <InputFormik
+                            autoComplete={false}
+                            disabled={!empty}
+                            required={empty}
+                            name="email"
+                            placeholder="exemplo@email.com"
+                            label="Email"
+                          />
+                        </div>
 
-              <div className="col-span-12 sm:col-span-5">
+                        {String(values.tipo) === "2" && (
+                          <>
+                            <div className="col-span-12 sm:col-span-6">
+                              <SelectFormik
+                                required
+                                name="formacao"
+                                placeholder="Superior"
+                                label="Formação"
+                                data={helpers.staticData.formacao}
+                              />
+                            </div>
+                            <div className="col-span-12 sm:col-span-6">
+                              <SelectFormik
+                                required
+                                name="uf"
+                                placeholder="DF"
+                                label="Estado"
+                                data={general.uf}
+                              />
+                            </div>
+                          </>
+                        )}
+
+                        {!empty && (
+                          <div className="col-span-12 sm:col-span-12">
+                            <SelectFormik
+                              required={empty}
+                              disabled={!empty}
+                              name="tipo"
+                              label="Tipo de Perfil"
+                              data={tipo}
+                            />
+                          </div>
+                        )}
+                      </>
+                    )}
+
+                    {/* <div className="col-span-12 sm:col-span-12">
                 <SelectFormik
-                  name="uf"
-                  placeholder="DF"
-                  label="Estado"
-                  data={general.uf}
+                required
+                name="ativo"
+                label="Status"
+                data={status}
                 />
-              </div>
-              <div className="col-span-12 sm:col-span-7">
-                <SelectFormik
-                  name="formacao"
-                  placeholder="Superior"
-                  label="Formação"
-                  data={helpers.staticData.formacao}
-                />
+              </div> */}
+                  </div>
+                </div>
               </div>
 
-              <div className="flex flex-col col-span-12 sm:col-span-6">
-                <InputFormik
-                  name="password"
-                  type="password"
-                  placeholder="••••••"
-                  label="Senha"
+              <div className="mt-5">
+                <Button
+                  title={empty ? "Criar" : "Editar"}
+                  loading={account.loading}
                 />
               </div>
-              <div className="flex flex-col col-span-12 sm:col-span-6">
-                <InputFormik
-                  name="confirmPassword"
-                  type="password"
-                  placeholder="••••••"
-                  label="Confimar senha"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-5">
-          <Button title="Registrar" loading={account.loading} />
-        </div>
-      </Form>
-    </Formik>
+            </Form>
+          )}
+        </Formik>
+      ) : (
+        <PasswordForm onSubmit={(password) => createAccount(password)} />
+      )}
+    </>
   );
 };
 

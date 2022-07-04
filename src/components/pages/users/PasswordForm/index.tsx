@@ -8,28 +8,14 @@ import InputFormik from "../../../InputFormik";
 import formSchema from "./formSchema";
 
 interface Props {
-  onSubmit: () => any;
+  onSubmit: (password: string) => any;
 }
 
 const PasswordForm: React.FC<Props> = ({ onSubmit }) => {
-  const dispatch = useDispatch();
-  const { account, companies } = useSelector((state) => state);
+  const { account } = useSelector((state) => state);
 
   function handleSubmit(values) {
-    dispatch(
-      AccountActions.registerAccountRequest(
-        {
-          password: values.password,
-          email: companies.editCompany?.email,
-          username: companies.editCompany?.email,
-          user_inf: companies.editCompany,
-          tipo: companies.editCompany.bool_master ? 4 : 3,
-          ativo: true,
-        },
-        true
-      )
-    );
-    // onSubmit();
+    onSubmit(values.password);
   }
 
   return (
@@ -39,15 +25,6 @@ const PasswordForm: React.FC<Props> = ({ onSubmit }) => {
         {...formSchema}
       >
         <Form>
-          <div className="flex flex-col col-span-12 sm:col-span-6">
-            <InputFormik
-              disabled
-              name="email"
-              type="email"
-              placeholder={companies.editCompany?.email}
-              label="Email"
-            />
-          </div>
           <div className="flex flex-col col-span-12 sm:col-span-6">
             <InputFormik
               required

@@ -26,6 +26,7 @@ export interface GetStaticValuesGeneralSuccess {
     formatedIndustryTypes: GenericData[];
     formatedSectors: GenericData[];
     formatedSegments: GenericData[];
+    formatedFundamentals: GenericData[];
   };
 }
 
@@ -67,6 +68,7 @@ export interface GeneralState {
   industryTypes: GenericData[] | null;
   collectionValues: GenericData[] | null;
   sectors: GenericData[] | null;
+  fundamentals: GenericData[] | null;
 }
 
 export interface Address {

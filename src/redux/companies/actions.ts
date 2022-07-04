@@ -56,9 +56,10 @@ export function registerCompanyFailure(): CompaniesActionTypes {
 
 export function deleteCompanyRequest(
   companyId: number,
+  userId: number,
   type: number
 ): CompaniesActionTypes {
-  return action(CompaniesTypes.DELETE_COMPANY_REQUEST, { companyId, type });
+  return action(CompaniesTypes.DELETE_COMPANY_REQUEST, { companyId, userId, type });
 }
 
 export function deleteCompanySuccess(): CompaniesActionTypes {
@@ -70,7 +71,23 @@ export function deleteCompanyFailure(): CompaniesActionTypes {
 }
 
 export function setEditCompany(data: Company): CompaniesActionTypes {
-  return action(CompaniesTypes.SET_EDIT_COMPANY, { data });
+  return action(CompaniesTypes.SET_EDIT_COMPANY_REQUEST, { data });
+}
+export function setEditCompanySuccess(data: Company): CompaniesActionTypes {
+  return action(CompaniesTypes.SET_EDIT_COMPANY_SUCCESS, { data });
+}
+export function setEditCompanyFailure(): CompaniesActionTypes {
+  return action(CompaniesTypes.SET_EDIT_COMPANY_FAILURE);
+}
+
+export function editCompanyRequest(data: Company): CompaniesActionTypes {
+  return action(CompaniesTypes.EDIT_COMPANY_REQUEST, { data });
+}
+export function editCompanySuccess(): CompaniesActionTypes {
+  return action(CompaniesTypes.EDIT_COMPANY_SUCCESS);
+}
+export function editCompanyFailure(): CompaniesActionTypes {
+  return action(CompaniesTypes.EDIT_COMPANY_FAILURE);
 }
 
 export function removeEditCompany(): CompaniesActionTypes {

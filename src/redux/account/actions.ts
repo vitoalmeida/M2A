@@ -36,9 +36,10 @@ export function getAccountsFailure(): AccountActionTypes {
 }
 
 export function registerAccountRequest(
-  data: RegisterAccountType
+  data: RegisterAccountType,
+  self: boolean
 ): AccountActionTypes {
-  return action(AccountTypes.REGISTER_ACCOUNT_REQUEST, { data });
+  return action(AccountTypes.REGISTER_ACCOUNT_REQUEST, { data, self });
 }
 
 export function registerAccountSuccess(data: Account): AccountActionTypes {
@@ -47,6 +48,48 @@ export function registerAccountSuccess(data: Account): AccountActionTypes {
 
 export function registerAccountFailure(): AccountActionTypes {
   return action(AccountTypes.REGISTER_ACCOUNT_FAILURE);
+}
+
+export function deleteAccountRequest(
+  profileId: number, userId: number, type: number
+): AccountActionTypes {
+  return action(AccountTypes.DELETE_ACCOUNT_REQUEST, { profileId, userId, type });
+}
+
+export function deleteAccountSuccess(): AccountActionTypes {
+  return action(AccountTypes.DELETE_ACCOUNT_SUCCESS);
+}
+
+export function deleteAccountFailure(): AccountActionTypes {
+  return action(AccountTypes.DELETE_ACCOUNT_FAILURE);
+}
+
+export function setEditAccountRequest(data: Profile): AccountActionTypes {
+  return action(AccountTypes.SET_EDIT_ACCOUNT_REQUEST, { data });
+}
+
+export function setEditAccountSuccess(data: Profile): AccountActionTypes {
+  return action(AccountTypes.SET_EDIT_ACCOUNT_SUCCESS, { data });
+}
+
+export function setEditAccountFailure(): AccountActionTypes {
+  return action(AccountTypes.SET_EDIT_ACCOUNT_FAILURE);
+}
+
+export function editAccountRequest(data: Profile): AccountActionTypes {
+  return action(AccountTypes.EDIT_ACCOUNT_REQUEST, { data });
+}
+
+export function editAccountSuccess(): AccountActionTypes {
+  return action(AccountTypes.EDIT_ACCOUNT_SUCCESS);
+}
+
+export function editAccountFailure(): AccountActionTypes {
+  return action(AccountTypes.EDIT_ACCOUNT_FAILURE);
+}
+
+export function removeEditAccountRequest(): AccountActionTypes {
+  return action(AccountTypes.REMOVE_EDIT_ACCOUNT);
 }
 
 export function clearData(): AccountActionTypes {

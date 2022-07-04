@@ -15,17 +15,19 @@ import { BsCircleFill } from "react-icons/bs";
 import { Diagnostic } from "../../../redux/diagnostics/types";
 import DiagnosticForm from "./DiagnosticForm";
 import { QuestionnaireActions } from "../../../redux/questionnaire";
+import { DiagnosticsActions } from "../../../redux/diagnostics";
 
 const Results = () => {
   const dispatch = useDispatch();
-  const { companies, diagnostics } = useSelector((state) => state);
-
+  const { diagnostics } = useSelector((state) => state);
+  console.log(diagnostics.diagnostics);
   const [selected, setSelected] = useState<Diagnostic>();
 
   const [viewOpen, setViewOpen] = useState(false);
   const [warningOpen, setWarningOpen] = useState(false);
-  const [deleteCompanyId, setDeleteCompanyId] = useState<number>();
-  const [companyType, setCompanyType] = useState<number>();
+
+  const [diagnosticId, setDiagnosticId] = useState<number>();
+  const [questionnaireId, setQuestionnaireId] = useState<number>();
 
   function handleOpenViewModal(diagnostic?: Diagnostic) {
     dispatch(
@@ -36,13 +38,18 @@ const Results = () => {
     setViewOpen(true);
   }
 
-  function handleOpenWarningModal(companyId: number) {
+  function handleOpenWarningModal(
+    diagnosticId: number,
+    questionnaireId: number
+  ) {
+    setDiagnosticId(diagnosticId);
+    setQuestionnaireId(questionnaireId);
     setWarningOpen(true);
   }
 
   function handleDeleteCompany() {
     dispatch(
-      CompaniesActions.deleteCompanyRequest(deleteCompanyId, companyType)
+      DiagnosticsActions.deleteDiagnosticRequest(diagnosticId, questionnaireId)
     );
   }
 
@@ -93,46 +100,73 @@ const Results = () => {
                 </div> */}
               </div>
               <table className="min-w-full divide-y divide-gray-300">
-                <thead className="bg-gray-50 w-full">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="py-3.5 px-4 text-center text-sm max-w-[3.5rem] xl:max-w-[3rem] font-semibold text-gray-900 overflow-hidden"
+                {diagnostics.diagnostics.length ? (
+                  <thead className="bg-gray-50 w-full">
+                    <tr>
+                      <th
+                        scope="col"
+                        className="py-3.5 px-4 text-center text-sm max-w-[3.5rem] xl:max-w-[3rem] font-semibold text-gray-900 overflow-hidden"
+                      >
+                        Tempo
+                      </th>
+                      <th
+                        scope="col"
+                        className="py-3.5 px-4 text-center text-sm max-w-[7rem] sm:max-w-[6.5rem] xl:max-w-[5.5rem] font-semibold text-gray-900 overflow-hidden"
+                      >
+                        Diagnosticado
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm min-w-[12rem] font-semibold text-gray-900 overflow-hidden"
+                      >
+                        Empresa
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm min-w-[10rem] font-semibold text-gray-900 overflow-hidden"
+                      >
+                        Consultor
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-3 text-center py-3.5 w-[4rem] text-sm font-semibold text-gray-900"
+                      >
+                        Visualizar
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-3 text-center py-3.5 text-sm w-[3rem] font-semibold text-gray-900 lg:pr-6"
+                      >
+                        Excluir
+                      </th>
+                    </tr>
+                  </thead>
+                ) : (
+                  <div className="flex flex-col justify-center items-center w-full h-[24rem] text-center">
+                    <svg
+                      className="mx-auto h-12 w-12 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      aria-hidden="true"
                     >
-                      Tempo
-                    </th>
-                    <th
-                      scope="col"
-                      className="py-3.5 px-4 text-center text-sm max-w-[7rem] sm:max-w-[6.5rem] xl:max-w-[5.5rem] font-semibold text-gray-900 overflow-hidden"
-                    >
-                      Diagnosticado
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm min-w-[12rem] font-semibold text-gray-900 overflow-hidden"
-                    >
-                      Empresa
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm min-w-[10rem] font-semibold text-gray-900 overflow-hidden"
-                    >
-                      Consultor
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-3 text-center py-3.5 w-[4rem] text-sm font-semibold text-gray-900"
-                    >
-                      Visualizar
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-3 text-center py-3.5 text-sm w-[3rem] font-semibold text-gray-900 lg:pr-6"
-                    >
-                      Excluir
-                    </th>
-                  </tr>
-                </thead>
+                      <path
+                        vectorEffect="non-scaling-stroke"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                      />
+                    </svg>
+                    <h3 className="mt-2 font-medium text-gray-600">
+                      Nenhum diagnóstico ainda
+                    </h3>
+                    <p className="mt-1 text-sm text-gray-400 mb-10">
+                      Espere uma empresa responder um questionário,
+                      <br /> para gerar um diagnóstico.
+                    </p>
+                  </div>
+                )}
                 <tbody className="divide-y divide-gray-200 bg-white">
                   {diagnostics.diagnostics.map((diagnostic) => (
                     <tr key={diagnostic.id}>
@@ -180,7 +214,14 @@ const Results = () => {
                       <td className="relative py-4 text-right text-sm font-medium lg:pr-3">
                         <button
                           className="flex mx-auto text-[#d14f4f]"
-                          onClick={() => handleOpenWarningModal(diagnostic.id)}
+                          onClick={() =>
+                            handleOpenWarningModal(
+                              diagnostic.id,
+                              (
+                                diagnostic?.empresa_questionario as Questionnaire
+                              )?.id
+                            )
+                          }
                         >
                           <FaTrash />
                         </button>

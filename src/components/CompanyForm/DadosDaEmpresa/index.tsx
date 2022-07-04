@@ -162,11 +162,13 @@ const DadosDaEmpresa = ({ changeTab }: Props) => {
                 {/* <div className="flex mx-auto w-full flex-col col-span-12 sm:col-span-5">
                 <InputFormik required name="projeto" label="Projeto" />
               </div> */}
-                <ToggleFormik
-                  disabled={values.master ? true : false}
-                  name="bool_master"
-                  label="Empresa master"
-                />
+                {!companies?.editCompany && (
+                  <ToggleFormik
+                    disabled={values.master ? true : false}
+                    name="bool_master"
+                    label="Empresa master"
+                  />
+                )}
               </div>
             </div>
           </div>

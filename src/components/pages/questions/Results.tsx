@@ -6,38 +6,37 @@ import Modal from "../../Modal";
 import EditForm from "../../CompanyForm";
 import { IoMdAdd } from "react-icons/io";
 import { Company } from "../../../redux/companies/types";
-import { CompaniesActions } from "../../../redux/companies";
 import { useDispatch } from "react-redux";
 import WaningModal from "../../WaningModal";
 import QuestionsEditForm from "./QuestionsEditForm";
 import { Question } from "../../../redux/questionnaire/types";
+import { QuestionnaireActions } from "../../../redux/questionnaire";
 
 const Results = () => {
   const dispatch = useDispatch();
 
-  //ALTERAR PARA PERGUNTA
   const { questionnaire } = useSelector((state) => state);
 
   const [editOpen, setEditOpen] = useState(false);
   const [warningOpen, setWarningOpen] = useState(false);
+
   const [deleteQuestionId, setDeleteQuestionId] = useState<number>();
 
-  //ALTERAR PARA PERGUNTA
   function handleOpenEditModal(question?: Question) {
-    // if (question) dispatch(CompaniesActions.setEditCompany(question));
-    // else dispatch(CompaniesActions.removeEditCompany());
+    if (question)
+      dispatch(QuestionnaireActions.setEditQuestionRequest(question));
+    else dispatch(QuestionnaireActions.removeEditQuestion());
+
     setEditOpen(true);
   }
 
-  //ALTERAR PARA PERGUNTA
-  function handleOpenWarningModal(companyId: number) {
-    setDeleteQuestionId(companyId);
+  function handleOpenWarningModal(questionId: number) {
+    setDeleteQuestionId(questionId);
     setWarningOpen(true);
   }
 
-  //ALTERAR PARA PERGUNTA
   function handleDeleteQuestion() {
-    // dispatch(CompaniesActions.deleteCompanyRequest(deleteCompanyId));
+    dispatch(QuestionnaireActions.deleteQuestionRequest(deleteQuestionId));
   }
 
   return (
@@ -47,7 +46,7 @@ const Results = () => {
         closeButton
         onCloseModal={() => setEditOpen(false)}
       >
-        <QuestionsEditForm />
+        <QuestionsEditForm onSubmit={() => setEditOpen(false)} />
       </Modal>
 
       <Modal
@@ -72,14 +71,14 @@ const Results = () => {
                 <h2 className="ml-0 text-2xl font-medium">
                   Lista de Perguntas
                 </h2>
-                <div className="mr-0">
+                {/* <div className="mr-0">
                   <Button
                     onClick={() => handleOpenEditModal()}
                     title="Cadastrar pergunta"
                     color="#32c841"
                     icon={<IoMdAdd />}
                   />
-                </div>
+                </div> */}
               </div>
               <table className="min-w-full divide-y divide-gray-300">
                 <thead className="bg-gray-50 w-full">
@@ -91,7 +90,6 @@ const Results = () => {
                       Contéudo da Pergunta
                     </th>
                     <th
-                      // onClick={() => handleOpenEditModal(questionnaire.questions[0])}
                       scope="col"
                       className="flex pr-5 justify-center py-3.5 min-w-[2rem] text-sm font-semibold text-gray-900"
                     >
@@ -106,7 +104,6 @@ const Results = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
-                  {/* ALTERAR PARA DADOS DA PERGUNTA */}
                   {questionnaire?.questions?.map((question) => (
                     <tr key={question.id}>
                       <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">

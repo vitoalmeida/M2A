@@ -18,6 +18,8 @@ interface Props {
   required?: boolean;
   disabled?: boolean;
   pattern?: string;
+  autoComplete?: boolean;
+  resize?: boolean;
 }
 
 const InputFormik: React.FC<Props> = ({
@@ -34,6 +36,8 @@ const InputFormik: React.FC<Props> = ({
   type,
   pattern,
   textArea,
+  autoComplete,
+  resize,
 }) => {
   const { values, errors, touched, setFieldValue, setErrors } =
     useFormikContext<any>();
@@ -65,7 +69,7 @@ const InputFormik: React.FC<Props> = ({
       )}
       <div className={`${error ? "" : "pb-6"}`}>
         <Field
-          className={`${textArea && "h-24"} ${
+          className={`${textArea && "h-24"} ${!resize && "resize-none"}  ${
             error ? "border-red-300" : "border-gray-300"
           } appearance-none block w-full px-3 py-2 border text-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
           name={name}
@@ -77,6 +81,7 @@ const InputFormik: React.FC<Props> = ({
             delete newErrors[name];
             setErrors(newErrors);
           }}
+          autoComplete={autoComplete}
           type={type === "currency" ? "number" : type}
           disabled={disabled}
           onBlur={() => setFocus(false)}

@@ -20,7 +20,7 @@ interface Props {
 
 const InformacoesComplementares = ({ onSubmit }: Props) => {
   const dispatch = useDispatch();
-  const { general, account, companies } = useSelector((state) => state);
+  const { companies } = useSelector((state) => state);
 
   const initialValues: Company = {
     ds_negocio: companies?.editCompany?.ds_negocio,
@@ -36,21 +36,18 @@ const InformacoesComplementares = ({ onSubmit }: Props) => {
 
   function handleSubmit(values) {
     const verifiedCompany = companies?.editCompany
-      ? helpers.companies.verifyCompanyToEdit(
-          {
-            ...companies?.editCompany,
-            missao: values.missao,
-            visao: values.visao,
-            valores: values.valores,
-            ds_negocio: values.ds_negocio,
-            resp_nome: values.resp_sobrenome,
-            resp_sobrenome: values.resp_sobrenome,
-            resp_email: values.resp_email,
-            resp_sexo: values.resp_sexo,
-            resp_formacao_academica: values.resp_formacao_academica,
-          },
-          companies?.editCompany
-        )
+      ? helpers.companies.verifyCompanyToEdit(companies?.editCompany, {
+          ...companies?.editCompany,
+          missao: values.missao,
+          visao: values.visao,
+          valores: values.valores,
+          ds_negocio: values.ds_negocio,
+          resp_nome: values.resp_nome,
+          resp_sobrenome: values.resp_sobrenome,
+          resp_email: values.resp_email,
+          resp_sexo: values.resp_sexo,
+          resp_formacao_academica: values.resp_formacao_academica,
+        })
       : values;
 
     dispatch(CompaniesActions.setEditCompany(verifiedCompany));

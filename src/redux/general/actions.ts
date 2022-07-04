@@ -11,7 +11,8 @@ export function getStaticValuesSuccess(
   formatedCollections: GenericData[],
   formatedIndustryTypes: GenericData[],
   formatedSectors: GenericData[],
-  formatedSegments: GenericData[]
+  formatedSegments: GenericData[],
+  formatedFundamentals: GenericData[]
 ): GeneralActionTypes {
   return action(GeneralTypes.GET_STATIC_VALUES_SUCCESS, {
     formatedUf,
@@ -19,6 +20,7 @@ export function getStaticValuesSuccess(
     formatedIndustryTypes,
     formatedSectors,
     formatedSegments,
+    formatedFundamentals,
   });
 }
 
