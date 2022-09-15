@@ -9,7 +9,7 @@ function registerDiagnostic(data: any) {
 }
 
 function deleteDiagnostic(diagnosticId: string) {
-  return client(`diagnostico/${diagnosticId}`).delete();
+  return client(`diagnostico/${diagnosticId}/`).delete();
 }
 
 export default {

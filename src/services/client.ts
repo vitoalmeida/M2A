@@ -48,7 +48,7 @@ class Client {
   }
 
   id(id: string) {
-    this._id = id;
+    this._id = `${id}/`;
     return this;
   }
 

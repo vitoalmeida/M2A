@@ -1,11 +1,11 @@
 import client from "../client";
 
 function getCompany(companyId: string) {
-  return client(`empresa/${companyId}`).get();
+  return client(`empresa/${companyId}/`).get();
 }
 
 function getMasterCompany(companyId: string) {
-  return client(`empresa_master/${companyId}`).get();
+  return client(`empresa_master/${companyId}/`).get();
 }
 
 function getCompanies() {

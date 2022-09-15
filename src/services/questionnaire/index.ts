@@ -27,11 +27,11 @@ function registerQuestionnaireAnswer(data: any) {
 }
 
 function deleteQuestionnaire(questionnaireId: string) {
-  return client(`empresa_questionario/${questionnaireId}`).delete();
+  return client(`empresa_questionario/${questionnaireId}/`).delete();
 }
 
 function deleteQuestion(questionId: string) {
-  return client(`pergunta/${questionId}`).delete();
+  return client(`pergunta/${questionId}/`).delete();
 }
 
 function editQuestion(questionId: string, data: any) {
@@ -41,7 +41,6 @@ function editQuestion(questionId: string, data: any) {
 function editAnswer(answerId: string, data: any) {
   return client(`resposta/${answerId}/`).data(data).put();
 }
-
 
 export default {
   editQuestion,

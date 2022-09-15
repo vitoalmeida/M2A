@@ -25,7 +25,7 @@ function getFundamentals() {
 }
 
 function getAddress(addressId: string) {
-  return client(`endereco/${addressId}`).get();
+  return client(`endereco/${addressId}/`).get();
 }
 
 function editAddress(addressId: string, data: any) {

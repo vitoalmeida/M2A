@@ -48,7 +48,7 @@ function deleteColsultant(profileId: string) {
 }
 
 function getConsultant(consultantId: string) {
-  return client(`consultor/${consultantId}`).get();
+  return client(`consultor/${consultantId}/`).get();
 }
 
 export default {
