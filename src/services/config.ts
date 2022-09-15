@@ -1,5 +1,5 @@
 import axios from "axios";
 
 export default axios.create({
-  baseURL: "http://m2aconsultoria.pythonanywhere.com",
+  baseURL: "https://m2aconsultoria.pythonanywhere.com",
 });
