@@ -1,13 +1,5 @@
 import * as Yup from "yup";
 
-const initialValues: any = {
-  pesquisa: "",
-  uf: "",
-  empresa_vinculada: "",
-  arrecadacao: "",
-  setor: "",
-};
-
 const validationSchema = Yup.object().shape({
   pesquisa: Yup.string(),
   uf: Yup.string(),
@@ -44,7 +36,6 @@ const validationSchema = Yup.object().shape({
 
 export default {
   // validate,
-  initialValues,
   validationSchema,
   validateOnBlur: false,
   validateOnChange: false,

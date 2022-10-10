@@ -171,7 +171,7 @@ const Results = () => {
                       {companies.companies?.data?.map((company) => {
                         if (Number(company.cnpj) > 1)
                           return (
-                            <tr key={company.id}>
+                            <tr key={company.cnpj}>
                               <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                                 {company.razao_social}
                               </td>
