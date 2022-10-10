@@ -1,15 +1,19 @@
 import { action } from "typesafe-actions";
+import { Filter } from "../../types";
+import { Count } from "../companies/types";
 import { Diagnostic, DiagnosticsActionTypes, DiagnosticsTypes } from "./types";
 
-export function getDiagnosticsRequest(): DiagnosticsActionTypes {
-  return action(DiagnosticsTypes.GET_DIAGNOSTICS_REQUEST);
+export function getDiagnosticsRequest(filter: Filter): DiagnosticsActionTypes {
+  return action(DiagnosticsTypes.GET_DIAGNOSTICS_REQUEST, { filter });
 }
 
 export function getDiagnosticsSuccess(
-  data: Diagnostic[]
+  data: Diagnostic[],
+  count: Count
 ): DiagnosticsActionTypes {
   return action(DiagnosticsTypes.GET_DIAGNOSTICS_SUCCESS, {
     data,
+    count,
   });
 }
 

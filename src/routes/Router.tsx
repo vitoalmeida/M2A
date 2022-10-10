@@ -28,7 +28,12 @@ const Router = () => {
   }
 
   useEffect(() => {
-    dispatch(CompaniesActions.getMasterCompaniesRequest());
+    dispatch(
+      CompaniesActions.getMasterCompaniesRequest({
+        limit: 10,
+        page: 0,
+      })
+    );
     if (!general?.uf?.length) {
       // dispatch(GeneralActions.seedBackend());
       dispatch(QuestionnaireActions.getQuestionsRequest());

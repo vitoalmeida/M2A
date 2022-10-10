@@ -24,7 +24,7 @@ function* getQuestions() {
     yield put(QuestionnaireActions.getQuestionsSuccess(data.results));
   } catch (err) {
     yield put(QuestionnaireActions.getQuestionsFailure());
-    console.log(err);
+    console.error(err);
   }
 }
 
@@ -35,7 +35,7 @@ function* getQuestionnaires() {
     yield put(QuestionnaireActions.getQuestionnairesSuccess(data.results));
   } catch (err) {
     yield put(QuestionnaireActions.getQuestionnairesFailure());
-    console.log(err);
+    console.error(err);
   }
 }
 
@@ -69,7 +69,7 @@ function* getQuestionnairesAnswers({
     );
   } catch (err) {
     yield put(QuestionnaireActions.getQuestionnairesAnswersFailure());
-    console.log(err);
+    console.error(err);
   }
 }
 
@@ -77,8 +77,6 @@ function* registerQuestionnaire({
   payload: { time, companyId, data, master },
 }: RegisterQuestionnaire) {
   try {
-    console.log(time, companyId, data, master);
-
     let empresa_master;
     let empresa;
     if (master) {
@@ -104,18 +102,17 @@ function* registerQuestionnaire({
     yield put(QuestionnaireActions.registerQuestionnairesSuccess());
   } catch (err) {
     yield put(QuestionnaireActions.registerQuestionnairesFailure());
-    console.log(err);
+    console.error(err);
   }
 }
 
 function* registerQuestion({ payload: { data } }: RegisterQuestion) {
   try {
-
     yield registerQuestionSuccess();
   } catch (err) {
     yield put(QuestionnaireActions.registerQuestionFailure());
 
-    console.log(err);
+    console.error(err);
     showToast(helpers.formErrors.formatError(err), "error");
   }
 }
@@ -123,35 +120,33 @@ function* registerQuestion({ payload: { data } }: RegisterQuestion) {
 function* registerQuestionSuccess() {
   showToast("Pergunta registrada com sucesso!", "success");
 
-  yield put(QuestionnaireActions.getQuestionsRequest())
-
+  yield put(QuestionnaireActions.getQuestionsRequest());
 }
 
 function* setEditQuestion({ payload: { data } }: SetEditQuestion) {
   try {
     yield setEditQuestionSuccess(data);
   } catch (err) {
-    yield setEditQuestionFailure(err)
+    yield setEditQuestionFailure(err);
   }
 }
 
 function* setEditQuestionSuccess(data: Question) {
   yield put(QuestionnaireActions.setEditQuestionSuccess(data));
-
 }
 
 function* setEditQuestionFailure(err: any) {
   yield put(QuestionnaireActions.setEditQuestionFailure());
-  console.log(err)
+  console.error(err);
 }
 
 function* deleteQuestion({ payload: { questionId } }: DeleteQuestionRequest) {
   try {
-    yield call(api.questionnaire.deleteQuestion, String(questionId))
+    yield call(api.questionnaire.deleteQuestion, String(questionId));
 
     yield deleteQuestionSuccess();
   } catch (err) {
-    yield deleteQuestionFailure(err)
+    yield deleteQuestionFailure(err);
   }
 }
 
@@ -159,31 +154,31 @@ function* deleteQuestionSuccess() {
   yield put(QuestionnaireActions.deleteQuestionSuccess());
   yield put(QuestionnaireActions.getQuestionsRequest());
   showToast("Pergunta deletada com sucesso!", "success");
-
 }
 
 function* deleteQuestionFailure(err: any) {
   yield put(QuestionnaireActions.deleteQuestionFailure());
   showToast(helpers.formErrors.formatError(err), "error");
-  console.log(err)
+  console.error(err);
 }
 
 function* editQuestion({ payload: { data } }: EditQuestion) {
   try {
-    console.log(data)
     for (let i = 0; i < data.formatadas.length; i++) {
-      console.log('for ', data.formatadas[i])
-      yield call(api.questionnaire.editAnswer, String(data.formatadas[i].id), data.formatadas[i])
+      yield call(
+        api.questionnaire.editAnswer,
+        String(data.formatadas[i].id),
+        data.formatadas[i]
+      );
     }
 
-    delete data.formatadas
+    delete data.formatadas;
 
-    yield call(api.questionnaire.editQuestion, String(data.id), data)
+    yield call(api.questionnaire.editQuestion, String(data.id), data);
 
-    console.log(data)
     yield editQuestionSuccess();
   } catch (err) {
-    yield editQuestionFailure(err)
+    yield editQuestionFailure(err);
   }
 }
 
@@ -191,13 +186,12 @@ function* editQuestionSuccess() {
   yield put(QuestionnaireActions.editQuestionSuccess());
   yield put(QuestionnaireActions.getQuestionsRequest());
   showToast("Pergunta editada com sucesso!", "success");
-
 }
 
 function* editQuestionFailure(err: any) {
   yield put(QuestionnaireActions.editQuestionFailure());
   showToast(helpers.formErrors.formatError(err), "error");
-  console.log(err)
+  console.error(err);
 }
 
 export default [
@@ -210,24 +204,9 @@ export default [
     QuestionnaireTypes.REGISTER_QUESTIONNAIRE_REQUEST,
     registerQuestionnaire
   ),
-  takeLatest(
-    QuestionnaireTypes.GET_QUESTIONNAIRES_REQUEST,
-    getQuestionnaires
-  ),
-  takeLatest(
-    QuestionnaireTypes.REGISTER_QUESTION_REQUEST,
-    registerQuestion
-  ),
-  takeLatest(
-    QuestionnaireTypes.SET_EDIT_QUESTION_REQUEST,
-    setEditQuestion
-  ),
-  takeLatest(
-    QuestionnaireTypes.EDIT_QUESTION_REQUEST,
-    editQuestion
-  ),
-  takeLatest(
-    QuestionnaireTypes.DELETE_QUESTION_REQUEST,
-    deleteQuestion
-  ),
-]
+  takeLatest(QuestionnaireTypes.GET_QUESTIONNAIRES_REQUEST, getQuestionnaires),
+  takeLatest(QuestionnaireTypes.REGISTER_QUESTION_REQUEST, registerQuestion),
+  takeLatest(QuestionnaireTypes.SET_EDIT_QUESTION_REQUEST, setEditQuestion),
+  takeLatest(QuestionnaireTypes.EDIT_QUESTION_REQUEST, editQuestion),
+  takeLatest(QuestionnaireTypes.DELETE_QUESTION_REQUEST, deleteQuestion),
+];

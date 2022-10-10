@@ -20,12 +20,12 @@ function deleteAccount(profileId: string) {
   return client("usuario").id(profileId).delete();
 }
 
-function getAdminUsers() {
-  return client("adm/").get();
+function getAdminUsers(filter: any) {
+  return client("adm/").filter(filter).get();
 }
 
-function getColsultantUsers() {
-  return client("consultor/").get();
+function getColsultantUsers(filter: any) {
+  return client("consultor/").filter(filter).get();
 }
 
 function setAccount(accountId: string, data: any) {

@@ -1,7 +1,7 @@
 import client from "../client";
 
-function getDiagnostics() {
-  return client("diagnostico/").get();
+function getDiagnostics(filter: any) {
+  return client("diagnostico/").filter(filter).get();
 }
 
 function registerDiagnostic(data: any) {

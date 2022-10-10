@@ -57,7 +57,7 @@ const QuestionnaireForm: React.FC = () => {
         }}
       >
         {({ errors, isValid, isValidating, isSubmitting }) => {
-          console.log(errors);
+          console.error(errors);
           if (isValidating && !isValid && errors && isSubmitting) {
             showToast("Responda todas as perguntas!", "error");
           }

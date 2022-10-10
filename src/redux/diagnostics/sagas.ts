@@ -1,20 +1,32 @@
 /* eslint-disable import/no-anonymous-default-export */
 // eslint-disable-next-line no-unused-vars
-import { all, call, put, takeLatest } from "redux-saga/effects";
+import { all, call, put, select, takeLatest } from "redux-saga/effects";
 import { DiagnosticsActions } from ".";
-import { DeleteDiagnostic, DiagnosticsTypes, RegisterDiagnostic } from "./types";
+import {
+  DeleteDiagnostic,
+  DiagnosticsTypes,
+  GetDiagnostics,
+  RegisterDiagnostic,
+} from "./types";
 import * as api from "../../services/index";
 import * as helpers from "../../helpers/index";
 import showToast from "../../helpers/showToast";
 import { customHistory } from "../../routes/CustomBrowserRouter";
+import { formatFilter } from "../../helpers/formatData";
 
-function* getDiagnostics() {
+function* getDiagnostics({ payload: { filter } }: GetDiagnostics) {
   try {
+    const { diagnostics: diagnosticsState } = yield select();
+    filter = formatFilter(filter);
+
     const { data: questionnaires } = yield call(
       api.questionnaire.getQuestionnaires
     );
 
-    const { data: diagnostics } = yield call(api.diagnostics.getDiagnostics);
+    const { data: diagnostics } = yield call(
+      api.diagnostics.getDiagnostics,
+      filter
+    );
 
     let diagnosedQuestionnairesIds = [];
 
@@ -63,65 +75,74 @@ function* getDiagnostics() {
       }
     }
 
-    yield put(DiagnosticsActions.getDiagnosticsSuccess(formatedDiagnostics));
+    yield put(
+      DiagnosticsActions.getDiagnosticsSuccess(formatedDiagnostics, {
+        total: diagnostics.count,
+        current: diagnosticsState.count.current + diagnostics.results.length,
+      })
+    );
   } catch (err) {
     yield put(DiagnosticsActions.getDiagnosticsFailure());
-    console.log(err);
+    console.error(err);
   }
 }
 
 function* registerDiagnostic({ payload: { data } }: RegisterDiagnostic) {
   try {
-    console.log(data);
     const { data: diagnostic } = yield call(
       api.diagnostics.registerDiagnostic,
       data
     );
-    console.log(diagnostic);
 
     showToast("Diagnóstico salvo com sucesso!", "success");
     yield put(DiagnosticsActions.registerDiagnosticSuccess());
-    yield put(DiagnosticsActions.getDiagnosticsRequest());
+    yield put(
+      DiagnosticsActions.getDiagnosticsRequest({
+        limit: 10,
+        page: 0,
+      })
+    );
   } catch (err) {
-    console.log(err);
+    console.error(err);
     showToast(helpers.formErrors.formatError(err), "error");
     yield put(DiagnosticsActions.registerDiagnosticFailure());
   }
 }
 
-function* deleteDiagnostic({ payload: { diagnosticId, questionnaireId } }: DeleteDiagnostic) {
+function* deleteDiagnostic({
+  payload: { diagnosticId, questionnaireId },
+}: DeleteDiagnostic) {
   try {
-    console.log(diagnosticId, questionnaireId)
+    if (diagnosticId)
+      yield call(api.diagnostics.deleteDiagnostic, String(diagnosticId));
 
-    if (diagnosticId) yield call(api.diagnostics.deleteDiagnostic, String(diagnosticId))
+    yield call(api.questionnaire.deleteQuestionnaire, String(questionnaireId));
 
-    yield call(api.questionnaire.deleteQuestionnaire, String(questionnaireId))
-
-    yield deleteDiagnosticSuccess()
+    yield deleteDiagnosticSuccess();
   } catch (err) {
-    yield deleteDiagnosticFailure(err)
+    yield deleteDiagnosticFailure(err);
   }
 }
 
 function* deleteDiagnosticSuccess() {
-  yield put(DiagnosticsActions.deleteDiagnosticSuccess())
-  yield put(DiagnosticsActions.getDiagnosticsRequest())
+  yield put(DiagnosticsActions.deleteDiagnosticSuccess());
+  yield put(
+    DiagnosticsActions.getDiagnosticsRequest({
+      limit: 10,
+      page: 0,
+    })
+  );
   showToast("Diagnóstico deletado com sucesso!", "success");
-
 }
 
 function* deleteDiagnosticFailure(err: any) {
-  console.log(err)
+  console.error(err);
   showToast(helpers.formErrors.formatError(err), "error");
-  yield put(DiagnosticsActions.deleteDiagnosticSuccess())
+  yield put(DiagnosticsActions.deleteDiagnosticSuccess());
 }
-
 
 export default [
   takeLatest(DiagnosticsTypes.GET_DIAGNOSTICS_REQUEST, getDiagnostics),
   takeLatest(DiagnosticsTypes.DELETE_DIAGNOSTIC_REQUEST, deleteDiagnostic),
-  takeLatest(
-    DiagnosticsTypes.REGISTER_DIAGNOSTIC_REQUEST,
-    registerDiagnostic
-  ),
-]
+  takeLatest(DiagnosticsTypes.REGISTER_DIAGNOSTIC_REQUEST, registerDiagnostic),
+];

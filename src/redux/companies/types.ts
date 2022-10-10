@@ -56,11 +56,16 @@ export interface GetCompanyFailure {
 
 export interface GetCompanies {
   type: CompaniesTypes.GET_COMPANIES_REQUEST;
+  payload: { filter: any };
 }
 
 export interface GetCompaniesSuccess {
   type: CompaniesTypes.GET_COMPANIES_SUCCESS;
-  payload: { data: Company[] };
+  payload: {
+    data: Company[];
+    companiesCount: Count;
+    masterCompaniesCount: Count;
+  };
 }
 
 export interface GetCompaniesFailure {
@@ -69,6 +74,7 @@ export interface GetCompaniesFailure {
 
 export interface GetMasterCompanies {
   type: CompaniesTypes.GET_MASTER_COMPANIES_REQUEST;
+  payload: { filter: any };
 }
 
 export interface GetMasterCompaniesSuccess {
@@ -172,7 +178,11 @@ export interface CompaniesState {
   editCompany: Company | null;
   company: { data: Company[] | null };
   masterCompanies: GenericData[] | null;
-  companies: { data: Company[] | null; count: number | null };
+  companies: {
+    data: Company[] | null;
+    companiesCount: Count;
+    masterCompaniesCount: Count;
+  };
   error: boolean | null;
 }
 
@@ -209,4 +219,9 @@ export interface Company {
   resp_formacao_academica?: string;
   // grupo: { nome_grupo: string };
   // projeto: number;
+}
+
+export interface Count {
+  total: number | null;
+  current: number | null;
 }

@@ -6,6 +6,10 @@ import { DiagnosticsState, DiagnosticsTypes } from "./types";
 const INITIAL_STATE: DiagnosticsState = {
   diagnostics: [],
   loading: null,
+  count: {
+    total: 0,
+    current: 0,
+  },
 };
 
 const reducer: Reducer<DiagnosticsState> = (
@@ -21,6 +25,7 @@ const reducer: Reducer<DiagnosticsState> = (
         ...state,
         loading: false,
         diagnostics: payload.data,
+        count: payload.count,
       };
 
     case DiagnosticsTypes.GET_DIAGNOSTICS_FAILURE:

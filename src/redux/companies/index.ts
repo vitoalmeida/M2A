@@ -12,7 +12,14 @@ const INITIAL_STATE: CompaniesState = {
   masterCompanies: null,
   companies: {
     data: null,
-    count: null,
+    companiesCount: {
+      total: null,
+      current: null,
+    },
+    masterCompaniesCount: {
+      total: null,
+      current: null,
+    },
   },
   error: null,
 };
@@ -58,7 +65,11 @@ const reducer: Reducer<CompaniesState> = (
       return {
         ...state,
         loading: false,
-        companies: { data: payload.data, count: payload.count },
+        companies: {
+          data: payload.data,
+          companiesCount: payload.companiesCount,
+          masterCompaniesCount: payload.masterCompaniesCount,
+        },
       };
 
     case CompaniesTypes.GET_COMPANIES_FAILURE:

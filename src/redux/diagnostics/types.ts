@@ -1,7 +1,7 @@
 /* eslint-disable no-shadow */
-import { GenericData } from "../../types";
+import { Filter, GenericData } from "../../types";
 import { Profile } from "../account/types";
-import { Company } from "../companies/types";
+import { Company, Count } from "../companies/types";
 import { Questionnaire } from "../questionnaire/types";
 
 /* eslint-disable no-unused-vars */
@@ -21,12 +21,16 @@ export enum DiagnosticsTypes {
 
 export interface GetDiagnostics {
   type: DiagnosticsTypes.GET_DIAGNOSTICS_REQUEST;
+  payload: {
+    filter: Filter;
+  };
 }
 
 export interface GetDiagnosticsSuccess {
   type: DiagnosticsTypes.GET_DIAGNOSTICS_SUCCESS;
   payload: {
     data: Diagnostic[];
+    count: Count;
   };
 }
 
@@ -79,6 +83,7 @@ export type DiagnosticsActionTypes =
 export interface DiagnosticsState {
   diagnostics: Diagnostic[];
   loading: boolean;
+  count: Count;
 }
 
 export interface Diagnostic {

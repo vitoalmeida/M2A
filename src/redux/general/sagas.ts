@@ -44,18 +44,17 @@ function* getStaticValues() {
         formatedIndustryTypes,
         formatedSectors,
         formatedSegments,
-        formatedFundamentals,
+        formatedFundamentals
       )
     );
   } catch (err) {
+    console.error(err);
     yield put(GeneralActions.getStaticValuesFailure());
-    console.log(err);
   }
 }
 
 function* seedBackend() {
   const { data } = yield call(api.questionnaire.getQuestions);
-  // console.log()
   if (!data.results.length) {
     for (let i = 0; i < perguntas.length; i++) {
       yield call(api.questionnaire.registerQuestion, perguntas[i]);
@@ -66,4 +65,4 @@ function* seedBackend() {
 export default [
   takeLatest(GeneralTypes.GET_STATIC_VALUES_REQUEST, getStaticValues),
   takeLatest(GeneralTypes.SEED_BACKEND, seedBackend),
-]
+];
