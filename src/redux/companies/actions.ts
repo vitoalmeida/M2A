@@ -30,8 +30,11 @@ export function getMasterCompaniesFailure(): CompaniesActionTypes {
   return action(CompaniesTypes.GET_MASTER_COMPANIES_FAILURE);
 }
 
-export function getCompaniesRequest(filter: Filter): CompaniesActionTypes {
-  return action(CompaniesTypes.GET_COMPANIES_REQUEST, { filter });
+export function getCompaniesRequest(
+  filter: Filter,
+  params?: any
+): CompaniesActionTypes {
+  return action(CompaniesTypes.GET_COMPANIES_REQUEST, { filter, params });
 }
 
 export function getCompaniesSuccess(

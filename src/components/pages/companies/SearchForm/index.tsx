@@ -3,26 +3,53 @@ import { InputFormik, SelectFormik, Button } from "../../../index";
 import formSchema from "./formSchema";
 import { IoMdTrash, IoMdSearch } from "react-icons/io";
 import { useSelector } from "../../../../redux/hooks";
-
-const initialValues: any = {
-  pesquisa: "",
-  uf: "",
-  empresa_vinculada: "",
-  arrecadacao: "",
-  setor: "",
-};
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  formatQueryString,
+  getRouterParams,
+} from "../../../../helpers/formatData";
 
 const SearchForm = () => {
   const { general, companies } = useSelector((state) => state);
+  const navigate = useNavigate();
+  const { search } = useLocation();
+  const { loading } = general;
 
-  function handleReset(resetForm) {
+  const params = getRouterParams(search);
+
+  const initialValues: any = {
+    query: params.query || "",
+    uf: params.uf || "",
+    empresa_vinculada: params.empresa_vinculada || "",
+    arrecadacao: params.arrecadacao || "",
+    setor: params.setor || "",
+  };
+
+  function handleReset(resetForm, setValues) {
     if (window.confirm("Deseja limpar os filtros?")) {
-      resetForm();
+      resetForm({
+        query: "",
+        uf: "",
+        empresa_vinculada: "",
+        arrecadacao: "",
+        setor: "",
+      });
+
+      setValues({
+        query: "",
+        uf: "",
+        empresa_vinculada: "",
+        arrecadacao: "",
+        setor: "",
+      });
+      navigate("/companies");
     }
   }
 
   function handleSubmit(values) {
-    console.log(values);
+    let queryString = formatQueryString({ ...params, page: 1 }, values);
+
+    navigate(`/companies${queryString ? queryString : ""}`);
   }
 
   return (
@@ -33,19 +60,25 @@ const SearchForm = () => {
     >
       {(formProps) => (
         <Form>
-          <div className="md:flex md:justify-around mt-5 w-full">
+          <div className="z-0 md:flex md:justify-around mt-5 w-full">
             <div className="flex flex-col w-full md:pr-5">
               <InputFormik
                 label="Pesquisar"
-                name="pesquisa"
+                name="query"
                 placeholder="Nome da empresa"
               />
             </div>
             <div className="flex flex-col w-full md:px-5">
-              <SelectFormik label="Estado" name="uf" data={general.uf} />
+              <SelectFormik
+                disabled={general.uf?.length ? false : true}
+                label="Estado"
+                name="uf"
+                data={general.uf}
+              />
             </div>
             <div className="flex flex-col w-full md:px-5">
               <SelectFormik
+                disabled={companies.masterCompanies?.length ? false : true}
                 label="Emp. vinculada"
                 name="empresa_vinculada"
                 data={companies.masterCompanies}
@@ -53,20 +86,28 @@ const SearchForm = () => {
             </div>
             <div className="flex flex-col w-full md:px-5">
               <SelectFormik
+                disabled={general.collectionValues?.length ? false : true}
                 label="Arrecadação"
                 name="arrecadacao"
                 data={general.collectionValues}
               />
             </div>
             <div className="flex flex-col w-full md:pl-5">
-              <SelectFormik label="Setor" name="setor" data={general.sectors} />
+              <SelectFormik
+                disabled={general.sectors?.length ? false : true}
+                label="Setor"
+                name="setor"
+                data={general.sectors}
+              />
             </div>
           </div>
-          <div className="-mt-3 flex w-full gap-x-5 justify-end">
+          <div className="z-10 -mt-3 flex w-full gap-x-5 justify-end">
             <Button
-              onClick={() => handleReset(formProps.resetForm)}
+              onClick={() =>
+                handleReset(formProps.resetForm, formProps.setValues)
+              }
               title="Limpar"
-              type="reset"
+              type="button"
               color="#ff8282"
               icon={<IoMdTrash />}
             />

@@ -56,7 +56,7 @@ export interface GetCompanyFailure {
 
 export interface GetCompanies {
   type: CompaniesTypes.GET_COMPANIES_REQUEST;
-  payload: { filter: any };
+  payload: { filter: any; params?: any };
 }
 
 export interface GetCompaniesSuccess {
@@ -179,9 +179,10 @@ export interface CompaniesState {
   company: { data: Company[] | null };
   masterCompanies: GenericData[] | null;
   companies: {
-    data: Company[] | null;
-    companiesCount: Count;
-    masterCompaniesCount: Count;
+    loading?: boolean;
+    data?: Company[] | null;
+    companiesCount?: Count;
+    masterCompaniesCount?: Count;
   };
   error: boolean | null;
 }

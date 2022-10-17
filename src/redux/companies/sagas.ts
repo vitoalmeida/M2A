@@ -17,7 +17,11 @@ import { customHistory } from "../../routes/CustomBrowserRouter";
 import * as api from "../../services/index";
 import * as helpers from "../../helpers/index";
 import showToast from "../../helpers/showToast";
-import { formatFilter, getRemainingCount } from "../../helpers/formatData";
+import {
+  filterCompanies,
+  formatFilter,
+  getRemainingCount,
+} from "../../helpers/formatData";
 import ApplicationState from "../types";
 
 function* getCompany({ payload: { companyId } }: GetCompany) {
@@ -62,13 +66,13 @@ function* getMasterCompanies({ payload: { filter } }: GetMasterCompanies) {
   }
 }
 
-function* getCompanies({ payload: { filter } }: GetCompanies) {
+function* getCompanies({ payload: { filter, params } }: GetCompanies) {
   try {
     const { companies: companiesState } = yield select();
 
-    let companiesCountTotal = companiesState.companies.companiesCount.total;
+    let companiesCountTotal = companiesState.companies.companiesCount?.total;
     let masterCompaniesCountTotal =
-      companiesState.companies.masterCompaniesCount.total;
+      companiesState.companies.masterCompaniesCount?.total;
 
     if (!companiesCountTotal) {
       const { data: companiesCount } = yield call(api.companies.getCompanies, {
@@ -139,24 +143,39 @@ function* getCompanies({ payload: { filter } }: GetCompanies) {
       }
     }
 
+    let filteredCompanies = [];
+    let filteredMasterCompanies = [];
+
+    let allFilteredCompanies = [];
+
+    if (params) {
+      filteredCompanies = filterCompanies(formatedCompanies, params);
+      filteredMasterCompanies = filterCompanies(
+        formatedMasterCompanies,
+        params
+      );
+
+      allFilteredCompanies = [...filteredCompanies, ...filteredMasterCompanies];
+    }
+
     yield getCompaniesSuccess(
-      allCompanies,
+      params ? allFilteredCompanies : allCompanies,
       {
-        total: companies.count,
+        total: params ? filteredCompanies.length : companies.count,
         current:
-          companiesState.companies.companiesCount.current +
+          companiesState.companies.companiesCount?.current +
           companies.results.length,
       },
       {
-        total: masterCompanies.count,
+        total: params ? filteredMasterCompanies.length : masterCompanies.count,
         current:
-          companiesState.companies.masterCompaniesCount.current +
+          companiesState.companies.masterCompaniesCount?.current +
           masterCompanies.results.length,
       }
     );
   } catch (err) {
     yield put(CompaniesActions.getCompaniesFailure());
-
+    console.error(err);
     showToast(helpers.formErrors.formatError(err), "error");
   }
 }

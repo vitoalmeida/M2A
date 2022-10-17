@@ -1,3 +1,4 @@
+import { Company } from "../redux/companies/types";
 import { Filter } from "../types";
 
 export const formatUf = (ufs) => {
@@ -46,8 +47,6 @@ export const getRemainingCount = (
 
   const firstRemaining = firstTotal - filter.limit * filter.page;
   const seccondRemaining = seccondTotal - filter.limit * filter.page;
-  console.log(firstRemaining);
-  console.log(seccondRemaining);
 
   if (firstRemaining < 5) {
     seccondFilter.newLimit = 10 - firstRemaining;
@@ -57,3 +56,104 @@ export const getRemainingCount = (
 
   return [firstFilter, seccondFilter];
 };
+
+export const getRouterParams = (query: string) => {
+  if (!query.length) return "";
+
+  const params: any = {};
+
+  query
+    .replaceAll("?", "")
+    .replaceAll("%20", " ")
+    .split("&")
+    .map((param) => {
+      const separeteParam = param.split("=");
+      params[separeteParam[0]] = separeteParam[1];
+    });
+
+  return params;
+};
+
+export function filterCompanies(companies: Company[], params: any) {
+  let filteredCompanies = [...companies];
+
+  if (params.query) {
+    const pattern = new RegExp(params.query.toLowerCase(), "g");
+    filteredCompanies = filteredCompanies.filter((company) => {
+      console.log(company);
+      if (
+        company.razao_social &&
+        pattern.test(company.razao_social.toLowerCase())
+      ) {
+        return company;
+      } else if (
+        company.fantasia &&
+        pattern.test(company.fantasia.toLowerCase())
+      ) {
+        return company;
+      } else {
+        return null;
+      }
+    });
+  }
+
+  if (params.uf) {
+    filteredCompanies = filteredCompanies.filter((company) => {
+      if (
+        company.endereco &&
+        Number(company.endereco?.uf) === Number(params.uf)
+      ) {
+        return company;
+      } else {
+        return null;
+      }
+    });
+  }
+
+  if (params.empresa_vinculada) {
+    filteredCompanies = filteredCompanies.filter((company) => {
+      if (
+        company.master &&
+        Number(company.master) === Number(params.empresa_vinculada)
+      ) {
+        return company;
+      } else {
+        return null;
+      }
+    });
+  }
+
+  if (params.setor) {
+    filteredCompanies = filteredCompanies.filter((company) => {
+      if (company.setor && Number(company.setor) === Number(params.setor)) {
+        return company;
+      } else {
+        return null;
+      }
+    });
+  }
+
+  return filteredCompanies;
+}
+
+export function formatQueryString(params: any, values: any) {
+  let queryString = "?";
+
+  Object.keys(params).forEach((prop) => {
+    if (params[prop] && !Object.keys(values).includes(prop)) {
+      queryString += `${queryString.length > 1 ? "&" : ""}${prop}=${
+        params[prop]
+      }`;
+    }
+  });
+
+  Object.keys(values).forEach((prop) => {
+    if (values[prop]) {
+      queryString += `${queryString.length > 1 ? "&" : ""}${prop}=${
+        values[prop]
+      }`;
+    }
+  });
+
+  return queryString.length > 1 ? queryString : "";
+}

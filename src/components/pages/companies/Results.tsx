@@ -12,14 +12,20 @@ import {
   Modal,
   ResultEmptyState,
 } from "../../../components";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Spinner } from "react-activity";
+import {
+  filterCompanies,
+  getRouterParams,
+  formatQueryString,
+} from "../../../helpers/formatData";
 
 const Results = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { companies, general } = useSelector((state) => state);
-  const { companies: companiesData, loading } = companies;
+  const { companies: companiesData } = companies;
+  const loading = companiesData.loading;
 
   const [editOpen, setEditOpen] = useState(false);
   const [warningOpen, setWarningOpen] = useState(false);
@@ -28,32 +34,43 @@ const Results = () => {
   const [userId, setUserId] = useState<number>();
   const [companyType, setCompanyType] = useState<number>();
 
+  const [filteredCompanies, setFilteredCompanies] = useState([]);
+  const [isSetingPage, setIsSetingPage] = useState(false);
+
   const [currentAppPage, setCurrentAppPage] = useState(1);
   const { search } = useLocation();
 
-  useEffect(() => {
-    const page = Number(search.replaceAll(/\D/g, "") || 1);
-    setCurrentAppPage(page);
-
-    dispatch(
-      CompaniesActions.getCompaniesRequest({
-        page: page - 1,
-        limit: 5,
-        offset: 1,
-      })
-    );
-  }, []);
+  const params = getRouterParams(search);
 
   function handleChangePage(page: number) {
+    setIsSetingPage(true);
+    if (params.page) {
+      delete params["page"];
+    }
+
     setCurrentAppPage(page);
-    navigate(`/companies?page=${page}`);
-    dispatch(
-      CompaniesActions.getCompaniesRequest({
-        page: page - 1,
-        limit: 5,
-        offset: 1,
-      })
-    );
+
+    if (Object.keys(params).length) {
+      let queryString = formatQueryString(params, { ...params, page });
+
+      navigate(`/companies${queryString ? queryString : ""}`);
+      setFilteredCompanies(
+        companies?.companies?.data.slice(10 * (page - 1), 10 * page)
+      );
+    } else {
+      navigate(`/companies?page=${page}`);
+      dispatch(
+        CompaniesActions.getCompaniesRequest({
+          page: page - 1,
+          limit: 5,
+          offset: 1,
+        })
+      );
+    }
+
+    setTimeout(() => {
+      setIsSetingPage(false);
+    }, 1000);
   }
 
   function handleOpenEditModal(company?: Company) {
@@ -86,6 +103,56 @@ const Results = () => {
   function handleEditCompany() {
     dispatch(CompaniesActions.editCompanyRequest(companies.editCompany));
   }
+
+  useEffect(() => {
+    if (!loading && !isSetingPage) {
+      let page = 0;
+
+      if (params.page) {
+        page = Number(params.page || 1) - 1;
+        setCurrentAppPage(page + 1);
+        delete params["page"];
+      }
+
+      if (Object.keys(params).length) {
+        dispatch(
+          CompaniesActions.getCompaniesRequest(
+            {
+              page,
+            },
+            params
+          )
+        );
+      } else {
+        dispatch(
+          CompaniesActions.getCompaniesRequest({
+            page,
+            limit: 5,
+            offset: 1,
+          })
+        );
+      }
+    }
+  }, [search]);
+
+  useEffect(() => {
+    if (companies?.companies?.data) {
+      let page = 0;
+
+      if (params.page) {
+        page = Number(params.page || 1) - 1;
+        delete params["page"];
+      }
+
+      if (Object.keys(params).length) {
+        setFilteredCompanies(
+          companies?.companies?.data.slice(10 * page, 10 * (page + 1))
+        );
+      } else {
+        setFilteredCompanies(companies?.companies?.data);
+      }
+    }
+  }, [companies?.companies?.data]);
 
   return (
     <div className="mb-32 mt-10">
@@ -128,7 +195,7 @@ const Results = () => {
                   <div className="flex flex-col justify-center items-center w-full h-[24rem] text-center">
                     <Spinner size={45} color={"#005589"} />
                   </div>
-                ) : companies?.companies.data?.length ? (
+                ) : filteredCompanies?.length ? (
                   <>
                     <thead className="bg-gray-50 w-full">
                       <tr>
@@ -168,7 +235,7 @@ const Results = () => {
                       id="myTable"
                       className="divide-y divide-gray-200 bg-white"
                     >
-                      {companies.companies?.data?.map((company) => {
+                      {filteredCompanies?.map((company) => {
                         if (Number(company.cnpj) > 1)
                           return (
                             <tr key={company.cnpj}>
@@ -230,8 +297,8 @@ const Results = () => {
                     {!loading && (
                       <Pagination
                         totalPage={Math.ceil(
-                          (companiesData.companiesCount.total +
-                            companiesData.masterCompaniesCount.total) /
+                          (companiesData.companiesCount?.total +
+                            companiesData.masterCompaniesCount?.total) /
                             10
                         )}
                         currentPage={currentAppPage}
