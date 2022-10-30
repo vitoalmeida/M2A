@@ -15,17 +15,11 @@ function deleteDiagnostic(diagnosticId: string) {
 }
 
 function sendEmail(email: Email) {
-  axios.post(
-    "https://email-sender.onrender.com/email",
-    {
-      email,
+  axios.post("https://email-sender.onrender.com/email", email, {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
     },
-    {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-    }
-  );
+  });
 }
 
 export default {

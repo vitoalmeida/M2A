@@ -94,6 +94,7 @@ export interface DiagnosticsState {
 
 export interface Diagnostic {
   id?: number;
+  diagnosticado?: boolean;
   data?: string;
   empresa_questionario?: number | Questionnaire;
   consultor?: string | number | Profile;

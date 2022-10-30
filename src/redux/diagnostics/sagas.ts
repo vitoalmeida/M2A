@@ -21,7 +21,6 @@ import {
 function* getDiagnostics({ payload: { filter, params } }: GetDiagnostics) {
   try {
     const { diagnostics: diagnosticsState } = yield select();
-    console.log(diagnosticsState);
 
     let questionnairesCountTotal =
       diagnosticsState.diagnostics.questionnairesCount?.total;
@@ -61,15 +60,13 @@ function* getDiagnostics({ payload: { filter, params } }: GetDiagnostics) {
 
     const { data: questionnaires } = yield call(
       api.questionnaire.getQuestionnaires,
-      firstFilter
+      filter
     );
     const { data: diagnostics } = yield call(
       api.diagnostics.getDiagnostics,
-      seccondFilter
+      filter
     );
 
-    console.log("questionnaires", questionnaires.results);
-    console.log("diagnostics", diagnostics.results);
     let diagnosedQuestionnairesIds = [];
 
     diagnostics.results.forEach((diagnostic) => {
@@ -77,12 +74,15 @@ function* getDiagnostics({ payload: { filter, params } }: GetDiagnostics) {
     });
 
     let formatedQuestionnaires = [];
+
     questionnaires.results.forEach((questionnaire) => {
       if (!diagnosedQuestionnairesIds.includes(questionnaire.id)) {
-        formatedQuestionnaires.push({ empresa_questionario: questionnaire });
+        formatedQuestionnaires.push({
+          diagnosticado: false,
+          id: `questionnaire-${questionnaire.id}`,
+          empresa_questionario: questionnaire,
+        });
       } else {
-        // const index = diagnosedQuestionnairesIds.indexOf(questionnaire.id);
-        // diagnosedQuestionnairesIds.splice(index, 1);
         diagnostics.results.find(
           (diagnostic) => diagnostic.empresa_questionario === questionnaire.id
         ).empresa_questionario = questionnaire;
@@ -93,8 +93,10 @@ function* getDiagnostics({ payload: { filter, params } }: GetDiagnostics) {
     });
 
     let formatedDiagnostics = [...diagnostics.results];
-    console.log(formatedDiagnostics);
+
     for (let i = 0; i < formatedDiagnostics.length; i++) {
+      formatedDiagnostics[i].diagnosticado = true;
+      formatedDiagnostics[i].id = `diagnostic-${formatedDiagnostics[i].id}`;
       if (formatedDiagnostics[i].consultor) {
         const { data: consultant } = yield call(
           api.account.getConsultant,
@@ -103,18 +105,18 @@ function* getDiagnostics({ payload: { filter, params } }: GetDiagnostics) {
         formatedDiagnostics[i].consultor = consultant;
       }
 
-      // if (typeof formatedDiagnostics[i].empresa_questionario === "number") {
-      //   // eslint-disable-next-line no-loop-func
-      //   formatedDiagnostics.find((diagnostic) => {
-      //     if (
-      //       diagnostic.empresa_questionario?.id ===
-      //       formatedDiagnostics[i].empresa_questionario
-      //     ) {
-      //       formatedDiagnostics[i].empresa_questionario =
-      //         diagnostic.empresa_questionario;
-      //     }
-      //   });
-      // }
+      if (typeof formatedDiagnostics[i].empresa_questionario === "number") {
+        // eslint-disable-next-line no-loop-func
+        formatedDiagnostics.find((diagnostic) => {
+          if (
+            diagnostic.empresa_questionario?.id ===
+            formatedDiagnostics[i].empresa_questionario
+          ) {
+            formatedDiagnostics[i].empresa_questionario =
+              diagnostic.empresa_questionario;
+          }
+        });
+      }
 
       if (
         typeof formatedDiagnostics[i].empresa_questionario.empresa === "number"
@@ -126,17 +128,17 @@ function* getDiagnostics({ payload: { filter, params } }: GetDiagnostics) {
         formatedDiagnostics[i].empresa_questionario.empresa = company;
       }
 
-      // if (
-      //   typeof formatedDiagnostics[i].empresa_questionario.empresa_master ===
-      //   "number"
-      // ) {
-      //   const { data: masterCompany } = yield call(
-      //     api.companies.getMasterCompany,
-      //     formatedDiagnostics[i].empresa_questionario.empresa_master
-      //   );
-      //   formatedDiagnostics[i].empresa_questionario.empresa_master =
-      //     masterCompany;
-      // }
+      if (
+        typeof formatedDiagnostics[i].empresa_questionario.empresa_master ===
+        "number"
+      ) {
+        const { data: masterCompany } = yield call(
+          api.companies.getMasterCompany,
+          formatedDiagnostics[i].empresa_questionario.empresa_master
+        );
+        formatedDiagnostics[i].empresa_questionario.empresa_master =
+          masterCompany;
+      }
     }
 
     for (let i = 0; i < formatedQuestionnaires.length; i++) {
@@ -164,6 +166,7 @@ function* getDiagnostics({ payload: { filter, params } }: GetDiagnostics) {
 
     let allFilteredDiagnostics = [];
 
+    console.log(formatedDiagnostics);
     if (params) {
       formatedDiagnostics = filterDiagnostics(formatedDiagnostics, params);
       formatedQuestionnaires = filterDiagnostics(
@@ -171,6 +174,7 @@ function* getDiagnostics({ payload: { filter, params } }: GetDiagnostics) {
         params
       );
     }
+    console.log(formatedQuestionnaires);
 
     allFilteredDiagnostics = [
       ...formatedDiagnostics,

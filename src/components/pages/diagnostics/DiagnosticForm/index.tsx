@@ -19,15 +19,30 @@ interface Props {
   closeForm?: () => any;
 }
 
-const initialValues: any = {
-  to: "",
-  text: "",
-};
-
 const DiagnosticForm: React.FC<Props> = ({ closeForm, diagnostic }) => {
   const dispatch = useDispatch();
   const { questionnaire, account } = useSelector((state) => state);
 
+  const initialValues: any = {
+    to:
+      (
+        (diagnostic.empresa_questionario as Questionnaire)
+          .empresa_master as Company
+      )?.cnpj === "0" &&
+      ((diagnostic.empresa_questionario as Questionnaire).empresa as Company)
+        ?.cnpj !== "1"
+        ? (
+            (diagnostic.empresa_questionario as Questionnaire)
+              .empresa as Company
+          )?.resp_email
+        : (
+            (diagnostic.empresa_questionario as Questionnaire)
+              .empresa_master as Company
+          )?.resp_email || "",
+    text: "",
+  };
+
+  console.log(initialValues);
   const total = questionnaire.questionnaireAnswers.reduce(
     (previousQuestion, currentQuestion) =>
       previousQuestion + currentQuestion.valor,
@@ -39,7 +54,9 @@ const DiagnosticForm: React.FC<Props> = ({ closeForm, diagnostic }) => {
       showToast("Apenas consultores poodem fornecer uma devolutiva!", "error");
       return;
     }
-    // const = ((diagnostic.empresa_questionario as Questionnaire).empresa_master as Company)?.cnpj === '0'
+
+    api.diagnostics.sendEmail({ to: values.to, text: values.text });
+
     dispatch(
       DiagnosticsActions.registerDiagnosticRequest({
         empresa_questionario: (diagnostic.empresa_questionario as Questionnaire)
@@ -49,7 +66,7 @@ const DiagnosticForm: React.FC<Props> = ({ closeForm, diagnostic }) => {
       })
     );
 
-    api.diagnostics.sendEmail({ to: values.to, text: values.text });
+    closeForm?.();
   }
 
   function returnRisk() {
@@ -206,28 +223,30 @@ const DiagnosticForm: React.FC<Props> = ({ closeForm, diagnostic }) => {
               <Form>
                 <div className="shadow sm:rounded-md sm:overflow-hidden">
                   <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
-                    <div className="grid grid-cols-3 gap-6">
-                      <div className="col-span-3">
-                        <InputFormik
-                          label="Destinatário"
-                          name="to"
-                          placeholder="exemplo@email.com"
-                        />
-                      </div>
-                    </div>
+                    {!diagnostic?.diagnosticado ? (
+                      <>
+                        <div className="grid grid-cols-3 gap-6">
+                          <div className="col-span-3">
+                            <InputFormik
+                              label="Destinatário"
+                              name="to"
+                              placeholder="exemplo@email.com"
+                            />
+                          </div>
+                        </div>
 
-                    <div>
-                      <InputFormik
-                        label="Conteúdo"
-                        name="text"
-                        placeholder="Sua empresa pode melhorar em..."
-                        // rows={15}
-                        textArea
-                        resize
-                      />
-                    </div>
+                        <div>
+                          <InputFormik
+                            label="Conteúdo"
+                            name="text"
+                            placeholder="Sua empresa pode melhorar em..."
+                            // rows={15}
+                            textArea
+                            resize
+                          />
+                        </div>
 
-                    {/* <div>
+                        {/* <div>
                     <label className="block text-sm font-medium text-gray-700">
                       Anexos
                     </label>
@@ -268,14 +287,23 @@ const DiagnosticForm: React.FC<Props> = ({ closeForm, diagnostic }) => {
                       </div>
                     </div>
                   </div> */}
+                      </>
+                    ) : (
+                      <span className="text-gray-400">
+                        Um e-mail já foi enviado para a empresa ou responsável
+                        deste questionário.
+                      </span>
+                    )}
                   </div>
                   <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                    <button
-                      className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary-blue"
-                      type="submit"
-                    >
-                      Enviar
-                    </button>
+                    {!diagnostic?.diagnosticado && (
+                      <button
+                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary-blue"
+                        type="submit"
+                      >
+                        Enviar
+                      </button>
+                    )}
                   </div>
                 </div>
               </Form>

@@ -261,7 +261,16 @@ export function filterDiagnostics(diagnostics: Diagnostic[], params: any) {
         [(diagnostic.empresa_questionario as Questionnaire).empresa as Company],
         params
       );
-      if (filteredCompany.length) return diagnostic;
+
+      const filteredMasterCompany = filterCompanies(
+        [
+          (diagnostic.empresa_questionario as Questionnaire)
+            .empresa_master as Company,
+        ],
+        params
+      );
+      if (filteredCompany.length || filteredMasterCompany.length)
+        return diagnostic;
       else return null;
     });
   }

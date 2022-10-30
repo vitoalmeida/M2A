@@ -63,8 +63,8 @@ const Results = () => {
       navigate(`/diagnostics?page=${page}`);
       dispatch(
         DiagnosticsActions.getDiagnosticsRequest({
-          page: page - 1,
-          limit: 5,
+          // page: page - 1,
+          offset: 0,
         })
       );
     }
@@ -120,7 +120,7 @@ const Results = () => {
         dispatch(
           DiagnosticsActions.getDiagnosticsRequest(
             {
-              page,
+              offset: 0,
             },
             newParams
           )
@@ -128,8 +128,8 @@ const Results = () => {
       } else {
         dispatch(
           DiagnosticsActions.getDiagnosticsRequest({
-            page,
-            limit: 5,
+            offset: 0,
+            // limit: 5,
           })
         );
       }
@@ -146,9 +146,10 @@ const Results = () => {
       }
 
       if (Object.keys(params).length) {
-        setFilteredDiagnostics(
-          diagnostics?.diagnostics?.data?.slice(10 * page, 10 * (page + 1))
-        );
+        setFilteredDiagnostics(diagnostics?.diagnostics?.data);
+        // setFilteredDiagnostics(
+        //   diagnostics?.diagnostics?.data?.slice(10 * page, 10 * (page + 1))
+        // );
       } else {
         setFilteredDiagnostics(diagnostics?.diagnostics?.data);
       }
@@ -257,13 +258,31 @@ const Results = () => {
                             />
                           </td>
                           <td className="whitespace-nowrap text-ellipsis px-3 py-4 text-sm text-gray-500">
-                            {
+                            {(
+                              (diagnostic.empresa_questionario as Questionnaire)
+                                .empresa_master as Company
+                            )?.cnpj === "0" &&
+                            (
+                              (diagnostic.empresa_questionario as Questionnaire)
+                                .empresa as Company
+                            )?.cnpj !== "1"
+                              ? (
+                                  (
+                                    diagnostic.empresa_questionario as Questionnaire
+                                  ).empresa as Company
+                                )?.fantasia
+                              : (
+                                  (
+                                    diagnostic.empresa_questionario as Questionnaire
+                                  ).empresa_master as Company
+                                )?.fantasia}
+                            {/* {
                               (
                                 (
                                   diagnostic.empresa_questionario as Questionnaire
                                 ).empresa as Company
                               )?.fantasia
-                            }
+                            } */}
                           </td>
 
                           <td className="whitespace-nowrap text-ellipsis px-3 py-4 text-sm text-gray-500">
