@@ -68,6 +68,8 @@ function* getDiagnostics({ payload: { filter, params } }: GetDiagnostics) {
       seccondFilter
     );
 
+    console.log("questionnaires", questionnaires.results);
+    console.log("diagnostics", diagnostics.results);
     let diagnosedQuestionnairesIds = [];
 
     diagnostics.results.forEach((diagnostic) => {
@@ -85,10 +87,13 @@ function* getDiagnostics({ payload: { filter, params } }: GetDiagnostics) {
           (diagnostic) => diagnostic.empresa_questionario === questionnaire.id
         ).empresa_questionario = questionnaire;
       }
+
+      if (typeof questionnaire.empresa_master === "number") {
+      }
     });
 
     let formatedDiagnostics = [...diagnostics.results];
-
+    console.log(formatedDiagnostics);
     for (let i = 0; i < formatedDiagnostics.length; i++) {
       if (formatedDiagnostics[i].consultor) {
         const { data: consultant } = yield call(
@@ -98,18 +103,18 @@ function* getDiagnostics({ payload: { filter, params } }: GetDiagnostics) {
         formatedDiagnostics[i].consultor = consultant;
       }
 
-      if (typeof formatedDiagnostics[i].empresa_questionario === "number") {
-        // eslint-disable-next-line no-loop-func
-        formatedDiagnostics.find((diagnostic) => {
-          if (
-            diagnostic.empresa_questionario?.id ===
-            formatedDiagnostics[i].empresa_questionario
-          ) {
-            formatedDiagnostics[i].empresa_questionario =
-              diagnostic.empresa_questionario;
-          }
-        });
-      }
+      // if (typeof formatedDiagnostics[i].empresa_questionario === "number") {
+      //   // eslint-disable-next-line no-loop-func
+      //   formatedDiagnostics.find((diagnostic) => {
+      //     if (
+      //       diagnostic.empresa_questionario?.id ===
+      //       formatedDiagnostics[i].empresa_questionario
+      //     ) {
+      //       formatedDiagnostics[i].empresa_questionario =
+      //         diagnostic.empresa_questionario;
+      //     }
+      //   });
+      // }
 
       if (
         typeof formatedDiagnostics[i].empresa_questionario.empresa === "number"
@@ -121,17 +126,17 @@ function* getDiagnostics({ payload: { filter, params } }: GetDiagnostics) {
         formatedDiagnostics[i].empresa_questionario.empresa = company;
       }
 
-      if (
-        typeof formatedDiagnostics[i].empresa_questionario.empresa_master ===
-        "number"
-      ) {
-        const { data: masterCompany } = yield call(
-          api.companies.getMasterCompany,
-          formatedDiagnostics[i].empresa_questionario.empresa_master
-        );
-        formatedDiagnostics[i].empresa_questionario.empresa_master =
-          masterCompany;
-      }
+      // if (
+      //   typeof formatedDiagnostics[i].empresa_questionario.empresa_master ===
+      //   "number"
+      // ) {
+      //   const { data: masterCompany } = yield call(
+      //     api.companies.getMasterCompany,
+      //     formatedDiagnostics[i].empresa_questionario.empresa_master
+      //   );
+      //   formatedDiagnostics[i].empresa_questionario.empresa_master =
+      //     masterCompany;
+      // }
     }
 
     for (let i = 0; i < formatedQuestionnaires.length; i++) {

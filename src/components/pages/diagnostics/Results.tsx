@@ -262,7 +262,7 @@ const Results = () => {
                                 (
                                   diagnostic.empresa_questionario as Questionnaire
                                 ).empresa as Company
-                              ).fantasia
+                              )?.fantasia
                             }
                           </td>
 

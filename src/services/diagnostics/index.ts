@@ -1,3 +1,5 @@
+import axios from "axios";
+import { Email } from "../../redux/diagnostics/types";
 import client from "../client";
 
 function getDiagnostics(filter: any) {
@@ -12,8 +14,23 @@ function deleteDiagnostic(diagnosticId: string) {
   return client(`diagnostico/${diagnosticId}/`).delete();
 }
 
+function sendEmail(email: Email) {
+  axios.post(
+    "https://email-sender.onrender.com/email",
+    {
+      email,
+    },
+    {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
+    }
+  );
+}
+
 export default {
   getDiagnostics,
   deleteDiagnostic,
   registerDiagnostic,
+  sendEmail,
 };

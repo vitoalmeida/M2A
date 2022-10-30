@@ -69,7 +69,7 @@ const InputFormik: React.FC<Props> = ({
       )}
       <div className={`${error ? "" : "pb-6"}`}>
         <Field
-          className={`${textArea && "h-24"} ${!resize && "resize-none"} ${
+          className={`${!resize && "resize-none"} ${
             disabled ? "text-gray-500 bg-gray-100" : "text-gray-600"
           } ${
             error ? "border-red-300" : "border-gray-300"
@@ -94,6 +94,7 @@ const InputFormik: React.FC<Props> = ({
           }
           placeholder={placeholder}
           pattern={pattern}
+          rows={textArea ? 15 : 1}
           as={textArea ? "textarea" : "input"}
         />
 

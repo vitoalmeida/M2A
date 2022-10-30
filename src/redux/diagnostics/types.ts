@@ -99,3 +99,8 @@ export interface Diagnostic {
   consultor?: string | number | Profile;
   tipo_diagnostico?: number | string;
 }
+
+export interface Email {
+  to?: string;
+  text?: string;
+}

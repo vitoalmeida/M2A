@@ -1,19 +1,29 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import Questionnaires from "../../../pages/Questionnaires";
-import account from "../../../redux/account";
-import { DiagnosticsActions } from "../../../redux/diagnostics";
-import { Diagnostic } from "../../../redux/diagnostics/types";
-import { useSelector } from "../../../redux/hooks";
-import { QuestionnaireActions } from "../../../redux/questionnaire";
-import showToast from "../../../helpers/showToast";
-import { Questionnaire } from "../../../redux/questionnaire/types";
-import Chart from "./Chart";
+import Questionnaires from "../../../../pages/Questionnaires";
+import * as api from "../../../../services/index";
+import { DiagnosticsActions } from "../../../../redux/diagnostics";
+import { Diagnostic } from "../../../../redux/diagnostics/types";
+import { useSelector } from "../../../../redux/hooks";
+import { QuestionnaireActions } from "../../../../redux/questionnaire";
+import showToast from "../../../../helpers/showToast";
+import { Questionnaire } from "../../../../redux/questionnaire/types";
+import Chart from "../Chart";
+import { Form, Formik } from "formik";
+import formSchema from "./formSchema";
+import InputFormik from "../../../InputFormik";
+import { Company } from "../../../../redux/companies/types";
 
 interface Props {
   diagnostic: Diagnostic;
   closeForm?: () => any;
 }
+
+const initialValues: any = {
+  to: "",
+  text: "",
+};
+
 const DiagnosticForm: React.FC<Props> = ({ closeForm, diagnostic }) => {
   const dispatch = useDispatch();
   const { questionnaire, account } = useSelector((state) => state);
@@ -24,12 +34,12 @@ const DiagnosticForm: React.FC<Props> = ({ closeForm, diagnostic }) => {
     0
   );
 
-  function handleDiagnosticate() {
+  function handleDiagnosticate(values) {
     if (account.data.tipo !== 2) {
       showToast("Apenas consultores poodem fornecer uma devolutiva!", "error");
       return;
     }
-
+    // const = ((diagnostic.empresa_questionario as Questionnaire).empresa_master as Company)?.cnpj === '0'
     dispatch(
       DiagnosticsActions.registerDiagnosticRequest({
         empresa_questionario: (diagnostic.empresa_questionario as Questionnaire)
@@ -38,6 +48,8 @@ const DiagnosticForm: React.FC<Props> = ({ closeForm, diagnostic }) => {
         tipo_diagnostico: 1,
       })
     );
+
+    api.diagnostics.sendEmail({ to: values.to, text: values.text });
   }
 
   function returnRisk() {
@@ -180,61 +192,42 @@ const DiagnosticForm: React.FC<Props> = ({ closeForm, diagnostic }) => {
                 Devolutiva
               </h3>
               <p className="mt-1 text-sm text-gray-600">
-                Responda para esta empresa como ela pode melhorar.
+                Responda com um e-mail para esta empresa, com orientações{" "}
+                <del></del> como ela pode melhorar.
               </p>
             </div>
           </div>
           <div className="mt-5 md:mt-0 md:col-span-2">
-            <form
-              onSubmit={(e) => {
-                {
-                  e.preventDefault();
-                  handleDiagnosticate();
-                }
-              }}
+            <Formik
+              onSubmit={handleDiagnosticate}
+              initialValues={initialValues}
+              {...formSchema}
             >
-              <div className="shadow sm:rounded-md sm:overflow-hidden">
-                <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
-                  <div className="grid grid-cols-3 gap-6">
-                    <div className="col-span-3 sm:col-span-2">
-                      <label
-                        htmlFor="company-website"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Destinatário
-                      </label>
-                      <div className="mt-1 flex rounded-md shadow-sm">
-                        <input
-                          type="text"
-                          name="company-website"
-                          id="company-website"
-                          className="px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
-                          placeholder="www.example.com"
+              <Form>
+                <div className="shadow sm:rounded-md sm:overflow-hidden">
+                  <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
+                    <div className="grid grid-cols-3 gap-6">
+                      <div className="col-span-3">
+                        <InputFormik
+                          label="Destinatário"
+                          name="to"
+                          placeholder="exemplo@email.com"
                         />
                       </div>
                     </div>
-                  </div>
 
-                  <div>
-                    <label
-                      htmlFor="about"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Conteúdo
-                    </label>
-                    <div className="mt-1">
-                      <textarea
-                        id="about"
-                        name="about"
-                        rows={3}
-                        className="px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
+                    <div>
+                      <InputFormik
+                        label="Conteúdo"
+                        name="text"
                         placeholder="Sua empresa pode melhorar em..."
-                        defaultValue={""}
+                        // rows={15}
+                        textArea
+                        resize
                       />
                     </div>
-                  </div>
 
-                  <div>
+                    {/* <div>
                     <label className="block text-sm font-medium text-gray-700">
                       Anexos
                     </label>
@@ -274,18 +267,19 @@ const DiagnosticForm: React.FC<Props> = ({ closeForm, diagnostic }) => {
                         </p>
                       </div>
                     </div>
+                  </div> */}
+                  </div>
+                  <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                    <button
+                      className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary-blue"
+                      type="submit"
+                    >
+                      Enviar
+                    </button>
                   </div>
                 </div>
-                <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                  <button
-                    className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary-blue"
-                    type="submit"
-                  >
-                    Enviar
-                  </button>
-                </div>
-              </div>
-            </form>
+              </Form>
+            </Formik>
           </div>
         </div>
       </div>
