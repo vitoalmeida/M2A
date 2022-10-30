@@ -33,7 +33,6 @@ const Results = () => {
   const [deleteCompanyId, setDeleteCompanyId] = useState<number>();
   const [userId, setUserId] = useState<number>();
   const [companyType, setCompanyType] = useState<number>();
-
   const [filteredCompanies, setFilteredCompanies] = useState([]);
   const [isSetingPage, setIsSetingPage] = useState(false);
 
@@ -44,14 +43,16 @@ const Results = () => {
 
   function handleChangePage(page: number) {
     setIsSetingPage(true);
-    if (params.page) {
-      delete params["page"];
+    const newParams = { ...params };
+
+    if (newParams.page) {
+      delete newParams["page"];
     }
 
     setCurrentAppPage(page);
 
-    if (Object.keys(params).length) {
-      let queryString = formatQueryString(params, { ...params, page });
+    if (Object.keys(newParams).length) {
+      let queryString = formatQueryString(newParams, { ...newParams, page });
 
       navigate(`/companies${queryString ? queryString : ""}`);
       setFilteredCompanies(
@@ -106,21 +107,22 @@ const Results = () => {
 
   useEffect(() => {
     if (!loading && !isSetingPage) {
+      const newParams = { ...params };
       let page = 0;
 
-      if (params.page) {
-        page = Number(params.page || 1) - 1;
+      if (newParams.page) {
+        page = Number(newParams.page || 1) - 1;
         setCurrentAppPage(page + 1);
-        delete params["page"];
+        delete newParams["page"];
       }
 
-      if (Object.keys(params).length) {
+      if (Object.keys(newParams).length) {
         dispatch(
           CompaniesActions.getCompaniesRequest(
             {
               page,
             },
-            params
+            newParams
           )
         );
       } else {
@@ -143,6 +145,10 @@ const Results = () => {
         page = Number(params.page || 1) - 1;
         delete params["page"];
       }
+      // const table = document.querySelector("#myTable");
+      // while (table.rows.length > 0) {
+      //   table.deleteRow(0);
+      // }
 
       if (Object.keys(params).length) {
         setFilteredCompanies(
@@ -288,8 +294,8 @@ const Results = () => {
                   </>
                 ) : (
                   <ResultEmptyState
-                    title="Nenhum diagnóstico ainda"
-                    description="Espere uma empresa responder um questionário, para gerar um diagnóstico."
+                    title="Nenhuma empresa encontrada"
+                    description="Tente usar outros parâmetros de filtragem."
                   />
                 )}
                 <tfoot className="relative w-full h-16 items-center justify-center">

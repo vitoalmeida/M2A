@@ -4,8 +4,8 @@ function getQuestions() {
   return client("pergunta/").get();
 }
 
-function getQuestionnaires() {
-  return client("empresa_questionario/").get();
+function getQuestionnaires(filter: any) {
+  return client("empresa_questionario/").filter(filter).get();
 }
 
 function getQuestionnairesAnswers(questionnaireId: number) {

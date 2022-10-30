@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { CompaniesActions } from "../redux/companies";
 import { QuestionnaireActions } from "../redux/questionnaire";
+import { AccountActions } from "../redux/account";
 
 const Router = () => {
   const dispatch = useDispatch();
@@ -28,6 +29,11 @@ const Router = () => {
   }
 
   useEffect(() => {
+    dispatch(
+      AccountActions.getAccountsRequest({
+        page: 0,
+      })
+    );
     dispatch(
       CompaniesActions.getMasterCompaniesRequest({
         limit: 10,

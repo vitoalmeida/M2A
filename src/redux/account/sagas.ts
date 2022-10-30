@@ -18,7 +18,11 @@ import * as helpers from "../../helpers/index";
 import showToast from "../../helpers/showToast";
 import configApi from "../../services/config";
 import { CompaniesActions } from "../companies";
-import { formatFilter, getRemainingCount } from "../../helpers/formatData";
+import {
+  filterUsers,
+  formatFilter,
+  getRemainingCount,
+} from "../../helpers/formatData";
 import { Count } from "../companies/types";
 
 function* getAccount({ payload: { data } }: GetAccount) {
@@ -61,7 +65,7 @@ function* getAccountSuccess(data, token, isCompany) {
   else customHistory.push("/companies");
 }
 
-function* getAccounts({ payload: { filter } }: GetAccounts) {
+function* getAccounts({ payload: { filter, params } }: GetAccounts) {
   try {
     const { account: accountState } = yield select();
 
@@ -102,34 +106,52 @@ function* getAccounts({ payload: { filter } }: GetAccounts) {
       seccondFilter
     );
 
-    const formatedAdmins = admins.results.map((admin) => {
+    let formatedAdmins = admins.results.map((admin) => {
       return { ...admin, tipo: 1 };
     });
 
-    const formatedConsultants = consultants.results.map((consultant) => {
+    let formatedConsultants = consultants.results.map((consultant) => {
       return { ...consultant, tipo: 2 };
     });
 
-    let formatedUsers: Profile[] = [...formatedAdmins, ...formatedConsultants];
-    for (let i = 0; i < formatedUsers.length; i++) {
+    for (let i = 0; i < formatedAdmins.length; i++) {
       const { data: account } = yield call(
         api.account.getAccount,
-        formatedUsers[i].usuario
+        formatedAdmins[i].usuario
       );
-      formatedUsers[i].ativo = account.ativo;
-      formatedUsers[i].username = account.username;
-      formatedUsers[i].email = account.email;
+      formatedAdmins[i].ativo = account.ativo;
+      formatedAdmins[i].username = account.username;
+      formatedAdmins[i].email = account.email;
     }
 
+    for (let i = 0; i < formatedConsultants.length; i++) {
+      const { data: account } = yield call(
+        api.account.getAccount,
+        formatedConsultants[i].usuario
+      );
+      formatedConsultants[i].ativo = account.ativo;
+      formatedConsultants[i].username = account.username;
+      formatedConsultants[i].email = account.email;
+    }
+
+    let allFilteredUsers: Profile[] = [];
+
+    if (params) {
+      formatedAdmins = filterUsers(formatedAdmins, params);
+      formatedConsultants = filterUsers(formatedConsultants, params);
+    }
+
+    allFilteredUsers = [...formatedAdmins, ...formatedConsultants];
+
     yield getAccountsSuccess(
-      formatedUsers,
+      allFilteredUsers,
       {
-        total: admins.count,
+        total: params ? formatedAdmins.length : admins.count,
         current:
           accountState.accountList.adminCount.current + formatedAdmins.length,
       },
       {
-        total: consultants.count,
+        total: params ? formatedConsultants.length : consultants.count,
         current:
           accountState.accountList.consultantCount.current +
           formatedConsultants.length,

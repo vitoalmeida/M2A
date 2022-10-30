@@ -1,4 +1,4 @@
-import { Form, Formik } from "formik";
+import { Form, Formik, useFormik } from "formik";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "../../../redux/hooks";
@@ -52,31 +52,33 @@ const QuestionnaireForm: React.FC = () => {
       </p>
       <Formik
         {...formSchema}
-        onSubmit={(values, actions) => {
+        onSubmit={(values) => {
           handleSubmit({ ...values });
         }}
-      >
-        {({ errors, isValid, isValidating, isSubmitting }) => {
-          console.error(errors);
-          if (isValidating && !isValid && errors && isSubmitting) {
+        validate={(values) => {
+          let errorsCount = 0;
+          Object.keys(values).forEach((key) => {
+            if (!values[key]) errorsCount += 1;
+          });
+          if (errorsCount) {
             showToast("Responda todas as perguntas!", "error");
           }
-
-          return (
-            <Form>
-              {questionnaire.questions.map((question, questionIndex) => (
-                <Question
-                  name={"pergunta" + (questionIndex + 1)}
-                  question={question}
-                  index={questionIndex}
-                />
-              ))}
-              <div className="py-10">
-                <Button title="ENVIAR" />
-              </div>
-            </Form>
-          );
         }}
+      >
+        {({ errors, isValid, initialStatus, values, status }) => (
+          <Form>
+            {questionnaire.questions.map((question, questionIndex) => (
+              <Question
+                name={"pergunta" + (questionIndex + 1)}
+                question={question}
+                index={questionIndex}
+              />
+            ))}
+            <div className="py-10">
+              <Button className="w-full" title="ENVIAR" />
+            </div>
+          </Form>
+        )}
       </Formik>
     </div>
   );

@@ -25,8 +25,11 @@ export function getAccountFailure(): AccountActionTypes {
   return action(AccountTypes.GET_ACCOUNT_FAILURE);
 }
 
-export function getAccountsRequest(filter: Filter): AccountActionTypes {
-  return action(AccountTypes.GET_ACCOUNTS_REQUEST, { filter });
+export function getAccountsRequest(
+  filter: Filter,
+  params?: any
+): AccountActionTypes {
+  return action(AccountTypes.GET_ACCOUNTS_REQUEST, { filter, params });
 }
 
 export function getAccountsSuccess(

@@ -23,6 +23,7 @@ export interface GetDiagnostics {
   type: DiagnosticsTypes.GET_DIAGNOSTICS_REQUEST;
   payload: {
     filter: Filter;
+    params?: any;
   };
 }
 
@@ -30,7 +31,8 @@ export interface GetDiagnosticsSuccess {
   type: DiagnosticsTypes.GET_DIAGNOSTICS_SUCCESS;
   payload: {
     data: Diagnostic[];
-    count: Count;
+    diagnosticCount: Count;
+    questionnairesCount: Count;
   };
 }
 
@@ -81,9 +83,13 @@ export type DiagnosticsActionTypes =
   | GetDiagnosticsFailure;
 
 export interface DiagnosticsState {
-  diagnostics: Diagnostic[];
+  diagnostics: {
+    loading?: boolean;
+    data?: Diagnostic[] | null;
+    questionnairesCount?: Count;
+    diagnosticsCount?: Count;
+  };
   loading: boolean;
-  count: Count;
 }
 
 export interface Diagnostic {

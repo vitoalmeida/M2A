@@ -3,17 +3,22 @@ import { Filter } from "../../types";
 import { Count } from "../companies/types";
 import { Diagnostic, DiagnosticsActionTypes, DiagnosticsTypes } from "./types";
 
-export function getDiagnosticsRequest(filter: Filter): DiagnosticsActionTypes {
-  return action(DiagnosticsTypes.GET_DIAGNOSTICS_REQUEST, { filter });
+export function getDiagnosticsRequest(
+  filter: Filter,
+  params?: any
+): DiagnosticsActionTypes {
+  return action(DiagnosticsTypes.GET_DIAGNOSTICS_REQUEST, { filter, params });
 }
 
 export function getDiagnosticsSuccess(
   data: Diagnostic[],
-  count: Count
+  diagnosticCount: Count,
+  questionnairesCount: Count
 ): DiagnosticsActionTypes {
   return action(DiagnosticsTypes.GET_DIAGNOSTICS_SUCCESS, {
     data,
-    count,
+    diagnosticCount,
+    questionnairesCount,
   });
 }
 

@@ -1,4 +1,7 @@
+import { Profile } from "../redux/account/types";
 import { Company } from "../redux/companies/types";
+import { Diagnostic } from "../redux/diagnostics/types";
+import { Questionnaire } from "../redux/questionnaire/types";
 import { Filter } from "../types";
 
 export const formatUf = (ufs) => {
@@ -78,17 +81,32 @@ export function filterCompanies(companies: Company[], params: any) {
   let filteredCompanies = [...companies];
 
   if (params.query) {
-    const pattern = new RegExp(params.query.toLowerCase(), "g");
+    const pattern = new RegExp(
+      params.query
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase(),
+      "g"
+    );
     filteredCompanies = filteredCompanies.filter((company) => {
-      console.log(company);
       if (
         company.razao_social &&
-        pattern.test(company.razao_social.toLowerCase())
+        pattern.test(
+          company.razao_social
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+        )
       ) {
         return company;
       } else if (
         company.fantasia &&
-        pattern.test(company.fantasia.toLowerCase())
+        pattern.test(
+          company.fantasia
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+        )
       ) {
         return company;
       } else {
@@ -132,8 +150,123 @@ export function filterCompanies(companies: Company[], params: any) {
       }
     });
   }
+  if (params.arrecadacao) {
+    filteredCompanies = filteredCompanies.filter((company) => {
+      if (
+        company.valor_arrecadacao &&
+        Number(company.valor_arrecadacao) === Number(params.arrecadacao)
+      ) {
+        return company;
+      } else {
+        return null;
+      }
+    });
+  }
 
   return filteredCompanies;
+}
+
+export function filterUsers(users: Profile[], params: any) {
+  let filteredUsers = [...users];
+
+  if (params.nome) {
+    const words = params.nome
+      .replace(/\s\s+/g, " ")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .split(" ");
+    filteredUsers = filteredUsers.filter((user) => {
+      if (
+        words.includes(user.nome.toLowerCase()) ||
+        words.includes(user.sobrenome.toLowerCase())
+      ) {
+        return user;
+      } else {
+        return null;
+      }
+    });
+  }
+
+  if (params.email) {
+    const pattern = new RegExp(params.email.toLowerCase(), "g");
+    filteredUsers = filteredUsers.filter((user) => {
+      if (pattern.test(user.email)) {
+        return user;
+      } else {
+        return null;
+      }
+    });
+  }
+
+  if (params.perfil) {
+    filteredUsers = filteredUsers.filter((user) => {
+      if (Number(params.perfil) === Number(user.tipo)) {
+        return user;
+      } else {
+        return null;
+      }
+    });
+  }
+
+  return filteredUsers;
+}
+
+export function filterDiagnostics(diagnostics: Diagnostic[], params: any) {
+  let filteredDiagnostics = [...diagnostics];
+
+  if (params.tempo) {
+    const tempo = params.tempo.replace(/\D/g, "");
+    filteredDiagnostics = filteredDiagnostics.filter((diagnostic) => {
+      if (tempo === params.tempo) {
+        return diagnostic;
+      } else {
+        return null;
+      }
+    });
+  }
+
+  if (params.status) {
+    filteredDiagnostics = filteredDiagnostics.filter((diagnostic) => {
+      if (Number(params.status) === 1 && diagnostic.consultor) {
+        return diagnostic;
+      } else if (Number(params.status) === 2 && !diagnostic.consultor) {
+        return diagnostic;
+      } else {
+        return null;
+      }
+    });
+  }
+
+  if (params.consultor) {
+    filteredDiagnostics = filteredDiagnostics.filter((diagnostic) => {
+      // @ts-ignore
+      if (Number(params.consultor) === Number(diagnostic.consultor?.id)) {
+        return diagnostic;
+      } else {
+        return null;
+      }
+    });
+  }
+
+  if (
+    params.query ||
+    params.uf ||
+    params.empresa_vinculada ||
+    params.arrecadacao ||
+    params.setor
+  ) {
+    filteredDiagnostics = filteredDiagnostics.filter((diagnostic) => {
+      const filteredCompany = filterCompanies(
+        [(diagnostic.empresa_questionario as Questionnaire).empresa as Company],
+        params
+      );
+      if (filteredCompany.length) return diagnostic;
+      else return null;
+    });
+  }
+
+  return filteredDiagnostics;
 }
 
 export function formatQueryString(params: any, values: any) {

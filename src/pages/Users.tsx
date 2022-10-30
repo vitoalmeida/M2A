@@ -1,4 +1,4 @@
-import SearchForm from "../components/pages/companies/SearchForm";
+import SearchForm from "../components/pages/users/SearchForm";
 import Layout from "../components/Layout";
 import Results from "../components/pages/users/Results";
 import { Helmet } from "react-helmet";

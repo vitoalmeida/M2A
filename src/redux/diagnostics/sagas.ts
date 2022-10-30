@@ -12,20 +12,60 @@ import * as api from "../../services/index";
 import * as helpers from "../../helpers/index";
 import showToast from "../../helpers/showToast";
 import { customHistory } from "../../routes/CustomBrowserRouter";
-import { formatFilter } from "../../helpers/formatData";
+import {
+  filterDiagnostics,
+  formatFilter,
+  getRemainingCount,
+} from "../../helpers/formatData";
 
-function* getDiagnostics({ payload: { filter } }: GetDiagnostics) {
+function* getDiagnostics({ payload: { filter, params } }: GetDiagnostics) {
   try {
     const { diagnostics: diagnosticsState } = yield select();
-    filter = formatFilter(filter);
+    console.log(diagnosticsState);
 
-    const { data: questionnaires } = yield call(
-      api.questionnaire.getQuestionnaires
+    let questionnairesCountTotal =
+      diagnosticsState.diagnostics.questionnairesCount?.total;
+    let diagnosticsCountTotal =
+      diagnosticsState.diagnostics.diagnosticsCount?.total;
+
+    if (!questionnairesCountTotal) {
+      const { data: questionnairesCount } = yield call(
+        api.questionnaire.getQuestionnaires,
+        {
+          page: 0,
+          limit: 0,
+        }
+      );
+      questionnairesCountTotal = questionnairesCount.count;
+    }
+
+    if (!diagnosticsCountTotal) {
+      const { data: diagnosticsCount } = yield call(
+        api.diagnostics.getDiagnostics,
+        {
+          page: 0,
+          limit: 0,
+        }
+      );
+      diagnosticsCountTotal = diagnosticsCount.count;
+    }
+
+    let [firstFilter, seccondFilter] = getRemainingCount(
+      questionnairesCountTotal,
+      diagnosticsCountTotal,
+      filter
     );
 
+    firstFilter = formatFilter(firstFilter);
+    seccondFilter = formatFilter(seccondFilter);
+
+    const { data: questionnaires } = yield call(
+      api.questionnaire.getQuestionnaires,
+      firstFilter
+    );
     const { data: diagnostics } = yield call(
       api.diagnostics.getDiagnostics,
-      filter
+      seccondFilter
     );
 
     let diagnosedQuestionnairesIds = [];
@@ -33,22 +73,21 @@ function* getDiagnostics({ payload: { filter } }: GetDiagnostics) {
     diagnostics.results.forEach((diagnostic) => {
       diagnosedQuestionnairesIds.push(diagnostic.empresa_questionario);
     });
-    let formatedQuestionnaires = [];
 
+    let formatedQuestionnaires = [];
     questionnaires.results.forEach((questionnaire) => {
       if (!diagnosedQuestionnairesIds.includes(questionnaire.id)) {
         formatedQuestionnaires.push({ empresa_questionario: questionnaire });
       } else {
+        // const index = diagnosedQuestionnairesIds.indexOf(questionnaire.id);
+        // diagnosedQuestionnairesIds.splice(index, 1);
         diagnostics.results.find(
           (diagnostic) => diagnostic.empresa_questionario === questionnaire.id
         ).empresa_questionario = questionnaire;
       }
     });
 
-    let formatedDiagnostics = [
-      ...diagnostics.results,
-      ...formatedQuestionnaires,
-    ];
+    let formatedDiagnostics = [...diagnostics.results];
 
     for (let i = 0; i < formatedDiagnostics.length; i++) {
       if (formatedDiagnostics[i].consultor) {
@@ -59,13 +98,33 @@ function* getDiagnostics({ payload: { filter } }: GetDiagnostics) {
         formatedDiagnostics[i].consultor = consultant;
       }
 
-      if (formatedDiagnostics[i].empresa_questionario.empresa_master === 3) {
+      if (typeof formatedDiagnostics[i].empresa_questionario === "number") {
+        // eslint-disable-next-line no-loop-func
+        formatedDiagnostics.find((diagnostic) => {
+          if (
+            diagnostic.empresa_questionario?.id ===
+            formatedDiagnostics[i].empresa_questionario
+          ) {
+            formatedDiagnostics[i].empresa_questionario =
+              diagnostic.empresa_questionario;
+          }
+        });
+      }
+
+      if (
+        typeof formatedDiagnostics[i].empresa_questionario.empresa === "number"
+      ) {
         const { data: company } = yield call(
           api.companies.getCompany,
           formatedDiagnostics[i].empresa_questionario.empresa
         );
         formatedDiagnostics[i].empresa_questionario.empresa = company;
-      } else {
+      }
+
+      if (
+        typeof formatedDiagnostics[i].empresa_questionario.empresa_master ===
+        "number"
+      ) {
         const { data: masterCompany } = yield call(
           api.companies.getMasterCompany,
           formatedDiagnostics[i].empresa_questionario.empresa_master
@@ -75,11 +134,56 @@ function* getDiagnostics({ payload: { filter } }: GetDiagnostics) {
       }
     }
 
+    for (let i = 0; i < formatedQuestionnaires.length; i++) {
+      if (formatedQuestionnaires[i].consultor) {
+        const { data: consultant } = yield call(
+          api.account.getConsultant,
+          String(formatedQuestionnaires[i].consultor)
+        );
+        formatedQuestionnaires[i].consultor = consultant;
+      }
+
+      const { data: company } = yield call(
+        api.companies.getCompany,
+        formatedQuestionnaires[i].empresa_questionario.empresa
+      );
+      formatedQuestionnaires[i].empresa_questionario.empresa = company;
+
+      const { data: masterCompany } = yield call(
+        api.companies.getMasterCompany,
+        formatedQuestionnaires[i].empresa_questionario.empresa_master
+      );
+      formatedQuestionnaires[i].empresa_questionario.empresa_master =
+        masterCompany;
+    }
+
+    let allFilteredDiagnostics = [];
+
+    if (params) {
+      formatedDiagnostics = filterDiagnostics(formatedDiagnostics, params);
+      formatedQuestionnaires = filterDiagnostics(
+        formatedQuestionnaires,
+        params
+      );
+    }
+
+    allFilteredDiagnostics = [
+      ...formatedDiagnostics,
+      ...formatedQuestionnaires,
+    ];
+
     yield put(
-      DiagnosticsActions.getDiagnosticsSuccess(formatedDiagnostics, {
-        total: diagnostics.count,
-        current: diagnosticsState.count.current + diagnostics.results.length,
-      })
+      DiagnosticsActions.getDiagnosticsSuccess(
+        allFilteredDiagnostics,
+        {
+          total: params ? formatedDiagnostics.length : diagnostics.count,
+          current: 0,
+        },
+        {
+          total: params ? formatedQuestionnaires.length : questionnaires.count,
+          current: 0,
+        }
+      )
     );
   } catch (err) {
     yield put(DiagnosticsActions.getDiagnosticsFailure());

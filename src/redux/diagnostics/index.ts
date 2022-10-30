@@ -4,12 +4,19 @@ import * as Actions from "./actions";
 import { DiagnosticsState, DiagnosticsTypes } from "./types";
 
 const INITIAL_STATE: DiagnosticsState = {
-  diagnostics: [],
-  loading: null,
-  count: {
-    total: 0,
-    current: 0,
+  diagnostics: {
+    data: null,
+    loading: false,
+    questionnairesCount: {
+      total: null,
+      current: null,
+    },
+    diagnosticsCount: {
+      total: null,
+      current: null,
+    },
   },
+  loading: null,
 };
 
 const reducer: Reducer<DiagnosticsState> = (
@@ -24,8 +31,11 @@ const reducer: Reducer<DiagnosticsState> = (
       return {
         ...state,
         loading: false,
-        diagnostics: payload.data,
-        count: payload.count,
+        diagnostics: {
+          data: payload.data,
+          questionnairesCount: payload.questionnairesCount,
+          diagnosticsCount: payload.diagnosticsCount,
+        },
       };
 
     case DiagnosticsTypes.GET_DIAGNOSTICS_FAILURE:

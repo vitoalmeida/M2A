@@ -30,7 +30,9 @@ function* getQuestions() {
 
 function* getQuestionnaires() {
   try {
-    const { data } = yield call(api.questionnaire.getQuestionnaires);
+    const { data } = yield call(api.questionnaire.getQuestionnaires, {
+      page: 0,
+    });
 
     yield put(QuestionnaireActions.getQuestionnairesSuccess(data.results));
   } catch (err) {
@@ -86,7 +88,7 @@ function* registerQuestionnaire({
       empresa_master = 3;
       empresa = companyId;
     }
-
+    console.log(time, companyId, data, master);
     const { data: empresa_questionario } = yield call(
       api.questionnaire.registerQuestionnaire,
       { tempo: time, empresa_master, empresa }

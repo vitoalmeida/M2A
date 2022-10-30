@@ -23,7 +23,7 @@ const Pagination = ({ currentPage, totalPage, onChangePage }: Props) => (
     </div>
 
     <div className="hidden md:flex">
-      {currentPage > 2 && (
+      {currentPage > 3 && (
         <a
           onClick={() => onChangePage(1)}
           className="inline-flex cursor-pointer items-center border-t-2 border-transparent px-4 pt-2 text-sm font-medium text-stk-grey-500 duration-300 hover:border-[#1289D9] hover:text-stk-grey-200"
@@ -31,7 +31,7 @@ const Pagination = ({ currentPage, totalPage, onChangePage }: Props) => (
           {1}
         </a>
       )}
-      {currentPage > 2 && (
+      {currentPage > 3 && (
         <span className="inline-flex select-none items-center border-t-2 border-transparent px-4 pt-2 text-sm font-medium text-gray-500">
           ...
         </span>
@@ -95,7 +95,7 @@ const Pagination = ({ currentPage, totalPage, onChangePage }: Props) => (
     </div>
 
     <div className="-mt-px flex w-0 flex-1 justify-end">
-      {totalPage !== currentPage && (
+      {totalPage > currentPage && (
         <a
           onClick={() => onChangePage(currentPage + 1)}
           className="inline-flex cursor-pointer items-center pt-2 pl-1 text-sm font-medium text-stk-grey-500 duration-300 hover:border-[#1289D9] hover:text-stk-grey-200"

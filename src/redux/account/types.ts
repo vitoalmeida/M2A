@@ -50,7 +50,7 @@ export interface GetAccountFailure {
 
 export interface GetAccounts {
   type: AccountTypes.GET_ACCOUNTS_REQUEST;
-  payload: { filter: Filter };
+  payload: { filter: Filter; params?: any };
 }
 
 export interface GetAccountsSuccess {

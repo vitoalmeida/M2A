@@ -3,7 +3,6 @@ import { FaEye, FaTrash } from "react-icons/fa";
 import { useSelector } from "../../../redux/hooks";
 import Modal from "../../Modal";
 import { Company } from "../../../redux/companies/types";
-import { CompaniesActions } from "../../../redux/companies";
 import { useDispatch } from "react-redux";
 import WaningModal from "../../WaningModal";
 import { Questionnaire } from "../../../redux/questionnaire/types";
@@ -17,13 +16,17 @@ import ResultEmptyState from "../../ResultEmptyState";
 import Pagination from "../../Pagination";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Spinner } from "react-activity";
+import {
+  formatQueryString,
+  getRouterParams,
+} from "../../../helpers/formatData";
 
 const Results = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { diagnostics, questionnaire } = useSelector((state) => state);
   const [selected, setSelected] = useState<Diagnostic>();
-  const { loading, count } = diagnostics;
+  const { loading } = diagnostics;
 
   const [viewOpen, setViewOpen] = useState(false);
   const [warningOpen, setWarningOpen] = useState(false);
@@ -31,32 +34,44 @@ const Results = () => {
   const [diagnosticId, setDiagnosticId] = useState<number>();
   const [questionnaireId, setQuestionnaireId] = useState<number>();
 
+  const [isSetingPage, setIsSetingPage] = useState(false);
   const [currentAppPage, setCurrentAppPage] = useState(1);
+  const [filteredDiagnostics, setFilteredDiagnostics] = useState([]);
 
   const { search } = useLocation();
 
-  useEffect(() => {
-    setCurrentAppPage(Number(search.replaceAll(/\D/g, "") || 1));
-    if (!questionnaire.questions.length) {
-      dispatch(QuestionnaireActions.getQuestionsRequest());
-    }
-    dispatch(
-      DiagnosticsActions.getDiagnosticsRequest({
-        page: Number(search.replaceAll(/\D/g, "")) - 1,
-        limit: 10,
-      })
-    );
-  }, []);
+  const params = getRouterParams(search);
 
   function handleChangePage(page: number) {
+    setIsSetingPage(true);
+    const newParams = { ...params };
+
+    if (newParams.page) {
+      delete newParams["page"];
+    }
+
     setCurrentAppPage(page);
-    navigate(`/diagnostics?page=${page}`);
-    dispatch(
-      DiagnosticsActions.getDiagnosticsRequest({
-        page: page - 1,
-        limit: 10,
-      })
-    );
+
+    if (Object.keys(newParams).length) {
+      let queryString = formatQueryString(newParams, { ...newParams, page });
+
+      navigate(`/diagnostics${queryString ? queryString : ""}`);
+      setFilteredDiagnostics(
+        diagnostics?.diagnostics?.data?.slice(10 * (page - 1), 10 * page)
+      );
+    } else {
+      navigate(`/diagnostics?page=${page}`);
+      dispatch(
+        DiagnosticsActions.getDiagnosticsRequest({
+          page: page - 1,
+          limit: 5,
+        })
+      );
+    }
+
+    setTimeout(() => {
+      setIsSetingPage(false);
+    }, 1000);
   }
 
   function handleOpenViewModal(diagnostic?: Diagnostic) {
@@ -82,6 +97,63 @@ const Results = () => {
       DiagnosticsActions.deleteDiagnosticRequest(diagnosticId, questionnaireId)
     );
   }
+
+  useEffect(() => {
+    setCurrentAppPage(Number(search.replaceAll(/\D/g, "") || 1));
+    if (!questionnaire.questions.length) {
+      dispatch(QuestionnaireActions.getQuestionsRequest());
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!loading && !isSetingPage) {
+      const newParams = { ...params };
+      let page = 0;
+
+      if (newParams.page) {
+        page = Number(newParams.page || 1) - 1;
+        setCurrentAppPage(page + 1);
+        delete newParams["page"];
+      }
+
+      if (Object.keys(newParams).length) {
+        dispatch(
+          DiagnosticsActions.getDiagnosticsRequest(
+            {
+              page,
+            },
+            newParams
+          )
+        );
+      } else {
+        dispatch(
+          DiagnosticsActions.getDiagnosticsRequest({
+            page,
+            limit: 5,
+          })
+        );
+      }
+    }
+  }, [search]);
+
+  useEffect(() => {
+    if (diagnostics?.diagnostics) {
+      let page = 0;
+
+      if (params.page) {
+        page = Number(params.page || 1) - 1;
+        delete params["page"];
+      }
+
+      if (Object.keys(params).length) {
+        setFilteredDiagnostics(
+          diagnostics?.diagnostics?.data?.slice(10 * page, 10 * (page + 1))
+        );
+      } else {
+        setFilteredDiagnostics(diagnostics?.diagnostics?.data);
+      }
+    }
+  }, [diagnostics?.diagnostics]);
 
   return (
     <div className="mb-32 mt-10">
@@ -126,7 +198,7 @@ const Results = () => {
                   <div className="flex flex-col justify-center items-center w-full h-[24rem] text-center">
                     <Spinner size={45} color={"#005589"} />
                   </div>
-                ) : diagnostics.diagnostics.length ? (
+                ) : filteredDiagnostics?.length ? (
                   <>
                     <thead className="bg-gray-50 w-full">
                       <tr>
@@ -169,7 +241,7 @@ const Results = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 bg-white">
-                      {diagnostics.diagnostics.map((diagnostic) => (
+                      {filteredDiagnostics?.map((diagnostic) => (
                         <tr key={diagnostic.id}>
                           <td className="whitespace-nowrap text-ellipsis text-center text-sm text-gray-500">
                             {"T" +
@@ -185,19 +257,13 @@ const Results = () => {
                             />
                           </td>
                           <td className="whitespace-nowrap text-ellipsis px-3 py-4 text-sm text-gray-500">
-                            {typeof (
-                              diagnostic.empresa_questionario as Questionnaire
-                            ).empresa !== "number"
-                              ? (
-                                  (
-                                    diagnostic.empresa_questionario as Questionnaire
-                                  ).empresa as Company
-                                ).fantasia
-                              : (
-                                  (
-                                    diagnostic.empresa_questionario as Questionnaire
-                                  ).empresa_master as Company
-                                ).fantasia}
+                            {
+                              (
+                                (
+                                  diagnostic.empresa_questionario as Questionnaire
+                                ).empresa as Company
+                              ).fantasia
+                            }
                           </td>
 
                           <td className="whitespace-nowrap text-ellipsis px-3 py-4 text-sm text-gray-500">
@@ -249,7 +315,14 @@ const Results = () => {
                   <div className="absolute mt-4 left-0 right-0 ml-auto mr-auto">
                     {!loading && (
                       <Pagination
-                        totalPage={Math.ceil(count.total / 10) || 1}
+                        totalPage={
+                          Math.ceil(
+                            (diagnostics.diagnostics?.diagnosticsCount?.total +
+                              diagnostics.diagnostics?.questionnairesCount
+                                ?.total) /
+                              10
+                          ) || 0
+                        }
                         currentPage={currentAppPage}
                         onChangePage={(newPage) => {
                           window.scrollTo({

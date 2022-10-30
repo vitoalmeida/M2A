@@ -15,6 +15,10 @@ import ResultEmptyState from "../../ResultEmptyState";
 import { Spinner } from "react-activity";
 import { useLocation, useNavigate } from "react-router-dom";
 import Pagination from "../../Pagination";
+import {
+  formatQueryString,
+  getRouterParams,
+} from "../../../helpers/formatData";
 
 const Results = () => {
   const dispatch = useDispatch();
@@ -30,31 +34,42 @@ const Results = () => {
   const [userId, setUserId] = useState<number>();
   const [type, setType] = useState<number>();
 
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [currentAppPage, setCurrentAppPage] = useState(1);
+  const [isSetingPage, setIsSetingPage] = useState(false);
 
   const { search } = useLocation();
 
-  useEffect(() => {
-    const page = Number(search.replaceAll(/\D/g, "") || 1);
-
-    setCurrentAppPage(page);
-    dispatch(
-      AccountActions.getAccountsRequest({
-        page: page - 1,
-        limit: 5,
-      })
-    );
-  }, []);
+  const params = getRouterParams(search);
 
   function handleChangePage(page: number) {
+    setIsSetingPage(true);
+    const newParams = { ...params };
+
+    if (newParams.page) {
+      delete newParams["page"];
+    }
+
     setCurrentAppPage(page);
-    navigate(`/users?page=${page}`);
-    dispatch(
-      AccountActions.getAccountsRequest({
-        page: page - 1,
-        limit: 5,
-      })
-    );
+
+    if (Object.keys(newParams).length) {
+      let queryString = formatQueryString(newParams, { ...newParams, page });
+
+      navigate(`/users${queryString ? queryString : ""}`);
+      setFilteredUsers(accountList?.data.slice(10 * (page - 1), 10 * page));
+    } else {
+      navigate(`/users?page=${page}`);
+      dispatch(
+        AccountActions.getAccountsRequest({
+          page: page - 1,
+          limit: 5,
+        })
+      );
+    }
+
+    setTimeout(() => {
+      setIsSetingPage(false);
+    }, 1000);
   }
 
   function handleOpenEditModal(user?: Profile) {
@@ -70,6 +85,54 @@ const Results = () => {
     setType(account.tipo);
     setWarningOpen(true);
   }
+
+  useEffect(() => {
+    if (!loading && !isSetingPage) {
+      const newParams = { ...params };
+      let page = 0;
+
+      if (newParams.page) {
+        page = Number(newParams.page || 1) - 1;
+        setCurrentAppPage(page + 1);
+        delete newParams["page"];
+      }
+
+      if (Object.keys(newParams).length) {
+        dispatch(
+          AccountActions.getAccountsRequest(
+            {
+              page,
+            },
+            newParams
+          )
+        );
+      } else {
+        dispatch(
+          AccountActions.getAccountsRequest({
+            page,
+            limit: 5,
+          })
+        );
+      }
+    }
+  }, [search]);
+
+  useEffect(() => {
+    if (accountList.data) {
+      let page = 0;
+
+      if (params.page) {
+        page = Number(params.page || 1) - 1;
+        delete params["page"];
+      }
+
+      if (Object.keys(params).length) {
+        setFilteredUsers(accountList.data.slice(10 * page, 10 * (page + 1)));
+      } else {
+        setFilteredUsers(accountList.data);
+      }
+    }
+  }, [accountList.data]);
 
   return (
     <div className="mb-32 mt-10">
@@ -125,7 +188,7 @@ const Results = () => {
                   <div className="flex flex-col justify-center items-center w-full h-[24rem] text-center">
                     <Spinner size={45} color={"#005589"} />
                   </div>
-                ) : accountList?.data?.length ? (
+                ) : filteredUsers?.length ? (
                   <>
                     <thead className="bg-gray-50 w-full">
                       <tr>
@@ -169,7 +232,7 @@ const Results = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 bg-white">
-                      {accountList?.data?.map((user: Profile) => (
+                      {filteredUsers?.map((user: Profile) => (
                         <tr key={user.id}>
                           <td className="relative whitespace-nowrap py-4 text-right text-sm font-medium">
                             <BsCircleFill
