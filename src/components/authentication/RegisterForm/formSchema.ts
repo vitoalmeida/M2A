@@ -1,8 +1,7 @@
 import * as Yup from "yup";
 import { formErrors } from "../../../helpers";
-import { RegisterProfile } from "../../../redux/account/types";
 
-const initialValues: RegisterProfile = {
+const initialValues: any = {
   nome: "",
   sobrenome: "",
   email: "",
