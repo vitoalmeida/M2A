@@ -240,7 +240,7 @@ const DiagnosticForm: React.FC<Props> = ({ closeForm, diagnostic }) => {
                             label="Conteúdo"
                             name="text"
                             placeholder="Sua empresa pode melhorar em..."
-                            // rows={15}
+                            rows={15}
                             textArea
                             resize
                           />

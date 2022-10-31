@@ -112,6 +112,7 @@ const InformacoesComplementares = ({ onSubmit }: Props) => {
                 <InputFormik
                   placeholder="Minha empresa é..."
                   textArea
+                  rows={4}
                   name="ds_negocio"
                   label="Descreva seu negócio"
                 />
@@ -120,6 +121,7 @@ const InformacoesComplementares = ({ onSubmit }: Props) => {
                 <InputFormik
                   placeholder="Nossa missão é..."
                   textArea
+                  rows={4}
                   name="missao"
                   label="Missão"
                 />
@@ -129,6 +131,7 @@ const InformacoesComplementares = ({ onSubmit }: Props) => {
                 <InputFormik
                   placeholder="Nossa visao é..."
                   textArea
+                  rows={4}
                   name="visao"
                   label="Visão"
                 />
@@ -137,6 +140,7 @@ const InformacoesComplementares = ({ onSubmit }: Props) => {
                 <InputFormik
                   placeholder="Nossos valores são.."
                   textArea
+                  rows={4}
                   name="valores"
                   label="Valores"
                 />

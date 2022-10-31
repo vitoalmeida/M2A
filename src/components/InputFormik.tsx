@@ -15,6 +15,7 @@ interface Props {
   mask?: string;
   descriptionMarginBottom?: number;
   textArea?: boolean;
+  rows?: number;
   required?: boolean;
   disabled?: boolean;
   pattern?: string;
@@ -32,6 +33,7 @@ const InputFormik: React.FC<Props> = ({
   secureTextEntry,
   description,
   descriptionMarginBottom,
+  rows = 1,
   disabled,
   type,
   pattern,
@@ -94,7 +96,7 @@ const InputFormik: React.FC<Props> = ({
           }
           placeholder={placeholder}
           pattern={pattern}
-          rows={textArea ? 15 : 1}
+          rows={rows}
           as={textArea ? "textarea" : "input"}
         />
 
