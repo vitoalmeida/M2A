@@ -6,3 +6,5 @@ export { default as WaningModal } from "./WaningModal";
 export { default as SuccessModal } from "./SuccessModal";
 export { default as CompanyForm } from "./CompanyForm";
 export { default as ToggleFormik } from "./ToggleFormik";
+export { default as Pagination } from "./Pagination";
+export { default as ResultEmptyState } from "./ResultEmptyState";

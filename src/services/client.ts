@@ -48,7 +48,7 @@ class Client {
   }
 
   id(id: string) {
-    this._id = id;
+    this._id = `${id}/`;
     return this;
   }
 
@@ -92,7 +92,10 @@ class Client {
   }
 
   filter(obj: object) {
-    return this.param("filter", obj);
+    Object.keys(obj).forEach((key) => {
+      this.param(key, obj[key]);
+    });
+    return this;
   }
 
   where(obj: object) {

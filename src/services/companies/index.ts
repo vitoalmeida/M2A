@@ -1,15 +1,15 @@
 import client from "../client";
 
 function getCompany(companyId: string) {
-  return client(`empresa/${companyId}`).get();
+  return client(`empresa/${companyId}/`).get();
 }
 
 function getMasterCompany(companyId: string) {
-  return client(`empresa_master/${companyId}`).get();
+  return client(`empresa_master/${companyId}/`).get();
 }
 
-function getCompanies() {
-  return client("empresa/").get();
+function getCompanies(filter: any) {
+  return client("empresa/").filter(filter).get();
 }
 
 function editCompany(companyId: string, data: any) {
@@ -20,8 +20,8 @@ function editMasterCompany(companyId: string, data: any) {
   return client(`empresa_master/${companyId}/`).data(data).put();
 }
 
-function getMasterCompanies() {
-  return client("empresa_master/").get();
+function getMasterCompanies(filter: any) {
+  return client("empresa_master/").filter(filter).get();
 }
 
 function registerCompany(data: any) {

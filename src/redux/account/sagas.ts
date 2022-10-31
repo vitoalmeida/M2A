@@ -1,14 +1,29 @@
 /* eslint-disable import/no-anonymous-default-export */
 // eslint-disable-next-line no-unused-vars
-import { all, call, delay, put, takeLatest } from "redux-saga/effects";
+import { all, call, delay, put, select, takeLatest } from "redux-saga/effects";
 import { AccountActions } from ".";
-import { Account, AccountTypes, DeleteAccountRequest, GetAccount, Profile, RegisterAccount, SetEditAccount } from "./types";
+import {
+  Account,
+  AccountTypes,
+  DeleteAccountRequest,
+  GetAccount,
+  GetAccounts,
+  Profile,
+  RegisterAccount,
+  SetEditAccount,
+} from "./types";
 import { customHistory } from "../../routes/CustomBrowserRouter";
 import * as api from "../../services/index";
 import * as helpers from "../../helpers/index";
 import showToast from "../../helpers/showToast";
 import configApi from "../../services/config";
 import { CompaniesActions } from "../companies";
+import {
+  filterUsers,
+  formatFilter,
+  getRemainingCount,
+} from "../../helpers/formatData";
+import { Count } from "../companies/types";
 
 function* getAccount({ payload: { data } }: GetAccount) {
   try {
@@ -33,7 +48,7 @@ function* getAccount({ payload: { data } }: GetAccount) {
     );
   } catch (err) {
     yield put(AccountActions.getAccountFailure());
-    console.log(err)
+    console.error(err);
     showToast(helpers.formErrors.formatError(err), "error");
   }
 }
@@ -50,29 +65,98 @@ function* getAccountSuccess(data, token, isCompany) {
   else customHistory.push("/companies");
 }
 
-function* getAccounts() {
+function* getAccounts({ payload: { filter, params } }: GetAccounts) {
   try {
-    const { data: admins } = yield call(api.account.getAdminUsers);
-    const { data: consultants } = yield call(api.account.getColsultantUsers);
+    const { account: accountState } = yield select();
 
-    const formatedAdmins = admins.results.map((admin) => {
+    let adminCountTotal = accountState.accountList.adminCount.total;
+    let consultantCountTotal = accountState.accountList.consultantCount.total;
+
+    if (!adminCountTotal) {
+      const { data: adminCount } = yield call(api.account.getAdminUsers, {
+        page: 0,
+        limit: 0,
+      });
+      adminCountTotal = adminCount.count;
+    }
+
+    if (!consultantCountTotal) {
+      const { data: consultantCount } = yield call(
+        api.account.getColsultantUsers,
+        {
+          page: 0,
+          limit: 0,
+        }
+      );
+      consultantCountTotal = consultantCount.count;
+    }
+
+    let [firstFilter, seccondFilter] = getRemainingCount(
+      adminCountTotal,
+      consultantCountTotal,
+      filter
+    );
+
+    firstFilter = formatFilter(firstFilter);
+    seccondFilter = formatFilter(seccondFilter);
+
+    const { data: admins } = yield call(api.account.getAdminUsers, firstFilter);
+    const { data: consultants } = yield call(
+      api.account.getColsultantUsers,
+      seccondFilter
+    );
+
+    let formatedAdmins = admins.results.map((admin) => {
       return { ...admin, tipo: 1 };
     });
 
-    const formatedConsultants = consultants.results.map((consultant) => {
+    let formatedConsultants = consultants.results.map((consultant) => {
       return { ...consultant, tipo: 2 };
     });
 
-    let formatedUsers: Profile[] = [...formatedAdmins, ...formatedConsultants]
-    for (let i = 0; i < formatedUsers.length; i++) {
-      const { data: account } = yield call(api.account.getAccount, formatedUsers[i].usuario)
-      formatedUsers[i].ativo = account.ativo
-      formatedUsers[i].username = account.username
-      formatedUsers[i].email = account.email
+    for (let i = 0; i < formatedAdmins.length; i++) {
+      const { data: account } = yield call(
+        api.account.getAccount,
+        formatedAdmins[i].usuario
+      );
+      formatedAdmins[i].ativo = account.ativo;
+      formatedAdmins[i].username = account.username;
+      formatedAdmins[i].email = account.email;
     }
 
+    for (let i = 0; i < formatedConsultants.length; i++) {
+      const { data: account } = yield call(
+        api.account.getAccount,
+        formatedConsultants[i].usuario
+      );
+      formatedConsultants[i].ativo = account.ativo;
+      formatedConsultants[i].username = account.username;
+      formatedConsultants[i].email = account.email;
+    }
 
-    yield getAccountsSuccess(formatedUsers, formatedUsers.length);
+    let allFilteredUsers: Profile[] = [];
+
+    if (params) {
+      formatedAdmins = filterUsers(formatedAdmins, params);
+      formatedConsultants = filterUsers(formatedConsultants, params);
+    }
+
+    allFilteredUsers = [...formatedAdmins, ...formatedConsultants];
+
+    yield getAccountsSuccess(
+      allFilteredUsers,
+      {
+        total: params ? formatedAdmins.length : admins.count,
+        current:
+          accountState.accountList.adminCount.current + formatedAdmins.length,
+      },
+      {
+        total: params ? formatedConsultants.length : consultants.count,
+        current:
+          accountState.accountList.consultantCount.current +
+          formatedConsultants.length,
+      }
+    );
   } catch (err) {
     yield put(AccountActions.getAccountsFailure());
 
@@ -80,8 +164,14 @@ function* getAccounts() {
   }
 }
 
-function* getAccountsSuccess(data: Profile[], count: number) {
-  yield put(AccountActions.getAccountsSuccess(data, count));
+function* getAccountsSuccess(
+  data: Profile[],
+  adminCount: Count,
+  consultantCount: Count
+) {
+  yield put(
+    AccountActions.getAccountsSuccess(data, adminCount, consultantCount)
+  );
 }
 
 function* registerAccount({ payload: { data, self } }: RegisterAccount) {
@@ -98,7 +188,6 @@ function* registerAccount({ payload: { data, self } }: RegisterAccount) {
         endereco: address.id,
       });
     } else {
-      console.log('data', data)
       yield call(api.account.registerAccount, data);
     }
 
@@ -107,7 +196,7 @@ function* registerAccount({ payload: { data, self } }: RegisterAccount) {
   } catch (err) {
     yield put(AccountActions.registerAccountFailure());
 
-    console.log(err);
+    console.error(err);
     showToast(helpers.formErrors.formatError(err), "error");
   }
 }
@@ -122,7 +211,12 @@ function* registerAccountSuccess(data, self) {
       })
     );
   } else {
-    yield put(AccountActions.getAccountsRequest())
+    yield put(
+      AccountActions.getAccountsRequest({
+        limit: 10,
+        page: 0,
+      })
+    );
   }
 }
 
@@ -130,21 +224,22 @@ function* setEditAccount({ payload: { data } }: SetEditAccount) {
   try {
     yield setEditAccountSuccess(data);
   } catch (err) {
-    yield setEditAccountFailure(err)
+    yield setEditAccountFailure(err);
   }
 }
 
 function* setEditAccountSuccess(data: Profile) {
   yield put(AccountActions.setEditAccountSuccess(data));
-
 }
 
 function* setEditAccountFailure(err: any) {
   yield put(AccountActions.setEditAccountFailure());
-  console.log(err)
+  console.error(err);
 }
 
-function* deleteAccount({ payload: { profileId, userId, type } }: DeleteAccountRequest) {
+function* deleteAccount({
+  payload: { profileId, userId, type },
+}: DeleteAccountRequest) {
   try {
     if (type === 1) {
       yield call(api.account.deleteAccount, String(userId));
@@ -156,66 +251,76 @@ function* deleteAccount({ payload: { profileId, userId, type } }: DeleteAccountR
 
     yield deleteAccountSuccess();
   } catch (err) {
-    yield deleteAccountSuccess()
+    yield deleteAccountSuccess();
   }
 }
 
 function* deleteAccountSuccess() {
   yield put(AccountActions.deleteAccountSuccess());
-  yield put(AccountActions.getAccountsRequest());
+  yield put(
+    AccountActions.getAccountsRequest({
+      limit: 10,
+      page: 0,
+    })
+  );
   showToast("Usuário deletado com sucesso!", "success");
-
 }
 
 function* deleteAccountFailure(err: any) {
   yield put(AccountActions.deleteAccountFailure());
   showToast(helpers.formErrors.formatError(err), "error");
-  console.log(err)
+  console.error(err);
 }
 
 function* editAccount({ payload: { data } }: SetEditAccount) {
   try {
-    // console.log(data)
-
     // yield call(api.account.setAccount, String(data.id), { ativo: data.ativo });
 
     if (data.tipo === 1) {
-      const formatedUser = data
-      delete formatedUser.email
-      delete formatedUser.celular
-      delete formatedUser.telefone
-      delete formatedUser.uf
-      delete formatedUser.formacao
-      delete formatedUser.tipo
-      delete formatedUser.ativo
+      const formatedUser = data;
+      delete formatedUser.email;
+      delete formatedUser.celular;
+      delete formatedUser.telefone;
+      delete formatedUser.uf;
+      delete formatedUser.formacao;
+      delete formatedUser.tipo;
+      delete formatedUser.ativo;
 
       yield call(api.account.setAdminAccount, String(data.id), formatedUser);
     } else {
-      const formatedUser = data
-      yield call(api.account.setColsultantAccount, String(data.id), formatedUser);
+      const formatedUser = data;
+      yield call(
+        api.account.setColsultantAccount,
+        String(data.id),
+        formatedUser
+      );
     }
 
     yield editAccountSuccess();
   } catch (err) {
-    yield editAccountFailure(err)
+    yield editAccountFailure(err);
   }
 }
 
 function* editAccountSuccess() {
   yield put(AccountActions.editAccountSuccess());
-  yield put(AccountActions.getAccountsRequest());
+  yield put(
+    AccountActions.getAccountsRequest({
+      limit: 10,
+      page: 0,
+    })
+  );
   showToast("Usuário editado com sucesso!", "success");
-
 }
 
 function* editAccountFailure(err: any) {
   yield put(AccountActions.editAccountFailure());
   showToast(helpers.formErrors.formatError(err), "error");
-  console.log(err)
+  console.error(err);
 }
 
 function* clearData() {
-  yield put(CompaniesActions.clearData())
+  yield put(CompaniesActions.clearData());
   showToast("Desconectado com sucesso!");
 }
 
@@ -226,5 +331,5 @@ export default [
   takeLatest(AccountTypes.SET_EDIT_ACCOUNT_REQUEST, setEditAccount),
   takeLatest(AccountTypes.DELETE_ACCOUNT_REQUEST, deleteAccount),
   takeLatest(AccountTypes.EDIT_ACCOUNT_REQUEST, editAccount),
-  takeLatest(AccountTypes.CLEAR_DATA, clearData)
-]
+  takeLatest(AccountTypes.CLEAR_DATA, clearData),
+];

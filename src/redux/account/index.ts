@@ -9,7 +9,17 @@ const INITIAL_STATE: AccountState = {
   loading: false,
   data: null,
   token: null,
-  accountList: { data: null, count: null },
+  accountList: {
+    data: null,
+    adminCount: {
+      total: null,
+      current: null,
+    },
+    consultantCount: {
+      total: null,
+      current: null,
+    },
+  },
   editAccount: null,
 };
 
@@ -41,7 +51,8 @@ const reducer: Reducer<AccountState> = (
         loading: false,
         accountList: {
           data: payload.data,
-          count: payload.count,
+          adminCount: payload.adminCount,
+          consultantCount: payload.consultantCount,
         },
       };
 

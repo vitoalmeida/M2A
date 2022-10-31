@@ -1,44 +1,102 @@
 /* eslint-disable import/no-anonymous-default-export */
 // eslint-disable-next-line no-unused-vars
-import { all, call, put, takeLatest } from "redux-saga/effects";
+import { all, call, put, select, takeLatest } from "redux-saga/effects";
 import { DiagnosticsActions } from ".";
-import { DeleteDiagnostic, DiagnosticsTypes, RegisterDiagnostic } from "./types";
+import {
+  DeleteDiagnostic,
+  DiagnosticsTypes,
+  GetDiagnostics,
+  RegisterDiagnostic,
+} from "./types";
 import * as api from "../../services/index";
 import * as helpers from "../../helpers/index";
 import showToast from "../../helpers/showToast";
 import { customHistory } from "../../routes/CustomBrowserRouter";
+import {
+  filterDiagnostics,
+  formatFilter,
+  getRemainingCount,
+} from "../../helpers/formatData";
 
-function* getDiagnostics() {
+function* getDiagnostics({ payload: { filter, params } }: GetDiagnostics) {
   try {
-    const { data: questionnaires } = yield call(
-      api.questionnaire.getQuestionnaires
+    const { diagnostics: diagnosticsState } = yield select();
+
+    let questionnairesCountTotal =
+      diagnosticsState.diagnostics.questionnairesCount?.total;
+    let diagnosticsCountTotal =
+      diagnosticsState.diagnostics.diagnosticsCount?.total;
+
+    if (!questionnairesCountTotal) {
+      const { data: questionnairesCount } = yield call(
+        api.questionnaire.getQuestionnaires,
+        {
+          page: 0,
+          limit: 0,
+        }
+      );
+      questionnairesCountTotal = questionnairesCount.count;
+    }
+
+    if (!diagnosticsCountTotal) {
+      const { data: diagnosticsCount } = yield call(
+        api.diagnostics.getDiagnostics,
+        {
+          page: 0,
+          limit: 0,
+        }
+      );
+      diagnosticsCountTotal = diagnosticsCount.count;
+    }
+
+    let [firstFilter, seccondFilter] = getRemainingCount(
+      questionnairesCountTotal,
+      diagnosticsCountTotal,
+      filter
     );
 
-    const { data: diagnostics } = yield call(api.diagnostics.getDiagnostics);
+    firstFilter = formatFilter(firstFilter);
+    seccondFilter = formatFilter(seccondFilter);
+
+    const { data: questionnaires } = yield call(
+      api.questionnaire.getQuestionnaires,
+      filter
+    );
+    const { data: diagnostics } = yield call(
+      api.diagnostics.getDiagnostics,
+      filter
+    );
 
     let diagnosedQuestionnairesIds = [];
 
     diagnostics.results.forEach((diagnostic) => {
       diagnosedQuestionnairesIds.push(diagnostic.empresa_questionario);
     });
+
     let formatedQuestionnaires = [];
 
     questionnaires.results.forEach((questionnaire) => {
       if (!diagnosedQuestionnairesIds.includes(questionnaire.id)) {
-        formatedQuestionnaires.push({ empresa_questionario: questionnaire });
+        formatedQuestionnaires.push({
+          diagnosticado: false,
+          id: `questionnaire-${questionnaire.id}`,
+          empresa_questionario: questionnaire,
+        });
       } else {
         diagnostics.results.find(
           (diagnostic) => diagnostic.empresa_questionario === questionnaire.id
         ).empresa_questionario = questionnaire;
       }
+
+      if (typeof questionnaire.empresa_master === "number") {
+      }
     });
 
-    let formatedDiagnostics = [
-      ...diagnostics.results,
-      ...formatedQuestionnaires,
-    ];
+    let formatedDiagnostics = [...diagnostics.results];
 
     for (let i = 0; i < formatedDiagnostics.length; i++) {
+      formatedDiagnostics[i].diagnosticado = true;
+      formatedDiagnostics[i].id = `diagnostic-${formatedDiagnostics[i].id}`;
       if (formatedDiagnostics[i].consultor) {
         const { data: consultant } = yield call(
           api.account.getConsultant,
@@ -47,13 +105,33 @@ function* getDiagnostics() {
         formatedDiagnostics[i].consultor = consultant;
       }
 
-      if (formatedDiagnostics[i].empresa_questionario.empresa_master === 3) {
+      if (typeof formatedDiagnostics[i].empresa_questionario === "number") {
+        // eslint-disable-next-line no-loop-func
+        formatedDiagnostics.find((diagnostic) => {
+          if (
+            diagnostic.empresa_questionario?.id ===
+            formatedDiagnostics[i].empresa_questionario
+          ) {
+            formatedDiagnostics[i].empresa_questionario =
+              diagnostic.empresa_questionario;
+          }
+        });
+      }
+
+      if (
+        typeof formatedDiagnostics[i].empresa_questionario.empresa === "number"
+      ) {
         const { data: company } = yield call(
           api.companies.getCompany,
           formatedDiagnostics[i].empresa_questionario.empresa
         );
         formatedDiagnostics[i].empresa_questionario.empresa = company;
-      } else {
+      }
+
+      if (
+        typeof formatedDiagnostics[i].empresa_questionario.empresa_master ===
+        "number"
+      ) {
         const { data: masterCompany } = yield call(
           api.companies.getMasterCompany,
           formatedDiagnostics[i].empresa_questionario.empresa_master
@@ -63,65 +141,121 @@ function* getDiagnostics() {
       }
     }
 
-    yield put(DiagnosticsActions.getDiagnosticsSuccess(formatedDiagnostics));
+    for (let i = 0; i < formatedQuestionnaires.length; i++) {
+      if (formatedQuestionnaires[i].consultor) {
+        const { data: consultant } = yield call(
+          api.account.getConsultant,
+          String(formatedQuestionnaires[i].consultor)
+        );
+        formatedQuestionnaires[i].consultor = consultant;
+      }
+
+      const { data: company } = yield call(
+        api.companies.getCompany,
+        formatedQuestionnaires[i].empresa_questionario.empresa
+      );
+      formatedQuestionnaires[i].empresa_questionario.empresa = company;
+
+      const { data: masterCompany } = yield call(
+        api.companies.getMasterCompany,
+        formatedQuestionnaires[i].empresa_questionario.empresa_master
+      );
+      formatedQuestionnaires[i].empresa_questionario.empresa_master =
+        masterCompany;
+    }
+
+    let allFilteredDiagnostics = [];
+
+    console.log(formatedDiagnostics);
+    if (params) {
+      formatedDiagnostics = filterDiagnostics(formatedDiagnostics, params);
+      formatedQuestionnaires = filterDiagnostics(
+        formatedQuestionnaires,
+        params
+      );
+    }
+    console.log(formatedQuestionnaires);
+
+    allFilteredDiagnostics = [
+      ...formatedDiagnostics,
+      ...formatedQuestionnaires,
+    ];
+
+    yield put(
+      DiagnosticsActions.getDiagnosticsSuccess(
+        allFilteredDiagnostics,
+        {
+          total: params ? formatedDiagnostics.length : diagnostics.count,
+          current: 0,
+        },
+        {
+          total: params ? formatedQuestionnaires.length : questionnaires.count,
+          current: 0,
+        }
+      )
+    );
   } catch (err) {
     yield put(DiagnosticsActions.getDiagnosticsFailure());
-    console.log(err);
+    console.error(err);
   }
 }
 
 function* registerDiagnostic({ payload: { data } }: RegisterDiagnostic) {
   try {
-    console.log(data);
     const { data: diagnostic } = yield call(
       api.diagnostics.registerDiagnostic,
       data
     );
-    console.log(diagnostic);
 
     showToast("Diagnóstico salvo com sucesso!", "success");
     yield put(DiagnosticsActions.registerDiagnosticSuccess());
-    yield put(DiagnosticsActions.getDiagnosticsRequest());
+    yield put(
+      DiagnosticsActions.getDiagnosticsRequest({
+        limit: 10,
+        page: 0,
+      })
+    );
   } catch (err) {
-    console.log(err);
+    console.error(err);
     showToast(helpers.formErrors.formatError(err), "error");
     yield put(DiagnosticsActions.registerDiagnosticFailure());
   }
 }
 
-function* deleteDiagnostic({ payload: { diagnosticId, questionnaireId } }: DeleteDiagnostic) {
+function* deleteDiagnostic({
+  payload: { diagnosticId, questionnaireId },
+}: DeleteDiagnostic) {
   try {
-    console.log(diagnosticId, questionnaireId)
+    if (diagnosticId)
+      yield call(api.diagnostics.deleteDiagnostic, String(diagnosticId));
 
-    if (diagnosticId) yield call(api.diagnostics.deleteDiagnostic, String(diagnosticId))
+    yield call(api.questionnaire.deleteQuestionnaire, String(questionnaireId));
 
-    yield call(api.questionnaire.deleteQuestionnaire, String(questionnaireId))
-
-    yield deleteDiagnosticSuccess()
+    yield deleteDiagnosticSuccess();
   } catch (err) {
-    yield deleteDiagnosticFailure(err)
+    yield deleteDiagnosticFailure(err);
   }
 }
 
 function* deleteDiagnosticSuccess() {
-  yield put(DiagnosticsActions.deleteDiagnosticSuccess())
-  yield put(DiagnosticsActions.getDiagnosticsRequest())
+  yield put(DiagnosticsActions.deleteDiagnosticSuccess());
+  yield put(
+    DiagnosticsActions.getDiagnosticsRequest({
+      limit: 10,
+      page: 0,
+    })
+  );
   showToast("Diagnóstico deletado com sucesso!", "success");
-
 }
 
 function* deleteDiagnosticFailure(err: any) {
-  console.log(err)
+  console.error(err);
   showToast(helpers.formErrors.formatError(err), "error");
-  yield put(DiagnosticsActions.deleteDiagnosticSuccess())
+  yield put(DiagnosticsActions.deleteDiagnosticSuccess());
 }
-
 
 export default [
   takeLatest(DiagnosticsTypes.GET_DIAGNOSTICS_REQUEST, getDiagnostics),
   takeLatest(DiagnosticsTypes.DELETE_DIAGNOSTIC_REQUEST, deleteDiagnostic),
-  takeLatest(
-    DiagnosticsTypes.REGISTER_DIAGNOSTIC_REQUEST,
-    registerDiagnostic
-  ),
-]
+  takeLatest(DiagnosticsTypes.REGISTER_DIAGNOSTIC_REQUEST, registerDiagnostic),
+];

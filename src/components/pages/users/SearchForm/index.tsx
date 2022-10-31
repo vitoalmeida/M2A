@@ -8,6 +8,7 @@ import {
   formatQueryString,
   getRouterParams,
 } from "../../../../helpers/formatData";
+import { usersType } from "../helpers";
 
 const SearchForm = () => {
   const { general, companies } = useSelector((state) => state);
@@ -18,38 +19,32 @@ const SearchForm = () => {
   const params = getRouterParams(search);
 
   const initialValues: any = {
-    query: params.query || "",
-    uf: params.uf || "",
-    empresa_vinculada: params.empresa_vinculada || "",
-    arrecadacao: params.arrecadacao || "",
-    setor: params.setor || "",
+    nome: params.nome || "",
+    email: params.email || "",
+    perfil: params.perfil || "",
   };
 
   function handleReset(resetForm, setValues) {
     if (window.confirm("Deseja limpar os filtros?")) {
       resetForm({
-        query: "",
-        uf: "",
-        empresa_vinculada: "",
-        arrecadacao: "",
-        setor: "",
+        nome: "",
+        email: "",
+        perfil: "",
       });
 
       setValues({
-        query: "",
-        uf: "",
-        empresa_vinculada: "",
-        arrecadacao: "",
-        setor: "",
+        nome: "",
+        email: "",
+        perfil: "",
       });
-      navigate("/companies");
+      navigate("/users");
     }
   }
 
   function handleSubmit(values) {
     let queryString = formatQueryString({ ...params, page: 1 }, values);
 
-    navigate(`/companies${queryString ? queryString : ""}`);
+    navigate(`/users${queryString ? queryString : ""}`);
   }
 
   return (
@@ -63,41 +58,23 @@ const SearchForm = () => {
           <div className="z-0 md:flex md:justify-around mt-5 w-full">
             <div className="flex flex-col w-full md:pr-5">
               <InputFormik
-                label="Pesquisar"
-                name="query"
-                placeholder="Nome da empresa"
+                label="Nome"
+                name="nome"
+                placeholder="Ex.: Jõao Silva"
               />
             </div>
             <div className="flex flex-col w-full md:px-5">
-              <SelectFormik
-                disabled={general.uf?.length ? false : true}
-                label="Estado"
-                name="uf"
-                data={general.uf}
+              <InputFormik
+                label="E-mail"
+                name="email"
+                placeholder="Ex.: joao@email.com"
               />
             </div>
-            <div className="flex flex-col w-full md:px-5">
+            <div className="flex flex-col w-full  md:pl-5">
               <SelectFormik
-                disabled={companies.masterCompanies?.length ? false : true}
-                label="Emp. vinculada"
-                name="empresa_vinculada"
-                data={companies.masterCompanies}
-              />
-            </div>
-            <div className="flex flex-col w-full md:px-5">
-              <SelectFormik
-                disabled={general.collectionValues?.length ? false : true}
-                label="Arrecadação"
-                name="arrecadacao"
-                data={general.collectionValues}
-              />
-            </div>
-            <div className="flex flex-col w-full md:pl-5">
-              <SelectFormik
-                disabled={general.sectors?.length ? false : true}
-                label="Setor"
-                name="setor"
-                data={general.sectors}
+                label="Tipo de perfil"
+                name="perfil"
+                data={usersType}
               />
             </div>
           </div>

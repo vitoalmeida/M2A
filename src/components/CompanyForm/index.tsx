@@ -21,7 +21,6 @@ const CompanyForm = ({ closeForm, onSubmit }: Props) => {
   const { companies } = useSelector((state) => state);
 
   const [empty, setEmpty] = useState(companies.editCompany ? false : true);
-  console.log(companies.editCompany);
 
   useEffect(() => {
     setEmpty(companies.editCompany ? false : true);

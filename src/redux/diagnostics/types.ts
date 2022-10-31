@@ -1,7 +1,7 @@
 /* eslint-disable no-shadow */
-import { GenericData } from "../../types";
+import { Filter, GenericData } from "../../types";
 import { Profile } from "../account/types";
-import { Company } from "../companies/types";
+import { Company, Count } from "../companies/types";
 import { Questionnaire } from "../questionnaire/types";
 
 /* eslint-disable no-unused-vars */
@@ -21,12 +21,18 @@ export enum DiagnosticsTypes {
 
 export interface GetDiagnostics {
   type: DiagnosticsTypes.GET_DIAGNOSTICS_REQUEST;
+  payload: {
+    filter: Filter;
+    params?: any;
+  };
 }
 
 export interface GetDiagnosticsSuccess {
   type: DiagnosticsTypes.GET_DIAGNOSTICS_SUCCESS;
   payload: {
     data: Diagnostic[];
+    diagnosticCount: Count;
+    questionnairesCount: Count;
   };
 }
 
@@ -77,14 +83,25 @@ export type DiagnosticsActionTypes =
   | GetDiagnosticsFailure;
 
 export interface DiagnosticsState {
-  diagnostics: Diagnostic[];
+  diagnostics: {
+    loading?: boolean;
+    data?: Diagnostic[] | null;
+    questionnairesCount?: Count;
+    diagnosticsCount?: Count;
+  };
   loading: boolean;
 }
 
 export interface Diagnostic {
   id?: number;
+  diagnosticado?: boolean;
   data?: string;
   empresa_questionario?: number | Questionnaire;
   consultor?: string | number | Profile;
   tipo_diagnostico?: number | string;
+}
+
+export interface Email {
+  to?: string;
+  text?: string;
 }

@@ -1,13 +1,15 @@
 /* eslint-disable import/no-anonymous-default-export */
 // eslint-disable-next-line no-unused-vars
-import { all, call, delay, put, takeLatest } from "redux-saga/effects";
+import { all, call, delay, put, select, takeLatest } from "redux-saga/effects";
 import { CompaniesActions } from ".";
 import {
   CompaniesTypes,
   Company,
+  Count,
   DeleteCompany,
   GetCompanies,
   GetCompany,
+  GetMasterCompanies,
   RegisterCompany,
   SetEditCompany,
 } from "./types";
@@ -15,6 +17,12 @@ import { customHistory } from "../../routes/CustomBrowserRouter";
 import * as api from "../../services/index";
 import * as helpers from "../../helpers/index";
 import showToast from "../../helpers/showToast";
+import {
+  filterCompanies,
+  formatFilter,
+  getRemainingCount,
+} from "../../helpers/formatData";
+import ApplicationState from "../types";
 
 function* getCompany({ payload: { companyId } }: GetCompany) {
   try {
@@ -35,10 +43,12 @@ function* getCompanySuccess(data) {
   yield put(CompaniesActions.getCompanySuccess(data));
 }
 
-function* getMasterCompanies() {
+function* getMasterCompanies({ payload: { filter } }: GetMasterCompanies) {
   try {
+    filter = formatFilter(filter);
     const { data: masterCompanies } = yield call(
-      api.companies.getMasterCompanies
+      api.companies.getMasterCompanies,
+      filter
     );
 
     const formatedMasterCompanies = masterCompanies.results.map((company) => {
@@ -56,11 +66,49 @@ function* getMasterCompanies() {
   }
 }
 
-function* getCompanies() {
+function* getCompanies({ payload: { filter, params } }: GetCompanies) {
   try {
-    const { data: companies } = yield call(api.companies.getCompanies);
+    const { companies: companiesState } = yield select();
+
+    let companiesCountTotal = companiesState.companies.companiesCount?.total;
+    let masterCompaniesCountTotal =
+      companiesState.companies.masterCompaniesCount?.total;
+
+    if (!companiesCountTotal) {
+      const { data: companiesCount } = yield call(api.companies.getCompanies, {
+        page: 0,
+        limit: 0,
+      });
+      companiesCountTotal = companiesCount.count;
+    }
+
+    if (!masterCompaniesCountTotal) {
+      const { data: masterCompaniesCount } = yield call(
+        api.companies.getMasterCompanies,
+        {
+          page: 0,
+          limit: 0,
+        }
+      );
+      masterCompaniesCountTotal = masterCompaniesCount.count;
+    }
+
+    let [firstFilter, seccondFilter] = getRemainingCount(
+      companiesCountTotal,
+      masterCompaniesCountTotal,
+      filter
+    );
+
+    firstFilter = formatFilter(firstFilter);
+    seccondFilter = formatFilter(seccondFilter);
+
+    const { data: companies } = yield call(
+      api.companies.getCompanies,
+      firstFilter
+    );
     const { data: masterCompanies } = yield call(
-      api.companies.getMasterCompanies
+      api.companies.getMasterCompanies,
+      seccondFilter
     );
 
     const formatedCompanies = companies.results.map((company) => {
@@ -71,10 +119,11 @@ function* getCompanies() {
       (masterCompany) => {
         return {
           ...masterCompany,
-          tipo: 4, segmento: masterCompany.segmento.id,
+          tipo: 4,
+          segmento: masterCompany.segmento.id,
           setor: masterCompany.setor.id,
           tipo_industria: masterCompany.tipo_industria.id,
-          valor_arrecadacao: masterCompany.valor_arrecadacao.id
+          valor_arrecadacao: masterCompany.valor_arrecadacao.id,
         };
       }
     );
@@ -94,16 +143,55 @@ function* getCompanies() {
       }
     }
 
-    yield getCompaniesSuccess(allCompanies, 20);
+    let filteredCompanies = [];
+    let filteredMasterCompanies = [];
+
+    let allFilteredCompanies = [];
+
+    if (params) {
+      filteredCompanies = filterCompanies(formatedCompanies, params);
+      filteredMasterCompanies = filterCompanies(
+        formatedMasterCompanies,
+        params
+      );
+
+      allFilteredCompanies = [...filteredCompanies, ...filteredMasterCompanies];
+    }
+
+    yield getCompaniesSuccess(
+      params ? allFilteredCompanies : allCompanies,
+      {
+        total: params ? filteredCompanies.length : companies.count,
+        current:
+          companiesState.companies.companiesCount?.current +
+          companies.results.length,
+      },
+      {
+        total: params ? filteredMasterCompanies.length : masterCompanies.count,
+        current:
+          companiesState.companies.masterCompaniesCount?.current +
+          masterCompanies.results.length,
+      }
+    );
   } catch (err) {
     yield put(CompaniesActions.getCompaniesFailure());
-
+    console.error(err);
     showToast(helpers.formErrors.formatError(err), "error");
   }
 }
 
-function* getCompaniesSuccess(data: Company[], count: number) {
-  yield put(CompaniesActions.getCompaniesSuccess(data, count));
+function* getCompaniesSuccess(
+  data: Company[],
+  companiesCount: Count,
+  masterCompaniesCount: Count
+) {
+  yield put(
+    CompaniesActions.getCompaniesSuccess(
+      data,
+      companiesCount,
+      masterCompaniesCount
+    )
+  );
 }
 
 function* registerCompany({ payload: { data } }: RegisterCompany) {
@@ -121,7 +209,6 @@ function* registerCompany({ payload: { data } }: RegisterCompany) {
     //   );
     //   invoicings.push(invoicing);
     // }
-    console.log(invoicings);
 
     yield call(api.companies.registerCompany, {
       ...data,
@@ -140,7 +227,12 @@ function* registerCompany({ payload: { data } }: RegisterCompany) {
 
 function* registerCompanySuccess(data) {
   yield put(CompaniesActions.registerCompanySuccess(data));
-  yield put(CompaniesActions.getCompaniesRequest());
+  yield put(
+    CompaniesActions.getCompaniesRequest({
+      limit: 10,
+      page: 0,
+    })
+  );
   yield put(CompaniesActions.removeEditCompany());
   showToast("Empresa cadastrada com sucesso!", "success");
 
@@ -149,7 +241,9 @@ function* registerCompanySuccess(data) {
   customHistory.push("/companies");
 }
 
-function* deleteCompany({ payload: { companyId, userId, type } }: DeleteCompany) {
+function* deleteCompany({
+  payload: { companyId, userId, type },
+}: DeleteCompany) {
   try {
     if (type === 3) {
       yield call(api.account.deleteAccount, String(userId));
@@ -162,7 +256,12 @@ function* deleteCompany({ payload: { companyId, userId, type } }: DeleteCompany)
     yield deleteCompanySuccess();
   } catch (err) {
     yield put(CompaniesActions.deleteCompanySuccess());
-    yield put(CompaniesActions.getCompaniesRequest());
+    yield put(
+      CompaniesActions.getCompaniesRequest({
+        limit: 10,
+        page: 0,
+      })
+    );
     showToast("Empresa deletada com sucesso!", "success");
 
     yield delay(500);
@@ -172,7 +271,12 @@ function* deleteCompany({ payload: { companyId, userId, type } }: DeleteCompany)
 
 function* deleteCompanySuccess() {
   yield put(CompaniesActions.deleteCompanySuccess());
-  yield put(CompaniesActions.getCompaniesRequest());
+  yield put(
+    CompaniesActions.getCompaniesRequest({
+      limit: 10,
+      page: 0,
+    })
+  );
   showToast("Empresa deletada com sucesso!", "success");
 
   yield delay(500);
@@ -180,7 +284,7 @@ function* deleteCompanySuccess() {
 }
 
 function* deleteCompanyFailure(err: any) {
-  console.log(err)
+  console.error(err);
   yield put(CompaniesActions.deleteCompanyFailure());
   showToast(helpers.formErrors.formatError(err), "error");
 
@@ -191,53 +295,71 @@ function* deleteCompanyFailure(err: any) {
 function* setEditCompany({ payload: { data } }: SetEditCompany) {
   try {
     if (data.usuario) {
-      const { data: user } = yield call(api.account.getAccount, String(data.usuario));
+      const { data: user } = yield call(
+        api.account.getAccount,
+        String(data.usuario)
+      );
 
       yield setEditCompanySuccess({ ...data, email: user.email });
     } else {
       yield setEditCompanySuccess(data);
     }
   } catch (err) {
-    yield setEditCompanyFailure(err)
+    yield setEditCompanyFailure(err);
   }
 }
 
 function* setEditCompanySuccess(data: Company) {
   yield put(CompaniesActions.setEditCompanySuccess(data));
-
 }
 
 function* setEditCompanyFailure(err: any) {
   yield put(CompaniesActions.setEditCompanyFailure());
-  console.log(err)
+  console.error(err);
 }
 
 function* editCompany({ payload: { data } }: SetEditCompany) {
   try {
-    yield call(api.general.editAddress, String(data.endereco.id), data.endereco);
+    yield call(
+      api.general.editAddress,
+      String(data.endereco.id),
+      data.endereco
+    );
 
-    const formatedData = { ...data, endereco: data.endereco.id }
-    delete formatedData.faturamento
-    delete formatedData.email
-    delete formatedData.bool_master
+    const formatedData = { ...data, endereco: data.endereco.id };
+    delete formatedData.faturamento;
+    delete formatedData.email;
+    delete formatedData.bool_master;
 
     if (formatedData.tipo === 3) {
-      yield call(api.companies.editCompany, String(formatedData.id), formatedData);
+      yield call(
+        api.companies.editCompany,
+        String(formatedData.id),
+        formatedData
+      );
     } else {
-      delete formatedData.master
-      yield call(api.companies.editMasterCompany, String(formatedData.id), formatedData);
-
+      delete formatedData.master;
+      yield call(
+        api.companies.editMasterCompany,
+        String(formatedData.id),
+        formatedData
+      );
     }
 
     yield editCompanySuccess();
   } catch (err) {
-    yield editCompanyFailure(err)
+    yield editCompanyFailure(err);
   }
 }
 
 function* editCompanySuccess() {
   yield put(CompaniesActions.editCompanySuccess());
-  yield put(CompaniesActions.getCompaniesRequest());
+  yield put(
+    CompaniesActions.getCompaniesRequest({
+      limit: 10,
+      page: 0,
+    })
+  );
   showToast("Empresa editada com sucesso!", "success");
 
   yield delay(500);
@@ -246,12 +368,11 @@ function* editCompanySuccess() {
 
 function* editCompanyFailure(err: any) {
   yield put(CompaniesActions.editCompanyFailure());
-  console.log(err)
+  console.error(err);
   showToast(helpers.formErrors.formatError(err), "error");
 
   yield delay(500);
   yield put(CompaniesActions.clearError());
-
 }
 
 export default [
@@ -261,5 +382,5 @@ export default [
   takeLatest(CompaniesTypes.REGISTER_COMPANY_REQUEST, registerCompany),
   takeLatest(CompaniesTypes.DELETE_COMPANY_REQUEST, deleteCompany),
   takeLatest(CompaniesTypes.SET_EDIT_COMPANY_REQUEST, setEditCompany),
-  takeLatest(CompaniesTypes.EDIT_COMPANY_REQUEST, editCompany)
-]
+  takeLatest(CompaniesTypes.EDIT_COMPANY_REQUEST, editCompany),
+];

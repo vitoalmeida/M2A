@@ -58,8 +58,8 @@ const LoginForm = () => {
             </a>
           </div>
         </div>
-        <div className="mt-12">
-          <Button title="Entrar" loading={account.loading} />
+        <div className="flex mt-12 justify-center">
+          <Button className="w-full" title="Entrar" loading={account.loading} />
         </div>
       </Form>
     </Formik>

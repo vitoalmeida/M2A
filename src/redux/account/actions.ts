@@ -1,4 +1,6 @@
 import { action } from "typesafe-actions";
+import { Filter } from "../../types";
+import { Count } from "../companies/types";
 import {
   Account,
   AccountActionTypes,
@@ -23,12 +25,23 @@ export function getAccountFailure(): AccountActionTypes {
   return action(AccountTypes.GET_ACCOUNT_FAILURE);
 }
 
-export function getAccountsRequest(): AccountActionTypes {
-  return action(AccountTypes.GET_ACCOUNTS_REQUEST);
+export function getAccountsRequest(
+  filter: Filter,
+  params?: any
+): AccountActionTypes {
+  return action(AccountTypes.GET_ACCOUNTS_REQUEST, { filter, params });
 }
 
-export function getAccountsSuccess(data: Profile[], count): AccountActionTypes {
-  return action(AccountTypes.GET_ACCOUNTS_SUCCESS, { data, count });
+export function getAccountsSuccess(
+  data: Profile[],
+  adminCount: Count,
+  consultantCount: Count
+): AccountActionTypes {
+  return action(AccountTypes.GET_ACCOUNTS_SUCCESS, {
+    data,
+    adminCount,
+    consultantCount,
+  });
 }
 
 export function getAccountsFailure(): AccountActionTypes {
@@ -51,9 +64,15 @@ export function registerAccountFailure(): AccountActionTypes {
 }
 
 export function deleteAccountRequest(
-  profileId: number, userId: number, type: number
+  profileId: number,
+  userId: number,
+  type: number
 ): AccountActionTypes {
-  return action(AccountTypes.DELETE_ACCOUNT_REQUEST, { profileId, userId, type });
+  return action(AccountTypes.DELETE_ACCOUNT_REQUEST, {
+    profileId,
+    userId,
+    type,
+  });
 }
 
 export function deleteAccountSuccess(): AccountActionTypes {

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FaChevronLeft } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { CompanyForm } from "../../";
-import { AccountActions } from "../../../redux/account";
+import { CompaniesActions } from "../../../redux/companies";
 import { useSelector } from "../../../redux/hooks";
 import LoginForm from "./LoginForm";
 import PasswordForm from "./PasswordForm";
@@ -25,19 +25,28 @@ const AuthRegion = () => {
           {registerFinalStep && (
             <span
               onClick={() => setRegisterFinalStep(false)}
-              className="cursor-pointer top-10 left-4 md:left-20 lg:left-20 xl:left-24 absolute flex items-center text-gray-500"
+              className="cursor-pointer top-16 left-4 md:left-20 lg:left-20 xl:left-24 absolute flex items-center text-gray-500"
             >
               <FaChevronLeft className="text-gray-500 mr-2" />
               Voltar
             </span>
           )}
-          <div className="flex flex-col items-center duration-500">
+          <div className="flex relative flex-col items-center duration-500">
             {currentScreen === "login" && (
               <img
                 className="h-20 mx-auto w-auto"
                 src={require("../../../assets/images/logo.png")}
                 alt="Workflow"
               />
+            )}
+            {currentScreen === "register" && !registerFinalStep && (
+              <span
+                onClick={() => setCurrentScreen("login")}
+                className="cursor-pointer top-8 left-0 absolute flex items-center text-gray-500"
+              >
+                <FaChevronLeft className="text-gray-500 mr-2" />
+                Voltar
+              </span>
             )}
             <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
               {currentScreen === "login"
@@ -75,11 +84,14 @@ const AuthRegion = () => {
               Ou{" "}
               <span
                 className="cursor-pointer text-blue-700"
-                onClick={() =>
+                onClick={() => {
+                  if (currentScreen === "login") {
+                    dispatch(CompaniesActions.removeEditCompany());
+                  }
                   setCurrentScreen((state) =>
                     state === "login" ? "register" : "login"
-                  )
-                }
+                  );
+                }}
               >
                 {currentScreen === "login"
                   ? "registre-se"

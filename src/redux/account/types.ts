@@ -1,6 +1,7 @@
 /* eslint-disable no-shadow */
 
-import { Company } from "../companies/types";
+import { Filter } from "../../types";
+import { Company, Count } from "../companies/types";
 
 /* eslint-disable no-unused-vars */
 export enum AccountTypes {
@@ -49,11 +50,12 @@ export interface GetAccountFailure {
 
 export interface GetAccounts {
   type: AccountTypes.GET_ACCOUNTS_REQUEST;
+  payload: { filter: Filter; params?: any };
 }
 
 export interface GetAccountsSuccess {
   type: AccountTypes.GET_ACCOUNTS_SUCCESS;
-  payload: { data: Profile[]; count: number };
+  payload: { data: Profile[]; adminCount: Count; consultantCount: Count };
 }
 
 export interface GetAccountsFailure {
@@ -62,7 +64,7 @@ export interface GetAccountsFailure {
 
 export interface RegisterAccount {
   type: AccountTypes.REGISTER_ACCOUNT_REQUEST;
-  payload: { data: RegisterAccountType, self: boolean };
+  payload: { data: RegisterAccountType; self: boolean };
 }
 
 export interface RegisterAccountSuccess {
@@ -77,7 +79,6 @@ export interface RegisterAccountFailure {
 export interface DeleteAccountRequest {
   type: AccountTypes.DELETE_ACCOUNT_REQUEST;
   payload: { profileId: number; userId: number; type: number };
-
 }
 
 export interface DeleteAccountSuccess {
@@ -149,7 +150,11 @@ export interface AccountState {
   loading: boolean;
   data: Account | null;
   token: number | null;
-  accountList: { data: Account[] | null; count: number | null };
+  accountList: {
+    data: Account[] | null;
+    adminCount: Count;
+    consultantCount: Count;
+  };
   editAccount: Profile;
 }
 

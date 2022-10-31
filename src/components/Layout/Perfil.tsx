@@ -204,6 +204,7 @@ const Perfil: React.FC = () => {
       </div>
       <div className="mx-4 sm:mx-10 sm:mt-6 mb-6">
         <Button
+          className="w-full"
           title="Editar"
           color="#f2f2f2"
           textColor="#181818"
@@ -213,6 +214,7 @@ const Perfil: React.FC = () => {
       </div>
       <div className="mx-4 sm:mx-10 mb-10 sm:mb-12">
         <Button
+          className="w-full"
           title="Sair"
           color="#e34444"
           loading={account.loading}

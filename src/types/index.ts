@@ -11,3 +11,10 @@ export interface ErrorType {
     data: { [key: string]: any };
   };
 }
+
+export interface Filter {
+  page?: number;
+  offset?: number;
+  limit?: number;
+  newLimit?: number;
+}

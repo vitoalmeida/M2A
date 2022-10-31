@@ -98,7 +98,7 @@ const Faturamento = ({ changeTab }: Props) => {
           </div>
         </div>
 
-        <div className="mt-5">
+        <div className="flex mt-5 justify-end">
           <Button
             title="Próximo"
             loading={account.loading}

@@ -68,7 +68,11 @@ const PasswordForm: React.FC<Props> = ({ onSubmit }) => {
             />
           </div>
           <div className="mt-8">
-            <Button title="Finalizar cadastro" loading={account.loading} />
+            <Button
+              className="w-full"
+              title="Finalizar cadastro"
+              loading={account.loading}
+            />
           </div>
         </Form>
       </Formik>

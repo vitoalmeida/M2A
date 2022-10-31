@@ -1,5 +1,6 @@
 import { action } from "typesafe-actions";
-import { CompaniesActionTypes, CompaniesTypes, Company } from "./types";
+import { Filter } from "../../types";
+import { CompaniesActionTypes, CompaniesTypes, Company, Count } from "./types";
 
 export function getCompanyRequest(companyId: number): CompaniesActionTypes {
   return action(CompaniesTypes.GET_COMPANY_REQUEST, { companyId });
@@ -13,8 +14,10 @@ export function getCompanyFailure(): CompaniesActionTypes {
   return action(CompaniesTypes.GET_COMPANY_FAILURE);
 }
 
-export function getMasterCompaniesRequest(): CompaniesActionTypes {
-  return action(CompaniesTypes.GET_MASTER_COMPANIES_REQUEST);
+export function getMasterCompaniesRequest(
+  filter: Filter
+): CompaniesActionTypes {
+  return action(CompaniesTypes.GET_MASTER_COMPANIES_REQUEST, { filter });
 }
 
 export function getMasterCompaniesSuccess(
@@ -27,15 +30,23 @@ export function getMasterCompaniesFailure(): CompaniesActionTypes {
   return action(CompaniesTypes.GET_MASTER_COMPANIES_FAILURE);
 }
 
-export function getCompaniesRequest(): CompaniesActionTypes {
-  return action(CompaniesTypes.GET_COMPANIES_REQUEST);
+export function getCompaniesRequest(
+  filter: Filter,
+  params?: any
+): CompaniesActionTypes {
+  return action(CompaniesTypes.GET_COMPANIES_REQUEST, { filter, params });
 }
 
 export function getCompaniesSuccess(
   data: Company[],
-  count: number
+  companiesCount: Count,
+  masterCompaniesCount: Count
 ): CompaniesActionTypes {
-  return action(CompaniesTypes.GET_COMPANIES_SUCCESS, { data, count });
+  return action(CompaniesTypes.GET_COMPANIES_SUCCESS, {
+    data,
+    companiesCount,
+    masterCompaniesCount,
+  });
 }
 
 export function getCompaniesFailure(): CompaniesActionTypes {
@@ -59,7 +70,11 @@ export function deleteCompanyRequest(
   userId: number,
   type: number
 ): CompaniesActionTypes {
-  return action(CompaniesTypes.DELETE_COMPANY_REQUEST, { companyId, userId, type });
+  return action(CompaniesTypes.DELETE_COMPANY_REQUEST, {
+    companyId,
+    userId,
+    type,
+  });
 }
 
 export function deleteCompanySuccess(): CompaniesActionTypes {

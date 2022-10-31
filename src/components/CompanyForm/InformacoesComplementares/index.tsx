@@ -93,6 +93,7 @@ const InformacoesComplementares = ({ onSubmit }: Props) => {
                 <SelectFormik
                   name="resp_formacao_academica"
                   placeholder="Superior"
+                  required
                   label="Formação"
                   data={formacao}
                 />
@@ -144,7 +145,7 @@ const InformacoesComplementares = ({ onSubmit }: Props) => {
           </div>
         </div>
 
-        <div className="mt-5">
+        <div className="flex mt-5 justify-end">
           <Button
             title="Salvar"
             loading={companies.loading}
